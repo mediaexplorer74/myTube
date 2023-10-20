@@ -1,0 +1,308 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B2B18D9D-A2BC-424C-9512-E1A0D0B91573}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RykenTubeWinRT</RootNamespace>
+    <AssemblyName>RykenTubeWinRT</AssemblyName>
+    <DefaultLanguage>ru-RU</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <OutputPath>bin\ARM64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Activity.cs" />
+    <Compile Include="ActivityClient.cs" />
+    <Compile Include="ActivityFeedType.cs" />
+    <Compile Include="ActivityItemType.cs" />
+    <Compile Include="ActivityReason.cs" />
+    <Compile Include="AnalyticsClient`1.cs" />
+    <Compile Include="AnnotationInfo.cs" />
+    <Compile Include="AnnotationStyle.cs" />
+    <Compile Include="AnnotationType.cs" />
+    <Compile Include="Async\AsyncOperationWithProgress`2.cs" />
+    <Compile Include="CacheInfo.cs" />
+    <Compile Include="CaptionsDeclaration.cs" />
+    <Compile Include="Category.cs" />
+    <Compile Include="ChannelIDs.cs" />
+    <Compile Include="ChannelSection.cs" />
+    <Compile Include="ChannelSectionListClient.cs" />
+    <Compile Include="ChannelSectionType.cs" />
+    <Compile Include="Cipher.cs" />
+    <Compile Include="CipherAlgoritm.cs" />
+    <Compile Include="CipherCode.cs" />
+    <Compile Include="CipherLoader.cs" />
+    <Compile Include="CipherType.cs" />
+    <Compile Include="ClientDataBase.cs" />
+    <Compile Include="ClientData`1.cs" />
+    <Compile Include="ClientIndexPageIndex.cs" />
+    <Compile Include="CollectionClient`1.cs" />
+    <Compile Include="Comment.cs" />
+    <Compile Include="CommentClient.cs" />
+    <Compile Include="DashManifest.cs" />
+    <Compile Include="DashReader.cs" />
+    <Compile Include="EntryClient`1.cs" />
+    <Compile Include="EventType.cs" />
+    <Compile Include="FeedClient.cs" />
+    <Compile Include="FeedPageClient`1.cs" />
+    <Compile Include="Fields\VideoFields.cs" />
+    <Compile Include="FunctionalClient`1.cs" />
+    <Compile Include="FunctionAndVariable.cs" />
+    <Compile Include="GroupCacheInfo.cs" />
+    <Compile Include="HistoryPageClient.cs" />
+    <Compile Include="HttpFilters\DashFilter.cs" />
+    <Compile Include="ICacheHandler.cs" />
+    <Compile Include="IDListClient`1.cs" />
+    <Compile Include="ItagMap.cs" />
+    <Compile Include="JSONResourceCreator.cs" />
+    <Compile Include="License.cs" />
+    <Compile Include="LikedResult.cs" />
+    <Compile Include="LikesClient.cs" />
+    <Compile Include="LiveStatus.cs" />
+    <Compile Include="MediaBoxReader.cs" />
+    <Compile Include="MediaEncoding.cs" />
+    <Compile Include="MediaFileDetails.cs" />
+    <Compile Include="MediaLinkType.cs" />
+    <Compile Include="MediaType.cs" />
+    <Compile Include="MultiFeedClient`1.cs" />
+    <Compile Include="OfflinePlaylistClient.cs" />
+    <Compile Include="OffsetAndTimeStamp.cs" />
+    <Compile Include="OnlineCipher.cs" />
+    <Compile Include="OnlineCipherEventArgs.cs" />
+    <Compile Include="OnlineCipherEventHandler.cs" />
+    <Compile Include="Part.cs" />
+    <Compile Include="PartsHandler.cs" />
+    <Compile Include="PlaylistClient.cs" />
+    <Compile Include="PlaylistEntry.cs" />
+    <Compile Include="PlaylistEntryClient.cs" />
+    <Compile Include="PlaylistHelper.cs" />
+    <Compile Include="PlaylistHelperBase.cs" />
+    <Compile Include="PlaylistListClient.cs" />
+    <Compile Include="PlaylistListPageClient.cs" />
+    <Compile Include="PlaylistPageClient.cs" />
+    <Compile Include="PlaylistRepeatMode.cs" />
+    <Compile Include="PlaylistType.cs" />
+    <Compile Include="PrivacyStatus.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QualityDecisionArgs.cs" />
+    <Compile Include="Query.cs" />
+    <Compile Include="Rating.cs" />
+    <Compile Include="RearrangeData.cs" />
+    <Compile Include="RecommendedPageClient.cs" />
+    <Compile Include="RegionInfo.cs" />
+    <Compile Include="RelatedClient.cs" />
+    <Compile Include="RelatedPageClient.cs" />
+    <Compile Include="RSSUploadsClient.cs" />
+    <Compile Include="SearchClient.cs" />
+    <Compile Include="SearchPlaylistClient.cs" />
+    <Compile Include="SearchSuggestionEventArgs.cs" />
+    <Compile Include="SearchUsersClient.cs" />
+    <Compile Include="Server\SocketServer.cs" />
+    <Compile Include="SIDXInfo.cs" />
+    <Compile Include="SIDXSegment.cs" />
+    <Compile Include="SignedInEventArgs.cs" />
+    <Compile Include="SignedInFailedEventArgs.cs" />
+    <Compile Include="SignedInUserClient.cs" />
+    <Compile Include="SignedOutEventArgs.cs" />
+    <Compile Include="SubscriptionData.cs" />
+    <Compile Include="SubscriptionsPageClient.cs" />
+    <Compile Include="Subtitle.cs" />
+    <Compile Include="SubtitleDeclaration.cs" />
+    <Compile Include="SubtitleFormat.cs" />
+    <Compile Include="SubtitlePlacement.cs" />
+    <Compile Include="ThumbnailQuality.cs" />
+    <Compile Include="TypeConstructor.cs" />
+    <Compile Include="UpdaterState.cs" />
+    <Compile Include="UploadFile.cs" />
+    <Compile Include="URLConstructor.cs" />
+    <Compile Include="URLDisplayMode.cs" />
+    <Compile Include="UserClient.cs" />
+    <Compile Include="UserFeed.cs" />
+    <Compile Include="UserInfo.cs" />
+    <Compile Include="UserInfoClient.cs" />
+    <Compile Include="UserListClient.cs" />
+    <Compile Include="UserListEventArgs.cs" />
+    <Compile Include="UserListEventHandler.cs" />
+    <Compile Include="UserPlaylistListClient.cs" />
+    <Compile Include="VideoByteRange.cs" />
+    <Compile Include="VideoFeedPageClient.cs" />
+    <Compile Include="VideoInfoLoader.cs" />
+    <Compile Include="VideoListClient.cs" />
+    <Compile Include="VideoPageClient.cs" />
+    <Compile Include="VideoProjection.cs" />
+    <Compile Include="VideoSize.cs" />
+    <Compile Include="VideoUrlInfo.cs" />
+    <Compile Include="WatchLaterClient.cs" />
+    <Compile Include="WebSiteMode.cs" />
+    <Compile Include="YouTube.cs" />
+    <Compile Include="YouTubeActivity.cs" />
+    <Compile Include="YouTubeClient`1.cs" />
+    <Compile Include="YouTubeCommentEventArgs.cs" />
+    <Compile Include="YouTubeCommentsEventHandler.cs" />
+    <Compile Include="YouTubeEntry.cs" />
+    <Compile Include="YouTubeEntryClient.cs" />
+    <Compile Include="YouTubeEntryEventArgs.cs" />
+    <Compile Include="YouTubeEntryEventHandler.cs" />
+    <Compile Include="YouTubeError.cs" />
+    <Compile Include="YouTubeErrorEventHandler.cs" />
+    <Compile Include="YouTubeFeed.cs" />
+    <Compile Include="YouTubeFeedEventArgs.cs" />
+    <Compile Include="YouTubeFeedEventHandler.cs" />
+    <Compile Include="YouTubeFeedType.cs" />
+    <Compile Include="YouTubeHelpers.cs" />
+    <Compile Include="YouTubeInfo.cs" />
+    <Compile Include="YouTubeInfoEventArgs.cs" />
+    <Compile Include="YouTubeInfoEventHandler.cs" />
+    <Compile Include="YouTubeInfoFailedEventArgs.cs" />
+    <Compile Include="YouTubeInfoFailedEventHandler.cs" />
+    <Compile Include="YouTubeInfoProperties.cs" />
+    <Compile Include="YouTubeInfoUrlContainer.cs" />
+    <Compile Include="YouTubeOrder.cs" />
+    <Compile Include="YouTubePlaylistListEventArgs.cs" />
+    <Compile Include="YouTubePlaylistListEventHandler.cs" />
+    <Compile Include="YouTubeQuality.cs" />
+    <Compile Include="YouTubeSearchEventArgs.cs" />
+    <Compile Include="YouTubeSearchEventHandler.cs" />
+    <Compile Include="YouTubeTime.cs" />
+    <Compile Include="YouTubeURLHelper.cs" />
+    <Compile Include="YouTubeURLInfo.cs" />
+    <Compile Include="YouTubeURLType.cs" />
+    <Compile Include="YouTubeUserEventArgs.cs" />
+    <Compile Include="YouTubeUserEventHandler.cs" />
+    <EmbeddedResource Include="Properties\RykenTubeWinRT.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.2.14</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XMLHelper\XMLHelper.csproj">
+      <Project>{44840bb7-0348-48dd-9fa9-431c9bce39bc}</Project>
+      <Name>XMLHelper</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

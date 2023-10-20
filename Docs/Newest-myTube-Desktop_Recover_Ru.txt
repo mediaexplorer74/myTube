@@ -1,0 +1,36 @@
+Поддержка Windows Phone » Стена » Запись
+	
+Noname Майкрософтов написал
+22 мая в 15:36
+Всем приветъ! Уже час долблюсь с MyTube... Это дерьмо никак не пускает в Google аккаунты вернее наоборот не могу зайти... Помогите Please. Там кто то говорил про API ключ так вот ЧТО С НИМ ДЕЛАТЬ И КАК ЕГО НАЙТИ? Подскажите пожалуйста
+Заранее спасибо!
+Поделиться
+Комментарии (1)
+	
+Поддержка Windows Phone
+Чтобы сделать API ключ сделайте следующее
+1 - открыть console.cloud.google.com (ЧЕРЕЗ ПК!!!!!)
+2 - создать проект
+3 - На вкладке "Dashboard" нажмите "enable apis and services" и включите youtube data api v3
+4 - перейдите на вкладку credentials
+5 - Нажмите create credentials и API key
+6 - В myTube! Зайдите в settings>use your own api key
+7 - скопируйте созданный API ключ
+8 - перейдите на вкладку credentials и выберите oauth client ID
+9 - нажмите configure consent screen
+10 - выберите external as your user type и нажмите create
+11 - Введите любое имя, которое вам нравится, в поле «application name», затем прокрутите вниз и нажмите «save». Никаких других данных здесь вводить не нужно
+12 - перейдите на вкладку credentials
+13 - нажмите help me choose
+14 - в выборе API нажмите youtube data api v3
+15 - выберите user or public data
+16 - ничего не вводите а просто нажмите save and continue
+17 - в application type выберите UWP
+18 - введите любое имя
+19 - в Store ID type введите apps.microsoft.com/store/detail/mytube/9WZDNCRCWF3L?hl=en-us&;gl=us
+20 - нажмите создать
+21 - скопируйте client id
+22 - введите client id в client id и client secret
+23 - нажмите confirm and restart
+24 - готово
+25 - войти в аккаунт даже если очень захотеть не получится, потому что google как всегда что-то намудили

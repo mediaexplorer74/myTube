@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7D5C5C35-C65F-463B-B1F8-3D577AA77542}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>myTubeAppLibrary</RootNamespace>
+    <AssemblyName>myTubeAppLibrary</AssemblyName>
+    <DefaultLanguage>ru-RU</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <OutputPath>bin\ARM64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Align.cs" />
+    <Compile Include="AllCapsConverter.cs" />
+    <Compile Include="AvailableQualitiesChangedEventArgs.cs" />
+    <Compile Include="BookmarkableActionEventArgs.cs" />
+    <Compile Include="BoolInverter.cs" />
+    <Compile Include="BoolToVisibility.cs" />
+    <Compile Include="Branding.cs" />
+    <Compile Include="CastingDeviceFinder.cs" />
+    <Compile Include="CastingDeviceType.cs" />
+    <Compile Include="CastingException.cs" />
+    <Compile Include="ChannelNotifications.cs" />
+    <Compile Include="ClientAndItem`1.cs" />
+    <Compile Include="Converters\SubtitlePlacementToVerticalAlignment.cs" />
+    <Compile Include="Crop.cs" />
+    <Compile Include="DashMediaStreamSource.cs" />
+    <Compile Include="DateToDotString.cs" />
+    <Compile Include="FoundCastingDeviceEventArgs.cs" />
+    <Compile Include="FramerateChangedEventArgs.cs" />
+    <Compile Include="FrameworkElementRendering\MemoryRandomAccessStream.cs" />
+    <Compile Include="GlobalProperties.cs" />
+    <Compile Include="Helper.cs" />
+    <Compile Include="Helpers\Ani.cs" />
+    <Compile Include="Helpers\InputPaneHelper.cs" />
+    <Compile Include="Helpers\YouTubeCacheHandler.cs" />
+    <Compile Include="History.cs" />
+    <Compile Include="IVideoHandler.cs" />
+    <Compile Include="Maintenence.cs" />
+    <Compile Include="MediaEndedArgs.cs" />
+    <Compile Include="MediaFailedEventArgs.cs" />
+    <Compile Include="MediaOpenedEventArgs.cs" />
+    <Compile Include="MediaRunningChangedArgs.cs" />
+    <Compile Include="MediaThumbnailChanged.cs" />
+    <Compile Include="MediaUsageArgs.cs" />
+    <Compile Include="MultipleSignInContainer.cs" />
+    <Compile Include="MyExtensions.cs" />
+    <Compile Include="myTubeConstants.cs" />
+    <Compile Include="NetworkConstants.cs" />
+    <Compile Include="NextVideoEventArgs.cs" />
+    <Compile Include="NullToVisibility.cs" />
+    <Compile Include="NumberWithNewLinesConverter.cs" />
+    <Compile Include="OfflinePlaylist.cs" />
+    <Compile Include="OfflinePlaylistsCollection.cs" />
+    <Compile Include="Placement.cs" />
+    <Compile Include="PlatformType.cs" />
+    <Compile Include="PlaybackSpeedChangedEventArgs.cs" />
+    <Compile Include="PlaylistButtonsEventArgs.cs" />
+    <Compile Include="PlaylistDirection.cs" />
+    <Compile Include="PlaylistPosition.cs" />
+    <Compile Include="PositionChangedEventArgs.cs" />
+    <Compile Include="ProjectionChangedEventArgs.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QualityChangedEventArgs.cs" />
+    <Compile Include="RoamingHistory`2.cs" />
+    <Compile Include="SecondaryStringBindingHelper.cs" />
+    <Compile Include="SharedSettings.cs" />
+    <Compile Include="SignInInfo.cs" />
+    <Compile Include="StepForwardBackwardRequestedEventArgs.cs" />
+    <Compile Include="StringAppendConverter.cs" />
+    <Compile Include="StringBindingHelper.cs" />
+    <Compile Include="StringCaseType.cs" />
+    <Compile Include="StringFormat.cs" />
+    <Compile Include="StringFormatCollection.cs" />
+    <Compile Include="Strings.cs" />
+    <Compile Include="StringToVisibiltyConverter.cs" />
+    <Compile Include="TaskAndFuncBase.cs" />
+    <Compile Include="TaskAndFunc`1.cs" />
+    <Compile Include="TaskAndMethod`1.cs" />
+    <Compile Include="TaskDispatcher.cs" />
+    <Compile Include="TextStacking.cs" />
+    <Compile Include="TextStyle.cs" />
+    <Compile Include="TileArgs.cs" />
+    <Compile Include="TileData.cs" />
+    <Compile Include="TileHelper.cs" />
+    <Compile Include="TilePinner.cs" />
+    <Compile Include="TileTemplate.cs" />
+    <Compile Include="TimeBookmark.cs" />
+    <Compile Include="TimeBookmarksManager.cs" />
+    <Compile Include="TimeShortener.cs" />
+    <Compile Include="ToAgoString.cs" />
+    <Compile Include="ToastAction.cs" />
+    <Compile Include="ToastActivationType.cs" />
+    <Compile Include="ToastHelper.cs" />
+    <Compile Include="TransferInfo.cs" />
+    <Compile Include="TransferManager.cs" />
+    <Compile Include="TransferManagerAction.cs" />
+    <Compile Include="TransferManagerActionEventArgs.cs" />
+    <Compile Include="TransferType.cs" />
+    <Compile Include="UploadInfo.cs" />
+    <Compile Include="UploadsManager.cs" />
+    <Compile Include="VideoCastingDevice.cs" />
+    <Compile Include="VideoHandlerFallbackRequestedException.cs" />
+    <Compile Include="VideoHandlerModel.cs" />
+    <Compile Include="VideoHandlerPicker.cs" />
+    <Compile Include="VideoHandlerRegistration.cs" />
+    <Compile Include="VideoHandlerState.cs" />
+    <Compile Include="VideoInfoPreload.cs" />
+    <Compile Include="VideoStepDirection.cs" />
+    <Compile Include="YouTubeExtensions.cs" />
+    <EmbeddedResource Include="Properties\myTubeAppLibrary.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.2.14</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CloudClasses\CloudClasses.csproj">
+      <Project>{6cd12432-b28e-4af5-99ac-b270e39c4523}</Project>
+      <Name>CloudClasses</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RykenTubeWinRT\RykenTubeWinRT.csproj">
+      <Project>{b2b18d9d-a2bc-424c-9512-e1a0d0b91573}</Project>
+      <Name>RykenTubeWinRT</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XMLHelper\XMLHelper.csproj">
+      <Project>{44840bb7-0348-48dd-9fa9-431c9bce39bc}</Project>
+      <Name>XMLHelper</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

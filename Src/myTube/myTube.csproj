@@ -1,0 +1,336 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{FEC0D9A6-7E37-4C32-A347-8449681C969E}</ProjectGuid>
+    <OutputType>AppContainerExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>myTube</RootNamespace>
+    <AssemblyName>myTube</AssemblyName>
+    <DefaultLanguage>ru-RU</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
+    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <OutputPath>bin\ARM64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RE\AboutPage.cs" />
+    <Compile Include="RE\AccountManagementControl.cs" />
+    <Compile Include="RE\Activities\ActivitiesList.cs" />
+    <Compile Include="RE\Activities\ActivityListTemplateSelector.cs" />
+    <Compile Include="RE\Activities\ActivityThumb.cs" />
+    <Compile Include="RE\Activities\LikeThumb.cs" />
+    <Compile Include="RE\Activities\RecommendedThumb.cs" />
+    <Compile Include="RE\Activities\UploadThumb.cs" />
+    <Compile Include="RE\AddPlaylistControl.cs" />
+    <Compile Include="RE\AfterVideoSection.cs" />
+    <Compile Include="RE\Ani.cs" />
+    <Compile Include="RE\AnnotationControl.cs" />
+    <Compile Include="RE\AnnotationsPanel.cs" />
+    <Compile Include="RE\App.cs" />
+    <Compile Include="RE\ArrangeStyle.cs" />
+    <Compile Include="RE\BetaPages\NewMessage.cs" />
+    <Compile Include="RE\BetaPages\StringFormatPage.cs" />
+    <Compile Include="RE\BetaPages\TileInfoPage.cs" />
+    <Compile Include="RE\BetaPages\TileListPage.cs" />
+    <Compile Include="RE\BetaPages\TranslationPage.cs" />
+    <Compile Include="RE\BitmapAndData.cs" />
+    <Compile Include="RE\CategoryTextInfo.cs" />
+    <Compile Include="RE\ChannelDetails.cs" />
+    <Compile Include="RE\ChannelHeader.cs" />
+    <Compile Include="RE\ChannelPage.cs" />
+    <Compile Include="RE\ChannelThumb.cs" />
+    <Compile Include="RE\ColorSchemes.cs" />
+    <Compile Include="RE\CommentControl.cs" />
+    <Compile Include="RE\CommentsList.cs" />
+    <Compile Include="RE\CommentThread.cs" />
+    <Compile Include="RE\Control16by9.cs" />
+    <Compile Include="RE\ControlDirection.cs" />
+    <Compile Include="RE\Converters\ColorSchemeToStringConverter.cs" />
+    <Compile Include="RE\Converters\IntToColorConverter.cs" />
+    <Compile Include="RE\Converters\SubtitlePlacementToVerticalAlignment.cs" />
+    <Compile Include="RE\CustomFrame.cs" />
+    <Compile Include="RE\CustomMath\Curve.cs" />
+    <Compile Include="RE\CustomMath\CurvePoint.cs" />
+    <Compile Include="RE\CustomSlider.cs" />
+    <Compile Include="RE\Debug\CommentListTestPage.cs" />
+    <Compile Include="RE\Debug\DebugInfoPanel.cs" />
+    <Compile Include="RE\DefaultPage.cs" />
+    <Compile Include="RE\DeviceFamily.cs" />
+    <Compile Include="RE\DeviceViewModel.cs" />
+    <Compile Include="RE\DirectionTappedEventArgs.cs" />
+    <Compile Include="RE\DownloaderPanel.cs" />
+    <Compile Include="RE\ExceptionPages\ExceptionDetails.cs" />
+    <Compile Include="RE\ExceptionPages\VersionListPage.cs" />
+    <Compile Include="RE\ExceptionPages\VersionsPage.cs" />
+    <Compile Include="RE\FadeType.cs" />
+    <Compile Include="RE\FlipStyle.cs" />
+    <Compile Include="RE\GlobalAppObjects\GlobalObjects.cs" />
+    <Compile Include="RE\Helpers\Accel.cs" />
+    <Compile Include="RE\Helpers\ClientAndFirstLoadTask.cs" />
+    <Compile Include="RE\Helpers\InputPaneHelper.cs" />
+    <Compile Include="RE\Helpers\ISelectableThumbnail.cs" />
+    <Compile Include="RE\Helpers\ISortableThumbnail`1.cs" />
+    <Compile Include="RE\Helpers\IVideoContainer.cs" />
+    <Compile Include="RE\Helpers\OrientChangedEventArgs.cs" />
+    <Compile Include="RE\Helpers\OrientChangedEventHandler.cs" />
+    <Compile Include="RE\Helpers\SortTappedEventArgs`1.cs" />
+    <Compile Include="RE\Helpers\VideoDepth.cs" />
+    <Compile Include="RE\Helpers\YouTubeCacheHandler.cs" />
+    <Compile Include="RE\HistoryPage.cs" />
+    <Compile Include="RE\HomePage.cs" />
+    <Compile Include="RE\IconButtonEvent.cs" />
+    <Compile Include="RE\IconButtonEventArgs.cs" />
+    <Compile Include="RE\IconButtonEventCollection.cs" />
+    <Compile Include="RE\IconButtonInfo.cs" />
+    <Compile Include="RE\IconButtonInfoCollection.cs" />
+    <Compile Include="RE\IconTextButton.cs" />
+    <Compile Include="RE\IDownloadPanelCallbackReceiver.cs" />
+    <Compile Include="RE\LeftRightControl.cs" />
+    <Compile Include="RE\LikesPage.cs" />
+    <Compile Include="RE\ListState.cs" />
+    <Compile Include="RE\ListStrings.cs" />
+    <Compile Include="RE\LowerStringFomatConverter.cs" />
+    <Compile Include="RE\MainPage.cs" />
+    <Compile Include="RE\MediaEndedEventArgs.cs" />
+    <Compile Include="RE\MediaOpenedEventArgs.cs" />
+    <Compile Include="RE\MediaRunningChangedEventArgs.cs" />
+    <Compile Include="RE\Media\myTubeMediaStreamSourceContainer.cs" />
+    <Compile Include="RE\MessageDialogs\CommentsView.cs" />
+    <Compile Include="RE\MessageDialogs\CommentThumb.cs" />
+    <Compile Include="RE\MessageDialogs\MessageNotification.cs" />
+    <Compile Include="RE\MessageDialogs\MessageThumb.cs" />
+    <Compile Include="RE\MessageDialogs\MessageView.cs" />
+    <Compile Include="RE\MessageDialogs\PollView.cs" />
+    <Compile Include="RE\MessageDialogs\RecentMessages.cs" />
+    <Compile Include="RE\MiniPlayerType.cs" />
+    <Compile Include="RE\MyMath.cs" />
+    <Compile Include="RE\ObjectCollection.cs" />
+    <Compile Include="RE\OnScrollingStoppedEventArgs.cs" />
+    <Compile Include="RE\OnSelectedPageChangedEventArgs.cs" />
+    <Compile Include="RE\OverCanvas.cs" />
+    <Compile Include="RE\OverCanvasWidthType.cs" />
+    <Compile Include="RE\Overlays\SelectControl.cs" />
+    <Compile Include="RE\Overlays\SortingControl.cs" />
+    <Compile Include="RE\PageInfo.cs" />
+    <Compile Include="RE\PageInfoCollection.cs" />
+    <Compile Include="RE\PivotHeader.cs" />
+    <Compile Include="RE\PlayerControls.cs" />
+    <Compile Include="RE\PlayerControlsState.cs" />
+    <Compile Include="RE\PlaylistEditMode.cs" />
+    <Compile Include="RE\PlaylistEntryCollection.cs" />
+    <Compile Include="RE\PlaylistList.cs" />
+    <Compile Include="RE\PlaylistListPage.cs" />
+    <Compile Include="RE\PlaylistOffsetEventHandler.cs" />
+    <Compile Include="RE\PlaylistPage.cs" />
+    <Compile Include="RE\PlaylistSelectorControl.cs" />
+    <Compile Include="RE\PlaylistThumbnail.cs" />
+    <Compile Include="RE\Popups\ChannelNotificationsPopup.cs" />
+    <Compile Include="RE\Popups\ChannelNotificationViewModel.cs" />
+    <Compile Include="RE\Popups\ClipboardPopup.cs" />
+    <Compile Include="RE\Popups\DevicePickerFlyout.cs" />
+    <Compile Include="RE\Popups\SearchFilterUI.cs" />
+    <Compile Include="RE\Popups\StringUploadPopup.cs" />
+    <Compile Include="RE\Popups\ViewString.cs" />
+    <Compile Include="RE\ProductKeyPages\KeyManagementPage.cs" />
+    <Compile Include="RE\ProductKeyPages\KeyRequestPage.cs" />
+    <Compile Include="RE\Program.cs" />
+    <Compile Include="RE\QualityButtonInfo.cs" />
+    <Compile Include="RE\QualityButtonInfoCollection.cs" />
+    <Compile Include="RE\RotationType.cs" />
+    <Compile Include="RE\RoundDirection.cs" />
+    <Compile Include="RE\SavedVideosPage.cs" />
+    <Compile Include="RE\SearchPage.cs" />
+    <Compile Include="RE\Settings.cs" />
+    <Compile Include="RE\SettingsContainer.cs" />
+    <Compile Include="RE\SettingsPages\GeneralSettings.cs" />
+    <Compile Include="RE\SettingsPages\SubscriptionsSettings.cs" />
+    <Compile Include="RE\SettingsPages\WatchLaterSettings.cs" />
+    <Compile Include="RE\ShareTargets\ShareLinkPage.cs" />
+    <Compile Include="RE\SliderValueChangedEventArgs.cs" />
+    <Compile Include="RE\SubscribedToPage.cs" />
+    <Compile Include="RE\TestPage.cs" />
+    <Compile Include="RE\TestPages\TestListPage.cs" />
+    <Compile Include="RE\Tests\Backend\AuthorizedClient.cs" />
+    <Compile Include="RE\Tests\Backend\CastingTest.cs" />
+    <Compile Include="RE\Tests\Backend\ChannelClients.cs" />
+    <Compile Include="RE\Tests\Backend\EmailTest.cs" />
+    <Compile Include="RE\Tests\Backend\PopularTests.cs" />
+    <Compile Include="RE\Tests\Backend\RelatedVideos.cs" />
+    <Compile Include="RE\Tests\Backend\VideoLoading.cs" />
+    <Compile Include="RE\TextToHyperlinkBlocksConverter.cs" />
+    <Compile Include="RE\ThumbnailDispatcher.cs" />
+    <Compile Include="RE\ThumbnailStyle.cs" />
+    <Compile Include="RE\TileStyle.cs" />
+    <Compile Include="RE\Tiles\VideoTile.cs" />
+    <Compile Include="RE\UploaderPage.cs" />
+    <Compile Include="RE\UploadProgressPanel.cs" />
+    <Compile Include="RE\UpperStringFomatConverter.cs" />
+    <Compile Include="RE\UserHome.cs" />
+    <Compile Include="RE\UserInfoCollection.cs" />
+    <Compile Include="RE\UserPages\UserManagement.cs" />
+    <Compile Include="RE\Vector3.cs" />
+    <Compile Include="RE\VideoContextMenu.cs" />
+    <Compile Include="RE\VideoDetails.cs" />
+    <Compile Include="RE\VideoList.cs" />
+    <Compile Include="RE\VideoPage.cs" />
+    <Compile Include="RE\VideoPageThumb.cs" />
+    <Compile Include="RE\VideoPlayer.cs" />
+    <Compile Include="RE\VideoThumb.cs" />
+    <Compile Include="RE\VideoThumb2.cs" />
+    <Compile Include="RE\VisualStateHelpers\PointerStateHelper.cs" />
+    <Compile Include="RE\WatchLaterPage.cs" />
+    <Compile Include="RE\WrapPanel.cs" />
+    <Compile Include="RE\YouTubeEntryCollection.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Properties\Default.rd.xml" />
+    <Content Include="Assets\LockScreenLogo.scale-200.png" />
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\Square150x150Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.2.14</Version>
+    </PackageReference>
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
