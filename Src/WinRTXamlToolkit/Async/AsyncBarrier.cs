@@ -1,43 +1,47 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Async.AsyncBarrier
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
+﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace WinRTXamlToolkit.Async
 {
-  public class AsyncBarrier
-  {
-    private readonly int _participantCount;
-    private int _remainingParticipants;
-    private ConcurrentStack<TaskCompletionSource<bool>> _waiters;
-
-    public AsyncBarrier(int participantCount)
+    /// <summary>
+    /// Enables multiple tasks to cooperatively work on an algorithm in parallel through multiple phases.
+    /// </summary>
+    public class AsyncBarrier
     {
-      if (participantCount <= 0)
-        throw new ArgumentOutOfRangeException(nameof (participantCount));
-      this._remainingParticipants = this._participantCount = participantCount;
-      this._waiters = new ConcurrentStack<TaskCompletionSource<bool>>();
-    }
+        private readonly int _participantCount;
+        private int _remainingParticipants;
+        private ConcurrentStack<TaskCompletionSource<bool>> _waiters;
 
-    public Task SignalAndWait()
-    {
-      TaskCompletionSource<bool> completionSource = new TaskCompletionSource<bool>();
-      this._waiters.Push(completionSource);
-      if (Interlocked.Decrement(ref this._remainingParticipants) == 0)
-      {
-        this._remainingParticipants = this._participantCount;
-        ConcurrentStack<TaskCompletionSource<bool>> waiters = this._waiters;
-        this._waiters = new ConcurrentStack<TaskCompletionSource<bool>>();
-        Parallel.ForEach<TaskCompletionSource<bool>>((IEnumerable<TaskCompletionSource<bool>>) waiters, (Action<TaskCompletionSource<bool>>) (w => w.SetResult(true)));
-      }
-      return (Task) completionSource.Task;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AsyncBarrier" /> class.
+        /// </summary>
+        /// <param name="participantCount">The participant count.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">participantCount</exception>
+        public AsyncBarrier(int participantCount)
+        {
+            if (participantCount <= 0) throw new ArgumentOutOfRangeException("participantCount");
+            _remainingParticipants = _participantCount = participantCount;
+            _waiters = new ConcurrentStack<TaskCompletionSource<bool>>();
+        }
+
+        /// <summary>
+        /// Signals that a participant has reached the barrier and waits for all other participants to reach the barrier as well.
+        /// </summary>
+        /// <returns></returns>
+        public Task SignalAndWait()
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            _waiters.Push(tcs);
+            if (Interlocked.Decrement(ref _remainingParticipants) == 0)
+            {
+                _remainingParticipants = _participantCount;
+                var waiters = _waiters;
+                _waiters = new ConcurrentStack<TaskCompletionSource<bool>>();
+                Parallel.ForEach(waiters, w => w.SetResult(true));
+            }
+            return tcs.Task;
+        } 
     }
-  }
 }

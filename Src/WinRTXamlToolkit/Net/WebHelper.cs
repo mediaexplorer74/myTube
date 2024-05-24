@@ -1,37 +1,44 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Net.WebHelper
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Windows.Networking.Connectivity;
 
 namespace WinRTXamlToolkit.Net
 {
-  public static class WebHelper
-  {
-    public static bool IsConnectedToInternet()
+    /// <summary>
+    /// A few Web utilities
+    /// </summary>
+    public static class WebHelper
     {
-      ConnectionProfile connectionProfile = NetworkInformation.GetInternetConnectionProfile();
-      return connectionProfile != null && connectionProfile.GetNetworkConnectivityLevel() == 3;
-    }
+        /// <summary>
+        /// Checks if Internet connection is available. May not be the most best way to do it though
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsConnectedToInternet()
+        {
+            var connectionProfile = NetworkInformation.GetInternetConnectionProfile();
 
-    public static async Task<string> DownloadStringAsync(string url)
-    {
-      HttpClientHandler handler = new HttpClientHandler()
-      {
-        UseDefaultCredentials = true,
-        AllowAutoRedirect = true
-      };
-      HttpResponseMessage response = await new HttpClient((HttpMessageHandler) handler)
-      {
-        MaxResponseContentBufferSize = 196608L
-      }.GetAsync(url);
-      response.EnsureSuccessStatusCode();
-      string responseBody = await response.Content.ReadAsStringAsync();
-      return responseBody;
+            return
+                (connectionProfile != null &&
+                connectionProfile.GetNetworkConnectivityLevel() == NetworkConnectivityLevel.InternetAccess);
+        }
+
+        /// <summary>
+        /// Downloads content from given URL and returns it as string
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static async Task<string> DownloadStringAsync(string url)
+        {
+            HttpClientHandler handler = new HttpClientHandler { UseDefaultCredentials = true, AllowAutoRedirect = true };
+            HttpClient client = new HttpClient(handler);
+            client.MaxResponseContentBufferSize = 196608;
+            HttpResponseMessage response = await client.GetAsync(url);
+
+            response.EnsureSuccessStatusCode();
+
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            return responseBody;
+        }
     }
-  }
 }

@@ -139,7 +139,7 @@ namespace myTube
         foreach (DownloadOperation downloadOperation in (IEnumerable<DownloadOperation>) await BackgroundDownloader.GetCurrentDownloadsForTransferGroupAsync(BackgroundTransferGroup.CreateGroup("Video")))
         {
           Helper.Write((object) nameof (TransferManager), (object) ("Download found: " + (object) downloadOperation.Progress.Status));
-          if (downloadOperation.Progress.Status == 2)
+          if (downloadOperation.Progress.Status == BackgroundTransferStatus.PausedByApplication)
           {
             try
             {
@@ -149,7 +149,7 @@ namespace myTube
             {
             }
           }
-          else if (downloadOperation.Progress.Status != 7)
+          else if (downloadOperation.Progress.Status != BackgroundTransferStatus.Error)
           {
             BackgroundTransferStatus status = downloadOperation.Progress.Status;
           }
@@ -186,7 +186,7 @@ namespace myTube
       {
         foreach (DownloadOperation downloadOperation in (IEnumerable<DownloadOperation>) await BackgroundDownloader.GetCurrentDownloadsForTransferGroupAsync(BackgroundTransferGroup.CreateGroup("Audio")))
         {
-          if (downloadOperation.Progress.Status == 2)
+          if (downloadOperation.Progress.Status == BackgroundTransferStatus.PausedByApplication)
           {
             try
             {
@@ -207,7 +207,8 @@ namespace myTube
         transfer = transferInfoArray[index];
         try
         {
-          bool flag = transfer.AudioFilePath != (Uri) null && !string.IsNullOrWhiteSpace(transfer.AudioFilePath.OriginalString);
+          bool flag = transfer.AudioFilePath != (Uri) null 
+                        && !string.IsNullOrWhiteSpace(transfer.AudioFilePath.OriginalString);
           if (flag)
             flag = await transfer.GetAudioStorageFile() == null;
           if (flag)
@@ -279,7 +280,8 @@ namespace myTube
       }
       try
       {
-        await FileIO.WriteTextAsync((IStorageFile) await this.infoFolder.CreateFileAsync(entry.ID + ".xml", (CreationCollisionOption) 1), entry.OriginalString);
+        await FileIO.WriteTextAsync((IStorageFile) await this.infoFolder.CreateFileAsync(entry.ID + ".xml",
+            (CreationCollisionOption) 1), entry.OriginalString);
       }
       catch
       {
@@ -289,7 +291,8 @@ namespace myTube
         try
         {
           byte[] imageStream = await imageStreamTask;
-          await FileIO.WriteBytesAsync((IStorageFile) await this.infoFolder.CreateFileAsync(entry.ID + ".jpg", (CreationCollisionOption) 1), imageStream);
+          await FileIO.WriteBytesAsync((IStorageFile) await this.infoFolder.CreateFileAsync(entry.ID + ".jpg",
+              (CreationCollisionOption) 1), imageStream);
           imageStream = (byte[]) null;
         }
         catch
@@ -344,8 +347,11 @@ namespace myTube
                 if (await transfers.FileExists(entry.ID + ".mp4"))
                 {
                   await file.MoveAsync((IStorageFolder) this.infoFolder);
+
                   if (await transfers.FileExists(entry.ID + ".jpg"))
-                    await (await transfers.GetFileAsync(entry.ID + ".jpg")).MoveAsync((IStorageFolder) this.infoFolder);
+                    await (await transfers.GetFileAsync(entry.ID + ".jpg"))
+                                            .MoveAsync((IStorageFolder) this.infoFolder);
+
                   StorageFile fileAsync = await transfers.GetFileAsync(entry.ID + ".mp4");
                   this.AddTransferInfo(new TransferInfo(entry)
                   {
@@ -409,13 +415,15 @@ namespace myTube
       {
         adaptive = true;
         if (await sender.GetTransferState(entry, TransferType.Audio) == TransferManager.State.None)
-          throw new InvalidOperationException("The audio for this transfer must be downloaded before the video can be downloaded");
+          throw new InvalidOperationException(
+              "The audio for this transfer must be downloaded before the video can be downloaded");
       }
       BackgroundDownloader downloader = new BackgroundDownloader();
       downloader.SetRequestHeader("User-Agent", YouTube.UserAgent);
       downloader.SuccessToastNotification = (ToastHelper.CreateToast(entry.GetThumb(ThumbnailQuality.SD), (qual == YouTubeQuality.Audio ? "Audio" : "Video") + " download finished", entry.Title, new TileArgs("myTube.VideoPage", entry.ID, 0)));
       downloader.Method = ("GET");
-      downloader.TransferGroup = (BackgroundTransferGroup.CreateGroup(qual == YouTubeQuality.Audio ? "Audio" : "Video"));
+      downloader.TransferGroup = (BackgroundTransferGroup.CreateGroup(qual == YouTubeQuality.Audio ? "Audio" 
+          : "Video"));
       StorageFolder videosLibrary = KnownFolders.VideosLibrary;
       StorageFolder downloadsFolder = (StorageFolder) null;
       try
@@ -426,7 +434,8 @@ namespace myTube
       {
         try
         {
-          downloadsFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("myTube", (CreationCollisionOption) 3);
+          downloadsFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("myTube", 
+              (CreationCollisionOption) 3);
         }
         catch
         {
@@ -448,8 +457,8 @@ namespace myTube
       string str2 = str1;
       StorageFile fileAsync = await downloadsFolder.CreateFileAsync(qual != YouTubeQuality.Audio ? (!adaptive ? str2 + ".mp4" : str2 + ".dashv") : str2 + ".dasha", (CreationCollisionOption) 0);
       DownloadOperation download = downloader.CreateDownload((qual == YouTubeQuality.Audio ? info.GetLink(YouTubeQuality.HD4320, MediaLinkType.Audio) : info.GetLink(qual, MediaLinkType.AllVideo)).ToUri(UriKind.Absolute), (IStorageFile) fileAsync);
-      download.put_CostPolicy((BackgroundTransferCostPolicy) 2);
-      download.put_Priority((BackgroundTransferPriority) 0);
+      download.CostPolicy = (BackgroundTransferCostPolicy) 2;
+      download.Priority = (BackgroundTransferPriority) 0;
       TransferInfo transfer = sender.GetTransferInfo(entry);
       if (transfer == null)
       {
@@ -556,7 +565,10 @@ namespace myTube
       catch
       {
       }
-      string originalString = (transferType == TransferType.Audio ? transfer.AudioFilePath : transfer.VideoFilePath).OriginalString;
+
+      string originalString = (transferType == TransferType.Audio
+                ? transfer.AudioFilePath 
+                : transfer.VideoFilePath).OriginalString;
       try
       {
         if (!string.IsNullOrWhiteSpace(originalString))
@@ -662,10 +674,15 @@ namespace myTube
     {
       TransferInfo[] transfers = ((IEnumerable<TransferInfo>) this.Transfers).Where<TransferInfo>((Func<TransferInfo, bool>) (t =>
       {
-        if (type == TransferType.Video && t.VideoFilePath != (Uri) null && !string.IsNullOrWhiteSpace(t.VideoFilePath.OriginalString))
+        if (type == TransferType.Video && t.VideoFilePath != (Uri) null
+          && !string.IsNullOrWhiteSpace(t.VideoFilePath.OriginalString))
           return true;
-        return type == TransferType.Audio && t.AudioFilePath != (Uri) null && !string.IsNullOrWhiteSpace(t.AudioFilePath.OriginalString);
+
+        return type == TransferType.Audio && t.AudioFilePath != (Uri) null
+          && !string.IsNullOrWhiteSpace(t.AudioFilePath.OriginalString);
+
       })).ToArray<TransferInfo>();
+
       int manyEntriesPerPage = this.HowManyEntriesPerPage;
       int startIndex = manyEntriesPerPage * page;
       int length = transfers.Length - startIndex;
@@ -725,7 +742,8 @@ namespace myTube
         return (Uri) null;
       try
       {
-        return new Uri(Helper.ToLocalUriPath((await this.infoFolder.GetFileAsync(ID + ".jpg")).Path), UriKind.Absolute);
+        return new Uri(Helper.ToLocalUriPath((await this.infoFolder.GetFileAsync(ID + ".jpg")).Path),
+            UriKind.Absolute);
       }
       catch
       {
@@ -733,7 +751,8 @@ namespace myTube
       }
     }));
 
-    public Task<IRandomAccessStream> GetThumb(string ID) => Task.Run<IRandomAccessStream>((Func<Task<IRandomAccessStream>>) (async () =>
+    public Task<IRandomAccessStream> GetThumb(string ID) => Task.Run<IRandomAccessStream>(
+        (Func<Task<IRandomAccessStream>>) (async () =>
     {
       await this.CreateXMLFolder();
       if (this.infoFolder == null)
@@ -748,7 +767,8 @@ namespace myTube
       }
     }));
 
-    public Task<DownloadOperation> GetDownload(TransferInfo transfer, TransferType type) => Task.Run<DownloadOperation>((Func<Task<DownloadOperation>>) (async () =>
+    public Task<DownloadOperation> GetDownload(TransferInfo transfer, TransferType type)
+            => Task.Run<DownloadOperation>((Func<Task<DownloadOperation>>) (async () =>
     {
       if (transfer != null)
       {
@@ -771,7 +791,8 @@ namespace myTube
       Task<TransferManager.State> videoStateTask = this.GetTransferState(ID, TransferType.Video);
       TransferManager.State audioState = await transferState;
       TransferManager.State state = await videoStateTask;
-      return audioState == TransferManager.State.Downloading || state == TransferManager.State.Downloading ? TransferManager.State.Downloading : (audioState != TransferManager.State.Complete || state != TransferManager.State.Complete ? (audioState != TransferManager.State.None || state != TransferManager.State.None ? TransferManager.State.Complete : TransferManager.State.None) : TransferManager.State.Complete);
+      return audioState == TransferManager.State.Downloading 
+                || state == TransferManager.State.Downloading ? TransferManager.State.Downloading : (audioState != TransferManager.State.Complete || state != TransferManager.State.Complete ? (audioState != TransferManager.State.None || state != TransferManager.State.None ? TransferManager.State.Complete : TransferManager.State.None) : TransferManager.State.Complete);
     }
 
     public async Task<TransferManager.State> GetTransferState(YouTubeEntry entry, TransferType type) => await this.GetTransferState(entry.ID, type);
@@ -779,7 +800,8 @@ namespace myTube
     public Task<TransferManager.State> GetTransferState(string ID, TransferType type) => Task.Run<TransferManager.State>((Func<Task<TransferManager.State>>) (async () =>
     {
       string Tag = nameof (GetTransferState);
-      Helper.Write((object) Tag, (object) string.Format("Getting TransferState for {0} ({1})", (object) ID, (object) type));
+      Helper.Write((object) Tag, (object) string.Format("Getting TransferState for {0} ({1})",
+          (object) ID, (object) type));
       TransferInfo[] transfers = this.Transfers;
       TransferInfo transfer = (TransferInfo) null;
       DownloadOperation download = (DownloadOperation) null;
@@ -825,8 +847,14 @@ namespace myTube
         bool found;
         if (download != null)
         {
-          if (download.Progress.Status != 5 && (download.Progress.TotalBytesToReceive <= 0UL || (long) download.Progress.TotalBytesToReceive != (long) download.Progress.BytesReceived))
-            return download.Progress.Status == 6 || download.Progress.Status == 7 ? TransferManager.State.None : TransferManager.State.Downloading;
+          if (download.Progress.Status != BackgroundTransferStatus.Completed 
+                && (download.Progress.TotalBytesToReceive <= 0UL 
+                || (long) download.Progress.TotalBytesToReceive != (long) download.Progress.BytesReceived))
+            return download.Progress.Status == BackgroundTransferStatus.Canceled 
+                    || download.Progress.Status == BackgroundTransferStatus.Error
+                    ? TransferManager.State.None 
+                    : TransferManager.State.Downloading;
+
           if (!string.IsNullOrWhiteSpace(str1))
           {
             found = true;
@@ -862,7 +890,8 @@ namespace myTube
     {
       try
       {
-        StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileName, (CreationCollisionOption) 1);
+        StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync(
+            fileName, (CreationCollisionOption) 1);
         await FileIO.WriteTextAsync((IStorageFile) file, this.xml.ToString());
         StorageFolder videosLibrary = KnownFolders.VideosLibrary;
         if (videosLibrary != null)
@@ -870,8 +899,10 @@ namespace myTube
           StorageFolder myTubeFolder = await videosLibrary.CreateFolderAsync("myTube", (CreationCollisionOption) 3);
           if (myTubeFolder != null)
           {
-            StorageFile storageFile1 = await file.CopyAsync((IStorageFolder) myTubeFolder, fileName + ".backup", (NameCollisionOption) 1);
-            StorageFile storageFile2 = await file.CopyAsync((IStorageFolder) myTubeFolder, fileName ?? "", (NameCollisionOption) 1);
+            StorageFile storageFile1 = await file.CopyAsync((IStorageFolder) myTubeFolder, fileName + ".backup",
+                (NameCollisionOption) 1);
+            StorageFile storageFile2 = await file.CopyAsync((IStorageFolder) myTubeFolder, fileName 
+                ?? "", (NameCollisionOption) 1);
           }
           myTubeFolder = (StorageFolder) null;
         }
@@ -899,7 +930,8 @@ namespace myTube
       }
       if (num != 1)
       {
-        TransferManager transferManager;
+        //RnD (empty?)
+        TransferManager transferManager = new TransferManager() { };
         return transferManager;
       }
       Helper.Write((object) nameof (TransferManager), (object) "Error loading from file, trying backup");

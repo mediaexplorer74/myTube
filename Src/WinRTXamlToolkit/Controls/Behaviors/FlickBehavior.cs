@@ -1,89 +1,113 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Controls.Behaviors.FlickBehavior
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using System;
+using WinRTXamlToolkit.Controls.Extensions;
+using WinRTXamlToolkit.Interactivity;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using WinRTXamlToolkit.Controls.Extensions;
-using WinRTXamlToolkit.Interactivity;
 
 namespace WinRTXamlToolkit.Controls.Behaviors
 {
-  public class FlickBehavior : Behavior<FrameworkElement>
-  {
-    private Canvas _canvas;
-    private Point _startPosition;
-
-    protected override void OnLoaded()
+    /// <summary>
+    /// When applied to an element placed in a Canvas - allows the element to be dragged or flicked.
+    /// </summary>
+    /// <remarks>
+    /// Works by changing the Canvas.Top/Left properties.
+    /// Changes Manipulation mode of the associated element to translate with inertia.
+    /// </remarks>
+    public class FlickBehavior : Behavior<FrameworkElement>
     {
-      this._canvas = ((DependencyObject) this.AssociatedObject).GetFirstAncestorOfType<Canvas>();
-      if (this._canvas == null)
-        throw new InvalidOperationException("FlickBehavior can only be used on elements hosted inside of a Canvas.");
-      ((UIElement) this.AssociatedObject).put_ManipulationMode((ManipulationModes) 67);
-      FrameworkElement associatedObject1 = this.AssociatedObject;
-      WindowsRuntimeMarshal.AddEventHandler<ManipulationStartingEventHandler>((Func<ManipulationStartingEventHandler, EventRegistrationToken>) new Func<ManipulationStartingEventHandler, EventRegistrationToken>(((UIElement) associatedObject1).add_ManipulationStarting), (Action<EventRegistrationToken>) new Action<EventRegistrationToken>(((UIElement) associatedObject1).remove_ManipulationStarting), new ManipulationStartingEventHandler(this.OnAssociatedObjectManipulationStarting));
-      FrameworkElement associatedObject2 = this.AssociatedObject;
-      WindowsRuntimeMarshal.AddEventHandler<ManipulationDeltaEventHandler>((Func<ManipulationDeltaEventHandler, EventRegistrationToken>) new Func<ManipulationDeltaEventHandler, EventRegistrationToken>(((UIElement) associatedObject2).add_ManipulationDelta), (Action<EventRegistrationToken>) new Action<EventRegistrationToken>(((UIElement) associatedObject2).remove_ManipulationDelta), new ManipulationDeltaEventHandler(this.OnAssociatedObjectManipulationDelta));
-    }
+        private Canvas _canvas;
+        private Point _startPosition;
 
-    protected override void OnUnloaded()
-    {
-      WindowsRuntimeMarshal.RemoveEventHandler<ManipulationStartingEventHandler>((Action<EventRegistrationToken>) new Action<EventRegistrationToken>(((UIElement) this.AssociatedObject).remove_ManipulationStarting), new ManipulationStartingEventHandler(this.OnAssociatedObjectManipulationStarting));
-      WindowsRuntimeMarshal.RemoveEventHandler<ManipulationDeltaEventHandler>((Action<EventRegistrationToken>) new Action<EventRegistrationToken>(((UIElement) this.AssociatedObject).remove_ManipulationDelta), new ManipulationDeltaEventHandler(this.OnAssociatedObjectManipulationDelta));
-      this._canvas = (Canvas) null;
-    }
-
-    private void OnAssociatedObjectManipulationStarting(
-      object sender,
-      ManipulationStartingRoutedEventArgs e)
-    {
-      this._startPosition = new Point(Canvas.GetLeft((UIElement) this.AssociatedObject), Canvas.GetTop((UIElement) this.AssociatedObject));
-    }
-
-    private void OnAssociatedObjectManipulationDelta(
-      object sender,
-      ManipulationDeltaRoutedEventArgs manipulationDeltaRoutedEventArgs)
-    {
-      double x = ((Point) manipulationDeltaRoutedEventArgs.Cumulative.Translation).X;
-      double y = ((Point) manipulationDeltaRoutedEventArgs.Cumulative.Translation).Y;
-      double num1 = this._startPosition.X + x;
-      double num2 = this._startPosition.Y + y;
-      if (manipulationDeltaRoutedEventArgs.IsInertial)
-      {
-        while (num1 < 0.0 || num1 > ((FrameworkElement) this._canvas).ActualWidth - this.AssociatedObject.ActualWidth)
+        /// <summary>
+        /// Called after the AssociatedObject is loaded (added to visual tree).
+        /// </summary>
+        /// <exception cref="System.InvalidOperationException">FlickBehavior can only be used on elements hosted inside of a Canvas.</exception>
+        /// <remarks>
+        /// Override this to hook up functionality to the AssociatedObject.
+        /// </remarks>
+        protected override void OnLoaded()
         {
-          if (num1 < 0.0)
-            num1 = -num1;
-          if (num1 > ((FrameworkElement) this._canvas).ActualWidth - this.AssociatedObject.ActualWidth)
-            num1 = 2.0 * (((FrameworkElement) this._canvas).ActualWidth - this.AssociatedObject.ActualWidth) - num1;
+            _canvas = this.AssociatedObject.GetFirstAncestorOfType<Canvas>();
+
+            if (_canvas == null)
+            {
+                throw new InvalidOperationException("FlickBehavior can only be used on elements hosted inside of a Canvas.");
+            }
+
+            this.AssociatedObject.ManipulationMode =
+                ManipulationModes.TranslateX |
+                ManipulationModes.TranslateY |
+                ManipulationModes.TranslateInertia;
+            this.AssociatedObject.ManipulationStarting += OnAssociatedObjectManipulationStarting;
+            this.AssociatedObject.ManipulationDelta += OnAssociatedObjectManipulationDelta;
         }
-        while (num2 < 0.0 || num2 > ((FrameworkElement) this._canvas).ActualHeight - this.AssociatedObject.ActualHeight)
+
+        /// <summary>
+        /// Called after the AssociatedObject is unloaded (removed from visual tree).
+        /// </summary>
+        /// <remarks>
+        /// Override this to hook up functionality to the AssociatedObject.
+        /// </remarks>
+        protected override void OnUnloaded()
         {
-          if (num2 < 0.0)
-            num2 = -num2;
-          if (num2 > ((FrameworkElement) this._canvas).ActualHeight - this.AssociatedObject.ActualHeight)
-            num2 = 2.0 * (((FrameworkElement) this._canvas).ActualHeight - this.AssociatedObject.ActualHeight) - num2;
+            this.AssociatedObject.ManipulationStarting -= OnAssociatedObjectManipulationStarting;
+            this.AssociatedObject.ManipulationDelta -= OnAssociatedObjectManipulationDelta;
+            _canvas = null;
         }
-      }
-      else
-      {
-        if (num1 < 0.0)
-          num1 = 0.0;
-        if (num1 > ((FrameworkElement) this._canvas).ActualWidth - this.AssociatedObject.ActualWidth)
-          num1 = ((FrameworkElement) this._canvas).ActualWidth - this.AssociatedObject.ActualWidth;
-        if (num2 < 0.0)
-          num2 = 0.0;
-        if (num2 > ((FrameworkElement) this._canvas).ActualHeight - this.AssociatedObject.ActualHeight)
-          num2 = ((FrameworkElement) this._canvas).ActualHeight - this.AssociatedObject.ActualHeight;
-      }
-      Canvas.SetLeft((UIElement) this.AssociatedObject, num1);
-      Canvas.SetTop((UIElement) this.AssociatedObject, num2);
-    }
-  }
-}
+
+        private void OnAssociatedObjectManipulationStarting(object sender, ManipulationStartingRoutedEventArgs e)
+        {
+            _startPosition = new Point(
+                Canvas.GetLeft(this.AssociatedObject),
+                Canvas.GetTop(this.AssociatedObject));
+        }
+
+        private void OnAssociatedObjectManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs manipulationDeltaRoutedEventArgs)
+        {
+            var dx = manipulationDeltaRoutedEventArgs.Cumulative.Translation.X;
+            var dy = manipulationDeltaRoutedEventArgs.Cumulative.Translation.Y;
+
+            var x = _startPosition.X + dx;
+            var y = _startPosition.Y + dy;
+
+            if (manipulationDeltaRoutedEventArgs.IsInertial)
+            {
+                while (x < 0 ||
+                       x > _canvas.ActualWidth - this.AssociatedObject.ActualWidth)
+                {
+                    if (x < 0)
+                        x = -x;
+                    if (x > _canvas.ActualWidth - this.AssociatedObject.ActualWidth)
+                        x = 2 *
+                            (_canvas.ActualWidth - this.AssociatedObject.ActualWidth) -
+                            x;
+                }
+
+                while (y < 0 ||
+                       y > _canvas.ActualHeight - this.AssociatedObject.ActualHeight)
+                {
+                    if (y < 0)
+                        y = -y;
+                    if (y > _canvas.ActualHeight - this.AssociatedObject.ActualHeight)
+                        y = 2 * (_canvas.ActualHeight - this.AssociatedObject.ActualHeight) -
+                            y;
+                }
+            }
+            else
+            {
+                if (x < 0)
+                    x = 0;
+                if (x > _canvas.ActualWidth - this.AssociatedObject.ActualWidth)
+                    x = _canvas.ActualWidth - this.AssociatedObject.ActualWidth;
+                if (y < 0)
+                    y = 0;
+                if (y > _canvas.ActualHeight - this.AssociatedObject.ActualHeight)
+                    y = _canvas.ActualHeight - this.AssociatedObject.ActualHeight;
+            }
+
+            Canvas.SetLeft(this.AssociatedObject, x);
+            Canvas.SetTop(this.AssociatedObject, y);
+        }
+    }}

@@ -1,11 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.AwaitableUI.MediaElementExtensions
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using System;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -13,48 +6,90 @@ using Windows.UI.Xaml.Media;
 
 namespace WinRTXamlToolkit.AwaitableUI
 {
-  public static class MediaElementExtensions
-  {
-    public static async Task<MediaElement> WaitForStateAsync(
-      this MediaElement mediaElement,
-      MediaElementState? newState = null)
+    /// <summary>
+    /// Extension methods for awaiting MediaElement state changes.
+    /// </summary>
+    public static class MediaElementExtensions
     {
-      if (newState.HasValue && mediaElement.CurrentState == newState.Value)
-        return (MediaElement) null;
-      TaskCompletionSource<MediaElement> tcs = new TaskCompletionSource<MediaElement>();
-      RoutedEventHandler reh = (RoutedEventHandler) null;
-      reh = (RoutedEventHandler) ((s, e) =>
-      {
-        if (newState.HasValue && mediaElement.CurrentState != newState.Value)
-          return;
-        WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>((Action<EventRegistrationToken>) new Action<EventRegistrationToken>(mediaElement.remove_CurrentStateChanged), reh);
-        tcs.SetResult((MediaElement) s);
-      });
-      WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>((Func<RoutedEventHandler, EventRegistrationToken>) new Func<RoutedEventHandler, EventRegistrationToken>(mediaElement.add_CurrentStateChanged), (Action<EventRegistrationToken>) new Action<EventRegistrationToken>(mediaElement.remove_CurrentStateChanged), reh);
-      return await tcs.Task;
-    }
+        /// <summary>
+        /// Waits for the MediaElement.CurrentState to change to any (default) or specific MediaElementState value.
+        /// </summary>
+        /// <param name="mediaElement"></param>
+        /// <param name="newState">The MediaElementState value to wait for. Null by default causes the metod to wait for a change to any other state.</param>
+        /// <returns></returns>
+        public static async Task<MediaElement> WaitForStateAsync(this MediaElement mediaElement, MediaElementState? newState = null)
+        {
+            if (newState != null &&
+                mediaElement.CurrentState == newState.Value)
+            {
+                return null;
+            }
 
-    public static async Task<MediaElement> PlayToEndAsync(
-      this MediaElement mediaElement,
-      Uri source)
-    {
-      mediaElement.put_Source((Uri) source);
-      return await mediaElement.WaitToCompleteAsync();
-    }
+            var tcs = new TaskCompletionSource<MediaElement>();
+            RoutedEventHandler reh = null;
 
-    public static async Task<MediaElement> WaitToCompleteAsync(this MediaElement mediaElement)
-    {
-      TaskCompletionSource<MediaElement> tcs = new TaskCompletionSource<MediaElement>();
-      RoutedEventHandler reh = (RoutedEventHandler) null;
-      reh = (RoutedEventHandler) ((s, e) =>
-      {
-        if (mediaElement.CurrentState == 2 || mediaElement.CurrentState == 1 || mediaElement.CurrentState == 3)
-          return;
-        WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>((Action<EventRegistrationToken>) new Action<EventRegistrationToken>(mediaElement.remove_CurrentStateChanged), reh);
-        tcs.SetResult((MediaElement) s);
-      });
-      WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>((Func<RoutedEventHandler, EventRegistrationToken>) new Func<RoutedEventHandler, EventRegistrationToken>(mediaElement.add_CurrentStateChanged), (Action<EventRegistrationToken>) new Action<EventRegistrationToken>(mediaElement.remove_CurrentStateChanged), reh);
-      return await tcs.Task;
+            reh = (s, e) =>
+            {
+                if (newState != null && mediaElement.CurrentState != newState.Value)
+                {
+                    return;
+                }
+
+                mediaElement.CurrentStateChanged -= reh;
+                tcs.SetResult((MediaElement)s);
+            };
+
+            mediaElement.CurrentStateChanged += reh;
+
+            return await tcs.Task;
+        }
+
+        /// <summary>
+        /// Plays to end and waits asynchronously.
+        /// </summary>
+        /// <param name="mediaElement">The media element.</param>
+        /// <param name="source">The source to play.</param>
+        /// <returns></returns>
+        public static async Task<MediaElement> PlayToEndAsync(this MediaElement mediaElement, Uri source)
+        {
+            mediaElement.Source = source;
+            return await mediaElement.WaitToCompleteAsync();
+        }
+
+        /// <summary>
+        /// Waits for the MediaElement to complete playback.
+        /// </summary>
+        /// <param name="mediaElement">The media element.</param>
+        /// <returns></returns>
+        public static async Task<MediaElement> WaitToCompleteAsync(this MediaElement mediaElement)
+        {
+            //if (mediaElement.CurrentState != MediaElementState.Closed &&
+            //    mediaElement.CurrentState != MediaElementState.Buffering &&
+            //    mediaElement.CurrentState != MediaElementState.Opening &&
+            //    mediaElement.CurrentState != MediaElementState.Playing)
+            //{
+            //    return mediaElement;
+            //}
+
+            var tcs = new TaskCompletionSource<MediaElement>();
+            RoutedEventHandler reh = null;
+
+            reh = (s, e) =>
+            {
+                if (mediaElement.CurrentState == MediaElementState.Buffering ||
+                    mediaElement.CurrentState == MediaElementState.Opening ||
+                    mediaElement.CurrentState == MediaElementState.Playing)
+                {
+                    return;
+                }
+
+                mediaElement.CurrentStateChanged -= reh;
+                tcs.SetResult((MediaElement)s);
+            };
+
+            mediaElement.CurrentStateChanged += reh;
+
+            return await tcs.Task;
+        }
     }
-  }
 }

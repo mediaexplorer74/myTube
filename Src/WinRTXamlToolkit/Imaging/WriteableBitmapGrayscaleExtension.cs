@@ -1,61 +1,89 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Imaging.WriteableBitmapGrayscaleExtension
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using Windows.UI.Xaml.Media.Imaging;
+﻿using Windows.UI.Xaml.Media.Imaging;
 
 namespace WinRTXamlToolkit.Imaging
 {
-  public static class WriteableBitmapGrayscaleExtension
-  {
-    public static WriteableBitmap Grayscale(this WriteableBitmap target)
+    /// <summary>
+    /// WriteableBitmap extensions to remove the color from the image.
+    /// </summary>
+    public static class WriteableBitmapGrayscaleExtension
     {
-      IBufferExtensions.PixelBufferInfo pixels = target.PixelBuffer.GetPixels();
-      for (int index = 0; index < pixels.Bytes.Length; index += 4)
-      {
-        byte num1 = pixels.Bytes[index + 3];
-        if (num1 > (byte) 0)
+        /// <summary>
+        /// Removes all color from the specified bitmap.
+        /// </summary>
+        /// <param name="target">The target bitmap.</param>
+        /// <returns></returns>
+        public static WriteableBitmap Grayscale(this WriteableBitmap target)
         {
-          double num2 = (double) num1 / (double) byte.MaxValue;
-          double num3 = (0.2126 * ((double) pixels.Bytes[index + 2] / num2) + 447.0 / 625.0 * ((double) pixels.Bytes[index + 1] / num2) + 0.0722 * ((double) pixels.Bytes[index] / num2)) * num2;
-          double num4 = num3;
-          double num5 = num3;
-          pixels.Bytes[index] = (byte) num5;
-          pixels.Bytes[index + 1] = (byte) num4;
-          pixels.Bytes[index + 2] = (byte) num3;
-        }
-      }
-      pixels.UpdateFromBytes();
-      target.Invalidate();
-      return target;
-    }
+            var pixels = target.PixelBuffer.GetPixels();
 
-    public static WriteableBitmap Grayscale(this WriteableBitmap target, double amount)
-    {
-      IBufferExtensions.PixelBufferInfo pixels = target.PixelBuffer.GetPixels();
-      for (int index = 0; index < pixels.Bytes.Length; index += 4)
-      {
-        byte num1 = pixels.Bytes[index + 3];
-        if (num1 > (byte) 0)
-        {
-          double num2 = (double) num1 / (double) byte.MaxValue;
-          double num3 = (double) pixels.Bytes[index + 2] / num2;
-          double num4 = (double) pixels.Bytes[index + 1] / num2;
-          double num5 = (double) pixels.Bytes[index] / num2;
-          double num6 = 0.2126 * num3 + 447.0 / 625.0 * num4 + 0.0722 * num5;
-          double num7 = ((1.0 - amount) * num3 + amount * num6) * num2;
-          double num8 = ((1.0 - amount) * num4 + amount * num6) * num2;
-          double num9 = ((1.0 - amount) * num5 + amount * num6) * num2;
-          pixels.Bytes[index] = (byte) num9;
-          pixels.Bytes[index + 1] = (byte) num8;
-          pixels.Bytes[index + 2] = (byte) num7;
+            for (int i = 0; i < pixels.Bytes.Length; i += 4)
+            {
+                byte a = pixels.Bytes[i + 3];
+
+                if (a > 0)
+                {
+                    double ad = (double)a / 255.0; // 0..1 range alpha
+                    double rd = (double)pixels.Bytes[i + 2] / ad; // 0..255 range red, non-alpha-premultiplied
+                    double gd = (double)pixels.Bytes[i + 1] / ad; // 0..255 range green, non-alpha-premultiplied
+                    double bd = (double)pixels.Bytes[i + 0] / ad; // 0..255 range blue, non-alpha-premultiplied
+
+                    // gain is the difference between current value and maximum (255), multiplied by the amount and alpha-premultiplied
+                    double luminance = 0.2126 * rd + 0.7152 * gd + 0.0722 * bd;
+                    double newR = luminance * ad;
+                    double newG = newR;
+                    double newB = newR;
+
+                    pixels.Bytes[i + 0] = (byte)newB;
+                    pixels.Bytes[i + 1] = (byte)newG;
+                    pixels.Bytes[i + 2] = (byte)newR;
+                }
+            }
+
+            pixels.UpdateFromBytes();
+            target.Invalidate();
+            return target;
         }
-      }
-      pixels.UpdateFromBytes();
-      target.Invalidate();
-      return target;
+
+        /// <summary>
+        /// Removes color from the specified bitmap.
+        /// </summary>
+        /// <param name="target">The target bitmap.</param>
+        /// <param name="amount">
+        /// The 0..1 range amount of color to remove
+        /// from the bitmap where
+        /// 0 does not affect the bitmap and
+        /// 1 makes the bitmap completely grayscale.
+        /// </param>
+        /// <returns></returns>
+        public static WriteableBitmap Grayscale(this WriteableBitmap target, double amount)
+        {
+            var pixels = target.PixelBuffer.GetPixels();
+
+            for (int i = 0; i < pixels.Bytes.Length; i += 4)
+            {
+                byte a = pixels.Bytes[i + 3];
+
+                if (a > 0)
+                {
+                    double ad = (double)a / 255.0; // 0..1 range alpha
+                    double rd = (double)pixels.Bytes[i + 2] / ad; // 0..255 range red, non-alpha-premultiplied
+                    double gd = (double)pixels.Bytes[i + 1] / ad; // 0..255 range green, non-alpha-premultiplied
+                    double bd = (double)pixels.Bytes[i + 0] / ad; // 0..255 range blue, non-alpha-premultiplied
+
+                    double luminance = 0.2126 * rd + 0.7152 * gd + 0.0722 * bd;
+                    double newR = ((1.0 - amount) * rd + amount * luminance) * ad;
+                    double newG = ((1.0 - amount) * gd + amount * luminance) * ad;
+                    double newB = ((1.0 - amount) * bd + amount * luminance) * ad;
+
+                    pixels.Bytes[i + 0] = (byte)newB;
+                    pixels.Bytes[i + 1] = (byte)newG;
+                    pixels.Bytes[i + 2] = (byte)newR;
+                }
+            }
+
+            pixels.UpdateFromBytes();
+            target.Invalidate();
+            return target;
+        }
     }
-  }
 }

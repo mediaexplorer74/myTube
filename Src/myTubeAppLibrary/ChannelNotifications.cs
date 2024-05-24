@@ -7,6 +7,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RykenTube;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -130,7 +131,9 @@ namespace myTube
     {
       try
       {
-        await FileIO.WriteTextAsync((IStorageFile) await folder.CreateFileAsync(fileName, (CreationCollisionOption) 1), JObject.FromObject((object) this.channelIds).ToString());
+        await FileIO.WriteTextAsync((IStorageFile) 
+            await folder.CreateFileAsync(fileName, (CreationCollisionOption) 1), 
+            JObject.FromObject((object) this.channelIds).ToString());
       }
       catch
       {

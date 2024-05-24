@@ -1,191 +1,340 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Controls.Behaviors.HighlightBehavior
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
-using System.Collections.Generic;
+﻿using System;
+using WinRTXamlToolkit.Interactivity;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
-using WinRTXamlToolkit.Controls.Common;
-using WinRTXamlToolkit.Interactivity;
 
 namespace WinRTXamlToolkit.Controls.Behaviors
 {
-  public class HighlightBehavior : Behavior<TextBlock>
-  {
-    public static readonly DependencyProperty SearchStringProperty = DependencyProperty.Register(nameof (SearchString), (Type) typeof (string), (Type) typeof (HighlightBehavior), new PropertyMetadata((object) null, new PropertyChangedCallback(HighlightBehavior.OnSearchStringChanged)));
-    public static readonly DependencyProperty IsCaseSensitiveProperty = DependencyProperty.Register(nameof (IsCaseSensitive), (Type) typeof (bool), (Type) typeof (HighlightBehavior), new PropertyMetadata((object) false, new PropertyChangedCallback(HighlightBehavior.OnIsCaseSensitiveChanged)));
-    public static readonly DependencyProperty HighlightTemplateProperty = DependencyProperty.Register(nameof (HighlightTemplate), (Type) typeof (DataTemplate), (Type) typeof (HighlightBehavior), new PropertyMetadata((object) null, new PropertyChangedCallback(HighlightBehavior.OnHighlightTemplateChanged)));
-    public static readonly DependencyProperty HighlightBrushProperty = DependencyProperty.Register(nameof (HighlightBrush), (Type) typeof (Brush), (Type) typeof (HighlightBehavior), new PropertyMetadata((object) new SolidColorBrush(Colors.Red), new PropertyChangedCallback(HighlightBehavior.OnHighlightBrushChanged)));
-    private PropertyChangeEventSource<string> _textChangeEventSource;
-
-    public string SearchString
+    /// <summary>
+    /// An attached behavior used to highlight instances of the SearchString in a TextBlock.
+    /// </summary>
+    public class HighlightBehavior : Behavior<TextBlock>
     {
-      get => (string) ((DependencyObject) this).GetValue(HighlightBehavior.SearchStringProperty);
-      set => ((DependencyObject) this).SetValue(HighlightBehavior.SearchStringProperty, (object) value);
-    }
+        #region SearchString
+        /// <summary>
+        /// SearchString Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty SearchStringProperty =
+            DependencyProperty.Register(
+                "SearchString",
+                typeof(string),
+                typeof(HighlightBehavior),
+                new PropertyMetadata(null, OnSearchStringChanged));
 
-    private static void OnSearchStringChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      HighlightBehavior highlightBehavior = (HighlightBehavior) d;
-      string oldValue = (string) e.OldValue;
-      string searchString = highlightBehavior.SearchString;
-      highlightBehavior.OnSearchStringChanged(oldValue, searchString);
-    }
-
-    private void OnSearchStringChanged(string oldSearchString, string newSearchString) => this.UpdateHighlight();
-
-    public bool IsCaseSensitive
-    {
-      get => (bool) ((DependencyObject) this).GetValue(HighlightBehavior.IsCaseSensitiveProperty);
-      set => ((DependencyObject) this).SetValue(HighlightBehavior.IsCaseSensitiveProperty, (object) value);
-    }
-
-    private static void OnIsCaseSensitiveChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      HighlightBehavior highlightBehavior = (HighlightBehavior) d;
-      bool oldValue = (bool) e.OldValue;
-      bool isCaseSensitive = highlightBehavior.IsCaseSensitive;
-      highlightBehavior.OnIsCaseSensitiveChanged(oldValue, isCaseSensitive);
-    }
-
-    private void OnIsCaseSensitiveChanged(bool oldIsCaseSensitive, bool newIsCaseSensitive) => this.UpdateHighlight();
-
-    public DataTemplate HighlightTemplate
-    {
-      get => (DataTemplate) ((DependencyObject) this).GetValue(HighlightBehavior.HighlightTemplateProperty);
-      set => ((DependencyObject) this).SetValue(HighlightBehavior.HighlightTemplateProperty, (object) value);
-    }
-
-    private static void OnHighlightTemplateChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      HighlightBehavior highlightBehavior = (HighlightBehavior) d;
-      DataTemplate oldValue = (DataTemplate) e.OldValue;
-      DataTemplate highlightTemplate = highlightBehavior.HighlightTemplate;
-      highlightBehavior.OnHighlightTemplateChanged(oldValue, highlightTemplate);
-    }
-
-    private void OnHighlightTemplateChanged(
-      DataTemplate oldHighlightTemplate,
-      DataTemplate newHighlightTemplate)
-    {
-      this.UpdateHighlight();
-    }
-
-    public Brush HighlightBrush
-    {
-      get => (Brush) ((DependencyObject) this).GetValue(HighlightBehavior.HighlightBrushProperty);
-      set => ((DependencyObject) this).SetValue(HighlightBehavior.HighlightBrushProperty, (object) value);
-    }
-
-    private static void OnHighlightBrushChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      HighlightBehavior highlightBehavior = (HighlightBehavior) d;
-      Brush oldValue = (Brush) e.OldValue;
-      Brush highlightBrush = highlightBehavior.HighlightBrush;
-      highlightBehavior.OnHighlightBrushChanged(oldValue, highlightBrush);
-    }
-
-    private void OnHighlightBrushChanged(Brush oldHighlightBrush, Brush newHighlightBrush) => this.UpdateHighlight();
-
-    protected override void OnAttached()
-    {
-      this.UpdateHighlight();
-      this._textChangeEventSource = new PropertyChangeEventSource<string>((DependencyObject) this.AssociatedObject, "Text", (BindingMode) 1);
-      this._textChangeEventSource.ValueChanged += new EventHandler<string>(this.TextChanged);
-      base.OnAttached();
-    }
-
-    protected override void OnDetaching()
-    {
-      this.ClearHighlight();
-      this._textChangeEventSource.ValueChanged -= new EventHandler<string>(this.TextChanged);
-      this._textChangeEventSource = (PropertyChangeEventSource<string>) null;
-      base.OnDetaching();
-    }
-
-    private void TextChanged(object sender, string s) => this.UpdateHighlight();
-
-    public void UpdateHighlight()
-    {
-      if (this.AssociatedObject == null || string.IsNullOrEmpty(this.AssociatedObject.Text) || string.IsNullOrEmpty(this.SearchString))
-      {
-        this.ClearHighlight();
-      }
-      else
-      {
-        string text = this.AssociatedObject.Text;
-        string searchString = this.SearchString;
-        int startIndex1 = 0;
-        ((ICollection<Inline>) this.AssociatedObject.Inlines).Clear();
-        while (true)
+        /// <summary>
+        /// Gets or sets the SearchString property. This dependency property 
+        /// indicates the search string to highlight in the associated TextBlock.
+        /// </summary>
+        public string SearchString
         {
-          string str1 = text;
-          string str2 = searchString;
-          int startIndex2 = startIndex1;
-          int comparisonType = this.IsCaseSensitive ? 0 : 1;
-          int startIndex3;
-          if ((startIndex3 = str1.IndexOf(str2, startIndex2, (StringComparison) comparisonType)) >= 0)
-          {
-            if (startIndex3 > startIndex1)
-            {
-              Run run = new Run();
-              run.put_Text(text.Substring(startIndex1, startIndex3 - startIndex1));
-              ((ICollection<Inline>) this.AssociatedObject.Inlines).Add((Inline) run);
-            }
-            string str3 = text.Substring(startIndex3, searchString.Length);
-            Run run1;
-            if (this.HighlightTemplate == null)
-            {
-              Run run2 = new Run();
-              run2.put_Text(str3);
-              ((TextElement) run2).put_Foreground(this.HighlightBrush);
-              run1 = run2;
-            }
-            else
-            {
-              run1 = (Run) this.HighlightTemplate.LoadContent();
-              run1.put_Text(str3);
-            }
-            ((ICollection<Inline>) this.AssociatedObject.Inlines).Add((Inline) run1);
-            startIndex1 = startIndex3 + searchString.Length;
-          }
-          else
-            break;
+            get { return (string)GetValue(SearchStringProperty); }
+            set { SetValue(SearchStringProperty, value); }
         }
-        if (startIndex1 >= text.Length)
-          return;
-        Run run3 = new Run();
-        run3.put_Text(text.Substring(startIndex1, text.Length - startIndex1));
-        ((ICollection<Inline>) this.AssociatedObject.Inlines).Add((Inline) run3);
-      }
-    }
 
-    public void ClearHighlight()
-    {
-      if (this.AssociatedObject == null)
-        return;
-      string text = this.AssociatedObject.Text;
-      ((ICollection<Inline>) this.AssociatedObject.Inlines).Clear();
-      InlineCollection inlines = this.AssociatedObject.Inlines;
-      Run run1 = new Run();
-      run1.put_Text(text);
-      Run run2 = run1;
-      ((ICollection<Inline>) inlines).Add((Inline) run2);
+        /// <summary>
+        /// Handles changes to the SearchString property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnSearchStringChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (HighlightBehavior)d;
+            string oldSearchString = (string)e.OldValue;
+            string newSearchString = target.SearchString;
+            target.OnSearchStringChanged(oldSearchString, newSearchString);
+        }
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the SearchString property.
+        /// </summary>
+        /// <param name="oldSearchString">The old SearchString value</param>
+        /// <param name="newSearchString">The new SearchString value</param>
+        private void OnSearchStringChanged(
+            string oldSearchString, string newSearchString)
+        {
+            UpdateHighlight();
+        }
+        #endregion
+
+        #region IsCaseSensitive
+        /// <summary>
+        /// IsCaseSensitive Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty IsCaseSensitiveProperty =
+            DependencyProperty.Register(
+                "IsCaseSensitive",
+                typeof(bool),
+                typeof(HighlightBehavior),
+                new PropertyMetadata(false, OnIsCaseSensitiveChanged));
+
+        /// <summary>
+        /// Gets or sets the IsCaseSensitive property. This dependency property 
+        /// indicates whether the highlight behavior is case sensitive.
+        /// </summary>
+        public bool IsCaseSensitive
+        {
+            get { return (bool)GetValue(IsCaseSensitiveProperty); }
+            set { SetValue(IsCaseSensitiveProperty, value); }
+        }
+
+        /// <summary>
+        /// Handles changes to the IsCaseSensitive property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnIsCaseSensitiveChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (HighlightBehavior)d;
+            bool oldIsCaseSensitive = (bool)e.OldValue;
+            bool newIsCaseSensitive = target.IsCaseSensitive;
+            target.OnIsCaseSensitiveChanged(oldIsCaseSensitive, newIsCaseSensitive);
+        }
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the IsCaseSensitive property.
+        /// </summary>
+        /// <param name="oldIsCaseSensitive">The old IsCaseSensitive value</param>
+        /// <param name="newIsCaseSensitive">The new IsCaseSensitive value</param>
+        private void OnIsCaseSensitiveChanged(
+            bool oldIsCaseSensitive, bool newIsCaseSensitive)
+        {
+            UpdateHighlight();
+        }
+        #endregion
+
+        #region HighlightTemplate
+        /// <summary>
+        /// HighlightTemplate Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty HighlightTemplateProperty =
+            DependencyProperty.Register(
+                "HighlightTemplate",
+                typeof(DataTemplate),
+                typeof(HighlightBehavior),
+                new PropertyMetadata(null, OnHighlightTemplateChanged));
+
+        /// <summary>
+        /// Gets or sets the HighlightTemplate property. This dependency property 
+        /// indicates the template to use to generate the highlight Run inlines.
+        /// </summary>
+        public DataTemplate HighlightTemplate
+        {
+            get { return (DataTemplate)GetValue(HighlightTemplateProperty); }
+            set { SetValue(HighlightTemplateProperty, value); }
+        }
+
+        /// <summary>
+        /// Handles changes to the HighlightTemplate property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnHighlightTemplateChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (HighlightBehavior)d;
+            DataTemplate oldHighlightTemplate = (DataTemplate)e.OldValue;
+            DataTemplate newHighlightTemplate = target.HighlightTemplate;
+            target.OnHighlightTemplateChanged(oldHighlightTemplate, newHighlightTemplate);
+        }
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the HighlightTemplate property.
+        /// </summary>
+        /// <param name="oldHighlightTemplate">The old HighlightTemplate value</param>
+        /// <param name="newHighlightTemplate">The new HighlightTemplate value</param>
+        private void OnHighlightTemplateChanged(
+            DataTemplate oldHighlightTemplate, DataTemplate newHighlightTemplate)
+        {
+            UpdateHighlight();
+        }
+        #endregion
+
+        #region HighlightBrush
+        /// <summary>
+        /// HighlightBrush Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty HighlightBrushProperty =
+            DependencyProperty.Register(
+                "HighlightBrush",
+                typeof(Brush),
+                typeof(HighlightBehavior),
+                new PropertyMetadata(new SolidColorBrush(Colors.Red), OnHighlightBrushChanged));
+
+        /// <summary>
+        /// Gets or sets the HighlightBrush property. This dependency property 
+        /// indicates the brush to use to highlight the found instances of the search string.
+        /// </summary>
+        /// <remarks>
+        /// Note that the brush is ignored if HighlightTemplate is specified
+        /// </remarks>
+        public Brush HighlightBrush
+        {
+            get { return (Brush)GetValue(HighlightBrushProperty); }
+            set { SetValue(HighlightBrushProperty, value); }
+        }
+
+        /// <summary>
+        /// Handles changes to the HighlightBrush property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnHighlightBrushChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (HighlightBehavior)d;
+            Brush oldHighlightBrush = (Brush)e.OldValue;
+            Brush newHighlightBrush = target.HighlightBrush;
+            target.OnHighlightBrushChanged(oldHighlightBrush, newHighlightBrush);
+        }
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the HighlightBrush property.
+        /// </summary>
+        /// <param name="oldHighlightBrush">The old HighlightBrush value</param>
+        /// <param name="newHighlightBrush">The new HighlightBrush value</param>
+        private void OnHighlightBrushChanged(
+            Brush oldHighlightBrush, Brush newHighlightBrush)
+        {
+            UpdateHighlight();
+        }
+        #endregion
+
+        private PropertyChangeEventSource<string> _textChangeEventSource;
+
+        protected override void OnAttached()
+        {
+            UpdateHighlight();
+            _textChangeEventSource = new PropertyChangeEventSource<string>(this.AssociatedObject, "Text", BindingMode.OneWay);
+            _textChangeEventSource.ValueChanged += TextChanged;
+            base.OnAttached();
+        }
+
+        protected override void OnDetaching()
+        {
+            ClearHighlight();
+            _textChangeEventSource.ValueChanged -= TextChanged;
+            _textChangeEventSource = null;
+            base.OnDetaching();
+        }
+
+        private void TextChanged(object sender, string s)
+        {
+            UpdateHighlight();
+        }
+
+        public void UpdateHighlight()
+        {
+            if (this.AssociatedObject == null ||
+                string.IsNullOrEmpty(this.AssociatedObject.Text) ||
+                string.IsNullOrEmpty(this.SearchString))
+            {
+                ClearHighlight();
+                return;
+            }
+
+            var txt = this.AssociatedObject.Text;
+            var searchTxt = this.SearchString;
+            var processedCharacters = 0;
+            this.AssociatedObject.Inlines.Clear();
+
+            int pos;
+
+            while ((pos = txt.IndexOf(
+                searchTxt,
+                processedCharacters,
+                this.IsCaseSensitive ? StringComparison.CurrentCulture : StringComparison.CurrentCultureIgnoreCase)) >= 0)
+            {
+                if (pos > processedCharacters)
+                {
+                    var run = new Run
+                    {
+                        Text =
+                            txt.Substring(
+                                processedCharacters, pos - processedCharacters)
+                    };
+
+                    this.AssociatedObject.Inlines.Add(run);
+                }
+
+                Run highlight;
+                var highlightText = txt.Substring(pos, searchTxt.Length);
+
+                if (this.HighlightTemplate == null)
+                {
+                    highlight =
+                        new Run
+                        {
+                            Text = highlightText,
+                            Foreground = this.HighlightBrush
+                        };
+                }
+                else
+                {
+                    highlight = (Run)this.HighlightTemplate.LoadContent();
+                    highlight.Text = highlightText;
+                }
+
+                this.AssociatedObject.Inlines.Add(highlight);
+                processedCharacters = pos + searchTxt.Length;
+            }
+
+            if (processedCharacters < txt.Length)
+            {
+                var run = new Run
+                {
+                    Text =
+                        txt.Substring(
+                            processedCharacters, txt.Length - processedCharacters)
+                };
+
+                this.AssociatedObject.Inlines.Add(run);
+            }
+        }
+
+        public void ClearHighlight()
+        {
+            if (this.AssociatedObject == null)
+            {
+                return;
+            }
+
+            var text = this.AssociatedObject.Text;
+            this.AssociatedObject.Inlines.Clear();
+            this.AssociatedObject.Inlines.Add(new Run{Text = text});
+        }
     }
-  }
 }

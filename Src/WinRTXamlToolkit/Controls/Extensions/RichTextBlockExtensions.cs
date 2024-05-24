@@ -1,12 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Controls.Extensions.RichTextBlockExtensions
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using System.Text.RegularExpressions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -14,105 +6,208 @@ using Windows.UI.Xaml.Documents;
 
 namespace WinRTXamlToolkit.Controls.Extensions
 {
-  public static class RichTextBlockExtensions
-  {
-    public static readonly DependencyProperty PlainTextProperty = DependencyProperty.RegisterAttached("PlainText", (Type) typeof (string), (Type) typeof (RichTextBlockExtensions), new PropertyMetadata((object) "", new PropertyChangedCallback(RichTextBlockExtensions.OnPlainTextChanged)));
-    public static readonly DependencyProperty LinkedHtmlFragmentProperty = DependencyProperty.RegisterAttached("LinkedHtmlFragment", (Type) typeof (string), (Type) typeof (RichTextBlockExtensions), new PropertyMetadata((object) null, new PropertyChangedCallback(RichTextBlockExtensions.OnLinkedHtmlFragmentChanged)));
-
-    public static string GetPlainText(DependencyObject d) => (string) d.GetValue(RichTextBlockExtensions.PlainTextProperty);
-
-    public static void SetPlainText(DependencyObject d, string value) => d.SetValue(RichTextBlockExtensions.PlainTextProperty, (object) value);
-
-    private static void OnPlainTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    /// <summary>
+    /// Attached properties and extension methods for RichTextBlock class.
+    /// </summary>
+    public static class RichTextBlockExtensions
     {
-      string oldValue = (string) e.OldValue;
-      string str = (string) d.GetValue(RichTextBlockExtensions.PlainTextProperty);
-      ((ICollection<Block>) ((RichTextBlock) d).Blocks).Clear();
-      Paragraph paragraph = new Paragraph();
-      InlineCollection inlines = paragraph.Inlines;
-      Run run1 = new Run();
-      run1.put_Text(str);
-      Run run2 = run1;
-      ((ICollection<Inline>) inlines).Add((Inline) run2);
-      ((ICollection<Block>) ((RichTextBlock) d).Blocks).Add((Block) paragraph);
-    }
+        #region PlainText
+        /// <summary>
+        /// PlainText Attached Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty PlainTextProperty =
+            DependencyProperty.RegisterAttached(
+                "PlainText",
+                typeof(string),
+                typeof(RichTextBlockExtensions),
+                new PropertyMetadata("", OnPlainTextChanged));
 
-    public static string GetLinkedHtmlFragment(DependencyObject d) => (string) d.GetValue(RichTextBlockExtensions.LinkedHtmlFragmentProperty);
-
-    public static void SetLinkedHtmlFragment(DependencyObject d, string value) => d.SetValue(RichTextBlockExtensions.LinkedHtmlFragmentProperty, (object) value);
-
-    private static void OnLinkedHtmlFragmentChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      string oldValue = (string) e.OldValue;
-      string htmlFragment = (string) d.GetValue(RichTextBlockExtensions.LinkedHtmlFragmentProperty);
-      ((RichTextBlock) d).SetLinkedHtmlFragmentString(htmlFragment);
-    }
-
-    public static void SetLinkedHtmlFragmentString(
-      this RichTextBlock richTextBlock,
-      string htmlFragment)
-    {
-      ((ICollection<Block>) richTextBlock.Blocks).Clear();
-      if (string.IsNullOrEmpty(htmlFragment))
-        return;
-      Regex regex = new Regex("\\<a\\s(href\\=\"|[^\\>]+?\\shref\\=\")(?<link>[^\"]+)\".*?\\>(?<text>.*?)(\\<\\/a\\>|$)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-      int startIndex = 0;
-      IEnumerator enumerator = (IEnumerator) regex.Matches(htmlFragment).GetEnumerator();
-      try
-      {
-        while (enumerator.MoveNext())
+        /// <summary>
+        /// Gets the PlainText property. This dependency property 
+        /// indicates the plain text to assign to the RichTextBlock.
+        /// </summary>
+        public static string GetPlainText(DependencyObject d)
         {
-          Match current = (Match) enumerator.Current;
-          if (current.Index > startIndex)
-          {
-            richTextBlock.AppendText(htmlFragment.Substring(startIndex, current.Index - startIndex));
-            startIndex = current.Index + current.Length;
-            richTextBlock.AppendLink(current.Groups["text"].Value, new Uri(current.Groups["link"].Value));
-          }
+            return (string)d.GetValue(PlainTextProperty);
         }
-      }
-      finally
-      {
-        if (enumerator is IDisposable disposable)
-          disposable.Dispose();
-      }
-      if (startIndex >= htmlFragment.Length)
-        return;
-      richTextBlock.AppendText(htmlFragment.Substring(startIndex));
-    }
 
-    public static void AppendText(this RichTextBlock richTextBlock, string text)
-    {
-      if (((ICollection<Block>) richTextBlock.Blocks).Count == 0 || !(((IList<Block>) richTextBlock.Blocks)[((ICollection<Block>) richTextBlock.Blocks).Count - 1] is Paragraph paragraph))
-      {
-        paragraph = new Paragraph();
-        ((ICollection<Block>) richTextBlock.Blocks).Add((Block) paragraph);
-      }
-      InlineCollection inlines = paragraph.Inlines;
-      Run run1 = new Run();
-      run1.put_Text(text);
-      Run run2 = run1;
-      ((ICollection<Inline>) inlines).Add((Inline) run2);
-    }
+        /// <summary>
+        /// Sets the PlainText property. This dependency property 
+        /// indicates the plain text to assign to the RichTextBlock.
+        /// </summary>
+        public static void SetPlainText(DependencyObject d, string value)
+        {
+            d.SetValue(PlainTextProperty, value);
+        }
 
-    public static void AppendLink(this RichTextBlock richTextBlock, string text, Uri uri)
-    {
-      if (((ICollection<Block>) richTextBlock.Blocks).Count == 0 || !(((IList<Block>) richTextBlock.Blocks)[((ICollection<Block>) richTextBlock.Blocks).Count - 1] is Paragraph paragraph))
-      {
-        paragraph = new Paragraph();
-        ((ICollection<Block>) richTextBlock.Blocks).Add((Block) paragraph);
-      }
-      HyperlinkButton hyperlinkButton1 = new HyperlinkButton();
-      ((ContentControl) hyperlinkButton1).put_Content((object) text);
-      hyperlinkButton1.put_NavigateUri((Uri) uri);
-      HyperlinkButton hyperlinkButton2 = hyperlinkButton1;
-      InlineCollection inlines = paragraph.Inlines;
-      InlineUIContainer inlineUiContainer1 = new InlineUIContainer();
-      inlineUiContainer1.put_Child((UIElement) hyperlinkButton2);
-      InlineUIContainer inlineUiContainer2 = inlineUiContainer1;
-      ((ICollection<Inline>) inlines).Add((Inline) inlineUiContainer2);
+        /// <summary>
+        /// Handles changes to the PlainText property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnPlainTextChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            string oldPlainText = (string)e.OldValue;
+            string newPlainText = (string)d.GetValue(PlainTextProperty);
+            ((RichTextBlock)d).Blocks.Clear();
+            var paragraph = new Paragraph();
+            paragraph.Inlines.Add(new Run { Text = newPlainText });
+            ((RichTextBlock)d).Blocks.Add(paragraph);
+        }
+        #endregion
+
+        #region LinkedHtmlFragment
+        /// <summary>
+        /// LinkedHtmlFragment Attached Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty LinkedHtmlFragmentProperty =
+            DependencyProperty.RegisterAttached(
+                "LinkedHtmlFragment",
+                typeof(string),
+                typeof(RichTextBlockExtensions),
+                new PropertyMetadata(null, OnLinkedHtmlFragmentChanged));
+
+        /// <summary>
+        /// Gets the LinkedHtmlFragment property. This dependency property 
+        /// indicates the linked text that can be bound to the RichTextBlock to automatically generate inline links.
+        /// </summary>
+        /// <remarks>
+        /// Note that only simple html text with opening and closing anchor tags and href attribute with double-quotes is supported.
+        /// No escapes or other tags will be parsed.
+        /// </remarks>
+        public static string GetLinkedHtmlFragment(DependencyObject d)
+        {
+            return (string)d.GetValue(LinkedHtmlFragmentProperty);
+        }
+
+        /// <summary>
+        /// Sets the LinkedHtmlFragment property. This dependency property 
+        /// indicates the linked text that can be bound to the RichTextBlock to automatically generate inline links.
+        /// </summary>
+        /// <remarks>
+        /// Note that only simple html text with opening and closing anchor tags and href attribute with double-quotes is supported.
+        /// No escapes or other tags will be parsed.
+        /// </remarks>
+        public static void SetLinkedHtmlFragment(DependencyObject d, string value)
+        {
+            d.SetValue(LinkedHtmlFragmentProperty, value);
+        }
+
+        /// <summary>
+        /// Handles changes to the LinkedHtmlFragment property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnLinkedHtmlFragmentChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            string oldLinkedHtmlFragment = (string)e.OldValue;
+            string newLinkedHtmlFragment = (string)d.GetValue(LinkedHtmlFragmentProperty);
+
+            ((RichTextBlock)d).SetLinkedHtmlFragment(newLinkedHtmlFragment);
+        }
+        #endregion
+
+        /// <summary>
+        /// Sets the linked HTML fragment.
+        /// </summary>
+        /// <remarks>
+        /// Note that only simple html text with opening and closing anchor tags and href attribute with double-quotes is supported.
+        /// No escapes or other tags will be parsed.
+        /// </remarks>
+        /// <param name="richTextBlock">The rich text block.</param>
+        /// <param name="htmlFragment">The HTML fragment.</param>
+        public static void SetLinkedHtmlFragment(this RichTextBlock richTextBlock, string htmlFragment)
+        {
+            richTextBlock.Blocks.Clear();
+
+            if (string.IsNullOrEmpty(htmlFragment))
+            {
+                return;
+            }
+
+            var regEx = new Regex(
+                @"\<a\s(href\=""|[^\>]+?\shref\="")(?<link>[^""]+)"".*?\>(?<text>.*?)(\<\/a\>|$)",
+                RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+            int nextOffset = 0;
+
+            foreach (Match match in regEx.Matches(htmlFragment))
+            {
+                if (match.Index > nextOffset)
+                {
+                    richTextBlock.AppendText(htmlFragment.Substring(nextOffset, match.Index - nextOffset));
+                    nextOffset = match.Index + match.Length;
+                    richTextBlock.AppendLink(match.Groups["text"].Value, new Uri(match.Groups["link"].Value));
+                }
+
+                //Debug.WriteLine(match.Groups["text"] + ":" + match.Groups["link"]);
+            }
+
+            if (nextOffset < htmlFragment.Length)
+            {
+                richTextBlock.AppendText(htmlFragment.Substring(nextOffset));
+            }
+        }
+
+        /// <summary>
+        /// Appends a paragraph of plain text to the RichTextBlock.
+        /// </summary>
+        /// <param name="richTextBlock">The rich text block.</param>
+        /// <param name="text">The text.</param>
+        public static void AppendText(this RichTextBlock richTextBlock, string text)
+        {
+            Paragraph paragraph;
+
+            if (richTextBlock.Blocks.Count == 0 ||
+                (paragraph = richTextBlock.Blocks[richTextBlock.Blocks.Count - 1] as Paragraph) == null)
+            {
+                paragraph = new Paragraph();
+                richTextBlock.Blocks.Add(paragraph);
+            }
+
+            paragraph.Inlines.Add(new Run { Text = text });
+        }
+
+        /// <summary>
+        /// Appends a HyperlinkButton with
+        /// the given text and navigate uri to the given RichTextBlock.
+        /// </summary>
+        /// <param name="richTextBlock">The rich text block.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="uri">The URI.</param>
+        public static void AppendLink(this RichTextBlock richTextBlock, string text, Uri uri)
+        {
+            Paragraph paragraph;
+
+            if (richTextBlock.Blocks.Count == 0 ||
+                (paragraph = richTextBlock.Blocks[richTextBlock.Blocks.Count - 1] as Paragraph) == null)
+            {
+                paragraph = new Paragraph();
+                richTextBlock.Blocks.Add(paragraph);
+            }
+
+            var link =
+                new HyperlinkButton
+                {
+                    Content = text,
+                    NavigateUri = uri
+                };
+
+            paragraph.Inlines.Add(new InlineUIContainer {Child = link});
+        }
     }
-  }
 }

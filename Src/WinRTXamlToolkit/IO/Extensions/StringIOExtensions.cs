@@ -1,63 +1,83 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.IO.Extensions.StringIOExtensions
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
+﻿using System;
 using System.Threading.Tasks;
-using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
 
 namespace WinRTXamlToolkit.IO.Extensions
 {
-  public static class StringIOExtensions
-  {
-    public static async Task<string> ReadFromFile(string fileName, StorageFolder folder = null)
+    /// <summary>
+    /// Extensions for simple writing and reading of strings to/from files.
+    /// </summary>
+    /// <remarks>
+    /// Note that these were created before FileIO class existed in WinRT, but they still serve a purpose.
+    /// </remarks>
+    public static class StringIOExtensions
     {
-      folder = folder ?? ApplicationData.Current.LocalFolder;
-      StorageFile file = await folder.GetFileAsync(fileName);
-      string str;
-      using (IRandomAccessStream fs = await file.OpenAsync((FileAccessMode) 0))
-      {
-        using (IInputStream inStream = fs.GetInputStreamAt(0UL))
+        /// <summary>
+        /// Reads a string from a text file.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="folder">The folder.</param>
+        /// <returns></returns>
+        public static async Task<string> ReadFromFile(
+            string fileName,
+            StorageFolder folder = null)
         {
-          using (DataReader reader = new DataReader(inStream))
-          {
-            int num = (int) await (IAsyncOperation<uint>) reader.LoadAsync((uint) fs.Size);
-            string data = reader.ReadString((uint) fs.Size);
-            reader.DetachStream();
-            str = data;
-          }
-        }
-      }
-      return str;
-    }
+            folder = folder ?? ApplicationData.Current.LocalFolder;
+            var file = await folder.GetFileAsync(fileName);
 
-    public static async Task WriteToFile(
-      this string text,
-      string fileName,
-      StorageFolder folder = null,
-      CreationCollisionOption options = 1)
-    {
-      folder = folder ?? ApplicationData.Current.LocalFolder;
-      StorageFile file = await folder.CreateFileAsync(fileName, options);
-      using (IRandomAccessStream fs = await file.OpenAsync((FileAccessMode) 1))
-      {
-        using (IOutputStream outStream = fs.GetOutputStreamAt(0UL))
-        {
-          using (DataWriter dataWriter = new DataWriter(outStream))
-          {
-            if (text != null)
+            using (var fs = await file.OpenAsync(FileAccessMode.Read))
             {
-              int num1 = (int) dataWriter.WriteString(text);
+                using (var inStream = fs.GetInputStreamAt(0))
+                {
+                    using (var reader = new DataReader(inStream))
+                    {
+                        await reader.LoadAsync((uint)fs.Size);
+                        string data = reader.ReadString((uint)fs.Size);
+                        reader.DetachStream();
+                        return data;
+                    }
+                }
             }
-            int num2 = (int) await (IAsyncOperation<uint>) dataWriter.StoreAsync();
-            dataWriter.DetachStream();
-          }
-          int num = await outStream.FlushAsync() ? 1 : 0;
         }
-      }
+
+        /// <summary>
+        /// Writes a string to a text file.
+        /// </summary>
+        /// <param name="text">The text to write.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="folder">The folder.</param>
+        /// <param name="options">
+        /// The enum value that determines how responds if the fileName is the same
+        /// as the name of an existing file in the current folder. Defaults to ReplaceExisting.
+        /// </param>
+        /// <returns></returns>
+        public static async Task WriteToFile(
+            this string text,
+            string fileName,
+            StorageFolder folder = null,
+            CreationCollisionOption options = CreationCollisionOption.ReplaceExisting)
+        {
+            folder = folder ?? ApplicationData.Current.LocalFolder;
+            var file = await folder.CreateFileAsync(
+                fileName,
+                options);
+            using (var fs = await file.OpenAsync(FileAccessMode.ReadWrite))
+            {
+                using (var outStream = fs.GetOutputStreamAt(0))
+                {
+                    using (var dataWriter = new DataWriter(outStream))
+                    {
+                        if (text != null)
+                            dataWriter.WriteString(text);
+
+                        await dataWriter.StoreAsync();
+                        dataWriter.DetachStream();
+                    }
+
+                    await outStream.FlushAsync();
+                }
+            }
+        }
     }
-  }
 }

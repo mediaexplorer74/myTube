@@ -1,148 +1,224 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Tools.BackgroundTimer
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace WinRTXamlToolkit.Tools
 {
-  public class BackgroundTimer : IDisposable
-  {
-    private ManualResetEvent _stopRequestEvent;
-    private ManualResetEvent _stoppedEvent;
-    private TimeSpan _interval;
-    private bool _adjustDelays = true;
-    private bool _isEnabled;
-
-    public event EventHandler<object> Tick;
-
-    public TimeSpan Interval
+    /// <summary>
+    /// A timer that raises the Tick events on a background thread,
+    /// similar to ThreadPoolTimer, but with API compatible with
+    /// DispatcherTimer.
+    /// </summary>
+    /// <remarks>
+    /// It was written in response to this SO question: Controlled non UI timer in metro app (.NET)
+    /// (http://stackoverflow.com/questions/10493253/controlled-non-ui-timer-in-metro-app-net).
+    /// The purpose was to have ticks on a background thread and have
+    /// the same API as the DispatcherTimer. It also has an option to self adjust a bit
+    /// to have an average frequency closer to what you would expect given the configured Interval.
+    /// That said I was not aware of the ThreadPoolTimer,
+    /// so it is possible it makes more sense to use that one.
+    /// It is a bit strange that the two timers we get have different APIs though,
+    /// so perhaps that is one case where using the BackgroundTimer makes a little bit of sense.
+    /// </remarks>
+    public class BackgroundTimer
     {
-      get => this._interval;
-      set
-      {
-        if (this.IsEnabled)
+        private readonly ManualResetEvent _stopRequestEvent;
+        private readonly ManualResetEvent _stoppedEvent;
+
+        /// <summary>
+        /// Occurs when the timer interval has elapsed.
+        /// </summary>
+        public event EventHandler<object> Tick;
+
+        #region Interval
+        private TimeSpan _interval;
+        /// <summary>
+        /// Gets or sets the period of time between timer ticks.
+        /// </summary>
+        /// <value>
+        /// The interval.
+        /// </value>
+        public TimeSpan Interval
         {
-          this.Stop();
-          this._interval = value;
-          this.Start();
+            get
+            {
+                return _interval;
+            }
+            set
+            {
+                if (IsEnabled)
+                {
+                    Stop();
+                    _interval = value;
+                    Start();
+                }
+                else
+                {
+                    _interval = value;
+                }
+            }
         }
-        else
-          this._interval = value;
-      }
-    }
+        #endregion
 
-    public bool AdjustDelays
-    {
-      get => this._adjustDelays;
-      set
-      {
-        if (this.IsEnabled)
+        #region AdjustDelays
+        private bool _adjustDelays = true;
+        /// <summary>
+        /// Gets or sets a value indicating whether delays between Tick events should be adjusted to
+        /// have Tick intervals averaging the given Interval property
+        /// instead of being minimum of Interval property value.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if delays should be adjusted; otherwise, <c>false</c>.
+        /// </value>
+        public bool AdjustDelays
         {
-          this.Stop();
-          this._adjustDelays = value;
-          this.Start();
+            get
+            {
+                return _adjustDelays;
+            }
+            set
+            {
+                if (IsEnabled)
+                {
+                    Stop();
+                    _adjustDelays = value;
+                    Start();
+                }
+                else
+                {
+                    _adjustDelays = value;
+                }
+            }
         }
-        else
-          this._adjustDelays = value;
-      }
-    }
+        #endregion
 
-    public bool IsEnabled
-    {
-      get => this._isEnabled;
-      set
-      {
-        if (this._isEnabled == value)
-          return;
-        if (value)
-          this.Start();
-        else
-          this.Stop();
-      }
-    }
+        #region IsEnabled
+        private bool _isEnabled;
+        /// <summary>
+        /// Gets or sets a value that indicates whether the timer is running.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance is enabled; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsEnabled
+        {
+            get
+            {
+                return _isEnabled;
+            }
+            set
+            {
+                if (_isEnabled == value)
+                    return;
 
-    public BackgroundTimer()
-    {
-      this._stopRequestEvent = new ManualResetEvent(false);
-      this._stoppedEvent = new ManualResetEvent(false);
-    }
+                if (value)
+                    Start();
+                else
+                    Stop();
+            }
+        }
+        #endregion
 
-    public void Start()
-    {
-      if (this._isEnabled)
-        return;
-      this._isEnabled = true;
-      this._stopRequestEvent.Reset();
-      if (this._adjustDelays)
-        Task.Run((Action) new Action(this.RunAdjusted));
-      else
-        Task.Run((Action) new Action(this.Run));
-    }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BackgroundTimer" /> class.
+        /// </summary>
+        public BackgroundTimer()
+        {
+            _stopRequestEvent = new ManualResetEvent(false);
+            _stoppedEvent = new ManualResetEvent(false);
+        }
 
-    public void Stop()
-    {
-      if (!this._isEnabled)
-        return;
-      this._isEnabled = false;
-      this._stoppedEvent.Reset();
-      this._stopRequestEvent.Set();
-      ((WaitHandle) this._stoppedEvent).WaitOne();
-    }
+        /// <summary>
+        /// Starts the BackgroundTimer.
+        /// </summary>
+        public void Start()
+        {
+            if (_isEnabled)
+            {
+                return;
+            }
 
-    public void StopNonBlocking()
-    {
-      if (!this._isEnabled)
-        return;
-      this._isEnabled = false;
-      this._stopRequestEvent.Set();
-    }
+            _isEnabled = true;
+            _stopRequestEvent.Reset();
 
-    private void Run()
-    {
-      while (this._isEnabled)
-      {
-        ((WaitHandle) this._stopRequestEvent).WaitOne(this._interval);
-        if (this._isEnabled && this.Tick != null)
-          this.Tick((object) this, (object) null);
-      }
-      this._stoppedEvent.Set();
-    }
+            if (_adjustDelays)
+                Task.Run((Action)RunAdjusted);
+            else
+                Task.Run((Action)Run);
+        }
 
-    private void RunAdjusted()
-    {
-      DateTime now = DateTime.Now;
-      long num = 0;
-      while (this._isEnabled)
-      {
-        TimeSpan timeSpan = DateTime.Now - now;
-        TimeSpan timeout = TimeSpan.FromSeconds(this._interval.TotalSeconds * (double) (num + 1L)) - timeSpan;
-        if (timeout > TimeSpan.Zero)
-          ((WaitHandle) this._stopRequestEvent).WaitOne(timeout);
-        if (this._isEnabled && this.Tick != null)
-          this.Tick((object) this, (object) null);
-        ++num;
-      }
-      this._stoppedEvent.Set();
-    }
+        /// <summary>
+        /// Stops the BackgroundTimer. Waits for it to stop before returning.
+        /// </summary>
+        public void Stop()
+        {
+            if (!_isEnabled)
+            {
+                return;
+            }
 
-    public void Dispose()
-    {
-      if (this._stopRequestEvent != null)
-      {
-        ((WaitHandle) this._stopRequestEvent).Dispose();
-        this._stopRequestEvent = (ManualResetEvent) null;
-      }
-      if (this._stoppedEvent == null)
-        return;
-      ((WaitHandle) this._stoppedEvent).Dispose();
-      this._stoppedEvent = (ManualResetEvent) null;
-    }
+            _isEnabled = false;
+            _stoppedEvent.Reset();
+            _stopRequestEvent.Set();
+            _stoppedEvent.WaitOne();
+        }
 
-    ~BackgroundTimer() => this.Dispose();
-  }
+        /// <summary>
+        /// Stops the BackgroundTimer - non blocking.
+        /// </summary>
+        public void StopNonBlocking()
+        {
+            if (!_isEnabled)
+            {
+                return;
+            }
+
+            _isEnabled = false;
+            _stopRequestEvent.Set();
+        }
+
+        private void Run()
+        {
+            while (_isEnabled)
+            {
+                _stopRequestEvent.WaitOne(_interval);
+
+                if (_isEnabled &&
+                    Tick != null)
+                {
+                    Tick(this, null);
+                }
+            }
+
+            _stoppedEvent.Set();
+        }
+
+        private void RunAdjusted()
+        {
+            var start = DateTime.Now;
+            long tickCount = 0;
+
+            while (_isEnabled)
+            {
+                var waitStart = DateTime.Now;
+                var timeRunning = waitStart - start;
+                var effectiveInterval = TimeSpan.FromSeconds(_interval.TotalSeconds * (tickCount + 1)) - timeRunning;
+
+                if (effectiveInterval > TimeSpan.Zero)
+                {
+                    _stopRequestEvent.WaitOne(effectiveInterval);
+                }
+
+                if (_isEnabled &&
+                    Tick != null)
+                {
+                    Tick(this, null);
+                }
+
+                tickCount++;
+            }
+
+            _stoppedEvent.Set();
+        }
+    }
 }

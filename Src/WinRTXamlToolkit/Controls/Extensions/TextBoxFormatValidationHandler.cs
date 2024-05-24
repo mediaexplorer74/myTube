@@ -1,45 +1,85 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Controls.Extensions.TextBoxFormatValidationHandler
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 
 namespace WinRTXamlToolkit.Controls.Extensions
 {
-  public class TextBoxFormatValidationHandler : FieldValidationHandler<TextBox>
-  {
-    internal void Detach()
+    /// <summary>
+    /// Handles validation of TextBox.Text whenever TextChanged property is raised.
+    /// </summary>
+    public class TextBoxFormatValidationHandler
     {
-      WindowsRuntimeMarshal.RemoveEventHandler<TextChangedEventHandler>((Action<EventRegistrationToken>) new Action<EventRegistrationToken>(this.Field.remove_TextChanged), new TextChangedEventHandler(this.OnTextBoxTextChanged));
-      WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>((Action<EventRegistrationToken>) new Action<EventRegistrationToken>(((FrameworkElement) this.Field).remove_Loaded), new RoutedEventHandler(this.OnTextBoxLoaded));
-      this.Field = (TextBox) null;
+        private TextBox _textBox;
+
+        internal void Detach()
+        {
+            _textBox.TextChanged -= OnTextBoxTextChanged;
+            _textBox = null;
+        }
+
+        internal void Attach(TextBox textBox)
+        {
+            if (_textBox == textBox)
+            {
+                return;
+            }
+
+            if (_textBox != null)
+            {
+                this.Detach();
+            }
+
+            _textBox = textBox;
+            _textBox.TextChanged += OnTextBoxTextChanged;
+
+            this. Validate();
+        }
+
+        private void OnTextBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            this.Validate();
+        }
+
+        internal void Validate()
+        {
+            var format = TextBoxValidationExtensions.GetFormat(_textBox);
+
+            var expectNonEmpty = (format & ValidTextBoxFormats.NonEmpty) != 0;
+            var isEmpty = string.IsNullOrWhiteSpace(_textBox.Text);
+
+            if (expectNonEmpty && isEmpty)
+            {
+                MarkInvalid();
+                return;
+            }
+
+            var expectNumber = (format & ValidTextBoxFormats.Numeric) != 0;
+
+            if (expectNumber &&
+                !isEmpty &&
+                !IsNumeric())
+            {
+                MarkInvalid();
+                return;
+            }
+
+            MarkValid();
+        }
+
+        private bool IsNumeric()
+        {
+            double number;
+            return double.TryParse(_textBox.Text, out number);
+        }
+
+        protected virtual void MarkValid()
+        {
+            var brush = TextBoxValidationExtensions.GetValidBrush(_textBox);
+            _textBox.Background = brush;
+        }
+
+        protected virtual void MarkInvalid()
+        {
+            var brush = TextBoxValidationExtensions.GetInvalidBrush(_textBox);
+            _textBox.Background = brush;
+        }
     }
-
-    internal void Attach(TextBox textBox)
-    {
-      if (this.Field == textBox)
-        return;
-      if (this.Field != null)
-        this.Detach();
-      this.Field = textBox;
-      TextBox field1 = this.Field;
-      WindowsRuntimeMarshal.AddEventHandler<TextChangedEventHandler>((Func<TextChangedEventHandler, EventRegistrationToken>) new Func<TextChangedEventHandler, EventRegistrationToken>(field1.add_TextChanged), (Action<EventRegistrationToken>) new Action<EventRegistrationToken>(field1.remove_TextChanged), new TextChangedEventHandler(this.OnTextBoxTextChanged));
-      TextBox field2 = this.Field;
-      WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>((Func<RoutedEventHandler, EventRegistrationToken>) new Func<RoutedEventHandler, EventRegistrationToken>(((FrameworkElement) field2).add_Loaded), (Action<EventRegistrationToken>) new Action<EventRegistrationToken>(((FrameworkElement) field2).remove_Loaded), new RoutedEventHandler(this.OnTextBoxLoaded));
-      this.Validate();
-    }
-
-    private void OnTextBoxLoaded(object sender, RoutedEventArgs e) => this.Validate();
-
-    private void OnTextBoxTextChanged(object sender, TextChangedEventArgs e) => this.Validate();
-
-    protected override string GetFieldValue() => this.Field.Text;
-
-    protected override int GetMaxLength() => this.Field.MaxLength;
-  }
 }

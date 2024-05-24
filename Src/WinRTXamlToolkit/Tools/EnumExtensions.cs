@@ -1,17 +1,27 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Tools.EnumExtensions
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
-using System.Collections;
+﻿using System;
 using System.Linq;
 
 namespace WinRTXamlToolkit.Tools
 {
-  public static class EnumExtensions
-  {
-    public static TEnumType[] GetValues<TEnumType>(Func<TEnumType, bool> condition = null) => condition == null ? ((IEnumerable) Enum.GetValues(typeof (TEnumType))).Cast<TEnumType>().ToArray<TEnumType>() : ((IEnumerable) Enum.GetValues(typeof (TEnumType))).Cast<TEnumType>().Where<TEnumType>((Func<TEnumType, bool>) condition).ToArray<TEnumType>();
-  }
+    /// <summary>
+    /// Enum type extensions.
+    /// </summary>
+    public static class EnumExtensions
+    {
+        /// <summary>
+        /// Gets the values declared by the given enum.
+        /// </summary>
+        /// <typeparam name="TEnumType">The enum type.</typeparam>
+        /// <param name="condition">The condition.</param>
+        /// <returns></returns>
+        public static TEnumType[] GetValues<TEnumType>(Func<TEnumType,bool> condition = null)
+        {
+            if (condition == null)
+            {
+                return Enum.GetValues(typeof (TEnumType)).Cast<TEnumType>().ToArray();
+            }
+
+            return Enum.GetValues(typeof(TEnumType)).Cast<TEnumType>().Where(condition).ToArray();
+        }
+    }
 }

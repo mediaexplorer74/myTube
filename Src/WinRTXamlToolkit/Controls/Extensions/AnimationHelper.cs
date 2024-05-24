@@ -1,52 +1,125 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Controls.Extensions.AnimationHelper
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Animation;
 
 namespace WinRTXamlToolkit.Controls.Extensions
 {
-  public static class AnimationHelper
-  {
-    public static readonly DependencyProperty StoryboardProperty = DependencyProperty.RegisterAttached("Storyboard", (Type) typeof (Storyboard), (Type) typeof (AnimationHelper), new PropertyMetadata((object) null, new PropertyChangedCallback(AnimationHelper.OnStoryboardChanged)));
-    public static readonly DependencyProperty IsPlayingProperty = DependencyProperty.RegisterAttached("IsPlaying", (Type) typeof (bool), (Type) typeof (AnimationHelper), new PropertyMetadata((object) false, new PropertyChangedCallback(AnimationHelper.OnIsPlayingChanged)));
-
-    public static Storyboard GetStoryboard(DependencyObject d) => (Storyboard) d.GetValue(AnimationHelper.StoryboardProperty);
-
-    public static void SetStoryboard(DependencyObject d, Storyboard value) => d.SetValue(AnimationHelper.StoryboardProperty, (object) value);
-
-    private static void OnStoryboardChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
+    /// <summary>
+    /// A simple pair of helper attached dependency properties
+    /// that allows to configure a single Storyboard to run on an element.
+    /// </summary>
+    public static class AnimationHelper
     {
-      Storyboard oldValue = (Storyboard) e.OldValue;
-      Storyboard storyboard = (Storyboard) d.GetValue(AnimationHelper.StoryboardProperty);
-      oldValue?.Stop();
-      if (!AnimationHelper.GetIsPlaying(d) || storyboard == null)
-        return;
-      storyboard.Begin();
+        #region Storyboard
+        /// <summary>
+        /// Storyboard Attached Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty StoryboardProperty =
+            DependencyProperty.RegisterAttached(
+                "Storyboard",
+                typeof(Storyboard),
+                typeof(AnimationHelper),
+                new PropertyMetadata(null, OnStoryboardChanged));
+
+        /// <summary>
+        /// Gets the Storyboard property. This dependency property 
+        /// indicates the storyboard to play.
+        /// </summary>
+        public static Storyboard GetStoryboard(DependencyObject d)
+        {
+            return (Storyboard)d.GetValue(StoryboardProperty);
+        }
+
+        /// <summary>
+        /// Sets the Storyboard property. This dependency property 
+        /// indicates the storyboard to play.
+        /// </summary>
+        public static void SetStoryboard(DependencyObject d, Storyboard value)
+        {
+            d.SetValue(StoryboardProperty, value);
+        }
+
+        /// <summary>
+        /// Handles changes to the Storyboard property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnStoryboardChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            Storyboard oldStoryboard = (Storyboard)e.OldValue;
+            Storyboard newStoryboard = (Storyboard)d.GetValue(StoryboardProperty);
+
+            if (oldStoryboard != null)
+                oldStoryboard.Stop();
+
+            if (GetIsPlaying(d) == true &&
+                newStoryboard != null)
+                newStoryboard.Begin();
+        }
+        #endregion
+
+        #region IsPlaying
+        /// <summary>
+        /// IsPlaying Attached Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty IsPlayingProperty =
+            DependencyProperty.RegisterAttached(
+                "IsPlaying",
+                typeof(bool),
+                typeof(AnimationHelper),
+                new PropertyMetadata(false, OnIsPlayingChanged));
+
+        /// <summary>
+        /// Gets the IsPlaying property. This dependency property 
+        /// indicates whether the storyboard is playing.
+        /// </summary>
+        public static bool GetIsPlaying(DependencyObject d)
+        {
+            return (bool)d.GetValue(IsPlayingProperty);
+        }
+
+        /// <summary>
+        /// Sets the IsPlaying property. This dependency property 
+        /// indicates whether the storyboard is playing.
+        /// </summary>
+        public static void SetIsPlaying(DependencyObject d, bool value)
+        {
+            d.SetValue(IsPlayingProperty, value);
+        }
+
+        /// <summary>
+        /// Handles changes to the IsPlaying property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnIsPlayingChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            bool oldIsPlaying = (bool)e.OldValue;
+            bool newIsPlaying = (bool)d.GetValue(IsPlayingProperty);
+
+            var storyboard = GetStoryboard(d);
+            if (storyboard == null)
+                return;
+
+            if (!newIsPlaying)
+                storyboard.Stop();
+
+            if (newIsPlaying)
+                storyboard.Begin();
+        }
+        #endregion
     }
-
-    public static bool GetIsPlaying(DependencyObject d) => (bool) d.GetValue(AnimationHelper.IsPlayingProperty);
-
-    public static void SetIsPlaying(DependencyObject d, bool value) => d.SetValue(AnimationHelper.IsPlayingProperty, (object) value);
-
-    private static void OnIsPlayingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      int num = (bool) e.OldValue ? 1 : 0;
-      bool flag = (bool) d.GetValue(AnimationHelper.IsPlayingProperty);
-      Storyboard storyboard = AnimationHelper.GetStoryboard(d);
-      if (storyboard == null)
-        return;
-      if (!flag)
-        storyboard.Stop();
-      if (!flag)
-        return;
-      storyboard.Begin();
-    }
-  }
 }

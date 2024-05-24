@@ -1,539 +1,1196 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Controls.CustomGridSplitter
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using System;
+using WinRTXamlToolkit.Controls.Extensions;
 using Windows.Foundation;
+using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
 
 namespace WinRTXamlToolkit.Controls
 {
-  [TemplateVisualState(GroupName = "OrientationStates", Name = "VerticalOrientation")]
-  [TemplateVisualState(GroupName = "OrientationStates", Name = "HorizontalOrientation")]
-  [StyleTypedProperty(Property = "PreviewStyle", StyleTargetType = typeof (GridSplitterPreviewControl))]
-  public class CustomGridSplitter : Control
-  {
-    private const string OrientationStatesGroupName = "OrientationStates";
-    private const string VerticalOrientationStateName = "VerticalOrientation";
-    private const string HorizontalOrientationStateName = "HorizontalOrientation";
-    private const double DefaultKeyboardIncrement = 1.0;
-    private Point _lastPosition;
-    private Point _previewDraggingStartPosition;
-    private bool _isDragging;
-    private bool _isDraggingPreview;
-    private GridResizeDirection _effectiveResizeDirection;
-    private Grid _parentGrid;
-    private Grid _previewPopupHostGrid;
-    private Popup _previewPopup;
-    private Grid _previewGrid;
-    private CustomGridSplitter _previewGridSplitter;
-    private Border _previewControlBorder;
-    private GridSplitterPreviewControl _previewControl;
-    public static readonly DependencyProperty ResizeBehaviorProperty = DependencyProperty.Register(nameof (ResizeBehavior), (Type) typeof (GridResizeBehavior), (Type) typeof (CustomGridSplitter), new PropertyMetadata((object) GridResizeBehavior.BasedOnAlignment));
-    public static readonly DependencyProperty ResizeDirectionProperty = DependencyProperty.Register(nameof (ResizeDirection), (Type) typeof (GridResizeDirection), (Type) typeof (CustomGridSplitter), new PropertyMetadata((object) GridResizeDirection.Auto, new PropertyChangedCallback(CustomGridSplitter.OnResizeDirectionChanged)));
-    public static readonly DependencyProperty KeyboardIncrementProperty = DependencyProperty.Register(nameof (KeyboardIncrement), (Type) typeof (double), (Type) typeof (CustomGridSplitter), new PropertyMetadata((object) 1.0));
-    public static readonly DependencyProperty ShowsPreviewProperty = DependencyProperty.Register(nameof (ShowsPreview), (Type) typeof (bool), (Type) typeof (CustomGridSplitter), new PropertyMetadata((object) false));
-    public static readonly DependencyProperty PreviewStyleProperty = DependencyProperty.Register(nameof (PreviewStyle), (Type) typeof (Style), (Type) typeof (CustomGridSplitter), new PropertyMetadata((object) null));
-    private uint? _dragPointer;
-
-    public event EventHandler DraggingCompleted;
-
-    public GridResizeBehavior ResizeBehavior
+    /// <summary>
+    /// Specifies the rows or columns that are resized
+    /// by a WinRTXamlToolkit.Controls.CustomGridSplitter control.
+    /// </summary>
+    public enum GridResizeBehavior
     {
-      get => (GridResizeBehavior) ((DependencyObject) this).GetValue(CustomGridSplitter.ResizeBehaviorProperty);
-      set => ((DependencyObject) this).SetValue(CustomGridSplitter.ResizeBehaviorProperty, (object) value);
+        /// <summary>
+        /// Space is redistributed based on the value of the
+        /// Windows.UI.Xaml.FrameworkElement.HorizontalAlignment and
+        /// Windows.UI.Xaml.FrameworkElement.VerticalAlignment properties.
+        /// </summary>
+        BasedOnAlignment = 0,
+        /// <summary>
+        /// For a horizontal WinRTXamlToolkit.Controls.CustomGridSplitter, space is redistributed
+        /// between the row that is specified for the WinRTXamlToolkit.Controls.CustomGridSplitter
+        /// and the next row that is below it. For a vertical WinRTXamlToolkit.Controls.CustomGridSplitter,
+        /// space is redistributed between the column that is specified for the WinRTXamlToolkit.Controls.CustomGridSplitter
+        /// and the next column that is to the right.
+        /// </summary>
+        CurrentAndNext = 1,
+        /// <summary>
+        /// For a horizontal WinRTXamlToolkit.Controls.CustomGridSplitter, space is redistributed
+        /// between the row that is specified for the WinRTXamlToolkit.Controls.CustomGridSplitter
+        /// and the next row that is above it. For a vertical WinRTXamlToolkit.Controls.CustomGridSplitter,
+        /// space is redistributed between the column that is specified for the WinRTXamlToolkit.Controls.CustomGridSplitter
+        /// and the next column that is to the left.
+        /// </summary>
+        PreviousAndCurrent = 2,
+        /// <summary>
+        /// For a horizontal WinRTXamlToolkit.Controls.CustomGridSplitter, space is redistributed
+        /// between the rows that are above and below the row that is specified for the
+        /// WinRTXamlToolkit.Controls.CustomGridSplitter. For a vertical WinRTXamlToolkit.Controls.CustomGridSplitter,
+        /// space is redistributed between the columns that are to the left and right
+        /// of the column that is specified for the WinRTXamlToolkit.Controls.CustomGridSplitter.
+        /// </summary>
+        PreviousAndNext = 3,
     }
 
-    public GridResizeDirection ResizeDirection
+    /// <summary>
+    /// Specifies whether a WinRTXamlToolkit.Controls.CustomGridSplitter control redistributes
+    /// space between rows or between columns.
+    /// </summary>
+    public enum GridResizeDirection
     {
-      get => (GridResizeDirection) ((DependencyObject) this).GetValue(CustomGridSplitter.ResizeDirectionProperty);
-      set => ((DependencyObject) this).SetValue(CustomGridSplitter.ResizeDirectionProperty, (object) value);
+        /// <summary>
+        /// Space is redistributed based on the values of the Windows.UI.Xaml.FrameworkElement.HorizontalAlignment,
+        /// Windows.UI.Xaml.FrameworkElement.VerticalAlignment, Windows.UI.Xaml.FrameworkElement.ActualWidth,
+        /// and Windows.UI.Xaml.FrameworkElement.ActualHeight properties of the WinRTXamlToolkit.Controls.CustomGridSplitter.
+        /// </summary>
+        Auto = 0,
+        /// <summary>
+        /// Space is redistributed between columns.
+        /// </summary>
+        Columns = 1,
+        /// <summary>
+        /// Space is redistributed between rows.
+        /// </summary>
+        Rows = 2,
     }
 
-    private static void OnResizeDirectionChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
+    /// <summary>
+    /// A control similar to the GridSplitter seen in WPF and Sivlerlight.
+    /// </summary>
+    [TemplateVisualState(GroupName = OrientationStatesGroupName, Name = VerticalOrientationStateName)]
+    [TemplateVisualState(GroupName = OrientationStatesGroupName, Name = HorizontalOrientationStateName)]
+    [TemplateVisualState(GroupName = FocusStatesGroupName, Name = FocusedStateName)]
+    [TemplateVisualState(GroupName = FocusStatesGroupName, Name = UnfocusedStateName)]
+    public class CustomGridSplitter : Control
     {
-      CustomGridSplitter customGridSplitter = (CustomGridSplitter) d;
-      GridResizeDirection oldValue = (GridResizeDirection) e.OldValue;
-      GridResizeDirection resizeDirection = customGridSplitter.ResizeDirection;
-      customGridSplitter.OnResizeDirectionChanged(oldValue, resizeDirection);
-    }
+        #region Template Part and Visual State names
+        private const string OrientationStatesGroupName = "OrientationStates";
+        private const string VerticalOrientationStateName = "VerticalOrientation";
+        private const string HorizontalOrientationStateName = "HorizontalOrientation";
+        private const string FocusStatesGroupName = "FocusStates";
+        private const string FocusedStateName = "Focused";
+        private const string UnfocusedStateName = "Unfocused";
+        #endregion
 
-    protected virtual void OnResizeDirectionChanged(
-      GridResizeDirection oldResizeDirection,
-      GridResizeDirection newResizeDirection)
-    {
-      this.DetermineResizeCursor();
-      this.UpdateVisualState();
-    }
+        private const double DefaultKeyboardIncrement = 1d;
+        private Point _lastPosition;
+        private Point _previewDraggingStartPosition;
+        private bool _isDragging;
+        private bool _isDraggingPreview;
+        private GridResizeDirection _effectiveResizeDirection;
+        private Grid _parentGrid;
 
-    public double KeyboardIncrement
-    {
-      get => (double) ((DependencyObject) this).GetValue(CustomGridSplitter.KeyboardIncrementProperty);
-      set => ((DependencyObject) this).SetValue(CustomGridSplitter.KeyboardIncrementProperty, (object) value);
-    }
+        private Grid _previewPopupHostGrid;
+        private Popup _previewPopup;
+        private Grid _previewGrid;
+        private CustomGridSplitter _previewGridSplitter;
+        private Border _previewControlBorder;
+        private GridSplitterPreviewControl _previewControl;
 
-    public bool ShowsPreview
-    {
-      get => (bool) ((DependencyObject) this).GetValue(CustomGridSplitter.ShowsPreviewProperty);
-      set => ((DependencyObject) this).SetValue(CustomGridSplitter.ShowsPreviewProperty, (object) value);
-    }
+        /// <summary>
+        /// Occurs when dragging completes.
+        /// </summary>
+        public event EventHandler DraggingCompleted;
 
-    public Style PreviewStyle
-    {
-      get => (Style) ((DependencyObject) this).GetValue(CustomGridSplitter.PreviewStyleProperty);
-      set => ((DependencyObject) this).SetValue(CustomGridSplitter.PreviewStyleProperty, (object) value);
-    }
+        #region ResizeBehavior
+        /// <summary>
+        /// ResizeBehavior Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty ResizeBehaviorProperty =
+            DependencyProperty.Register(
+                "ResizeBehavior",
+                typeof(GridResizeBehavior),
+                typeof(CustomGridSplitter),
+                new PropertyMetadata(GridResizeBehavior.BasedOnAlignment));
 
-    private GridResizeDirection DetermineEffectiveResizeDirection() => this.ResizeDirection == GridResizeDirection.Columns || this.ResizeDirection != GridResizeDirection.Rows && (((FrameworkElement) this).HorizontalAlignment != 3 || (((FrameworkElement) this).HorizontalAlignment != 3 || ((FrameworkElement) this).VerticalAlignment == 3) && ((FrameworkElement) this).HorizontalAlignment == 3 && ((FrameworkElement) this).VerticalAlignment == 3 && ((FrameworkElement) this).ActualWidth <= ((FrameworkElement) this).ActualHeight) ? GridResizeDirection.Columns : GridResizeDirection.Rows;
-
-    private GridResizeBehavior DetermineEffectiveResizeBehavior()
-    {
-      if (this.ResizeBehavior == GridResizeBehavior.CurrentAndNext)
-        return GridResizeBehavior.CurrentAndNext;
-      if (this.ResizeBehavior == GridResizeBehavior.PreviousAndCurrent)
-        return GridResizeBehavior.PreviousAndCurrent;
-      if (this.ResizeBehavior == GridResizeBehavior.PreviousAndNext)
-        return GridResizeBehavior.PreviousAndNext;
-      if (this.DetermineEffectiveResizeDirection() == GridResizeDirection.Rows)
-      {
-        if (((FrameworkElement) this).VerticalAlignment == null)
-          return GridResizeBehavior.PreviousAndCurrent;
-        return ((FrameworkElement) this).VerticalAlignment == 2 ? GridResizeBehavior.CurrentAndNext : GridResizeBehavior.PreviousAndNext;
-      }
-      if (((FrameworkElement) this).HorizontalAlignment == null)
-        return GridResizeBehavior.PreviousAndCurrent;
-      return ((FrameworkElement) this).HorizontalAlignment == 2 ? GridResizeBehavior.CurrentAndNext : GridResizeBehavior.PreviousAndNext;
-    }
-
-    private void DetermineResizeCursor()
-    {
-      int effectiveResizeDirection = (int) this.DetermineEffectiveResizeDirection();
-    }
-
-    public CustomGridSplitter()
-    {
-      this.put_DefaultStyleKey((object) typeof (CustomGridSplitter));
-      this.put_IsTabStop(true);
-      this.DetermineResizeCursor();
-      CustomGridSplitter customGridSplitter = this;
-      WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>((Func<EventHandler<object>, EventRegistrationToken>) new Func<EventHandler<object>, EventRegistrationToken>(((FrameworkElement) customGridSplitter).add_LayoutUpdated), (Action<EventRegistrationToken>) new Action<EventRegistrationToken>(((FrameworkElement) customGridSplitter).remove_LayoutUpdated), new EventHandler<object>(this.OnLayoutUpdated));
-      this.UpdateVisualState();
-    }
-
-    private void OnLayoutUpdated(object sender, object e) => this.UpdateVisualState();
-
-    private void UpdateVisualState()
-    {
-      if (this.DetermineEffectiveResizeDirection() == GridResizeDirection.Columns)
-        VisualStateManager.GoToState((Control) this, "VerticalOrientation", true);
-      else
-        VisualStateManager.GoToState((Control) this, "HorizontalOrientation", true);
-    }
-
-    protected virtual void OnPointerEntered(PointerRoutedEventArgs e) => this.DetermineResizeCursor();
-
-    protected virtual void OnPointerPressed(PointerRoutedEventArgs e)
-    {
-      if (this._dragPointer.HasValue)
-        return;
-      this._dragPointer = new uint?(e.Pointer.PointerId);
-      this._effectiveResizeDirection = this.DetermineEffectiveResizeDirection();
-      this._parentGrid = this.GetGrid();
-      this._previewDraggingStartPosition = (Point) e.GetCurrentPoint((UIElement) this._parentGrid).Position;
-      this._lastPosition = this._previewDraggingStartPosition;
-      this._isDragging = true;
-      if (this.ShowsPreview)
-        this.StartPreviewDragging(e);
-      else
-        this.StartDirectDragging(e);
-    }
-
-    private void StartPreviewDragging(PointerRoutedEventArgs e)
-    {
-      this._isDraggingPreview = true;
-      Popup popup = new Popup();
-      ((FrameworkElement) popup).put_Width(((FrameworkElement) this._parentGrid).ActualWidth);
-      ((FrameworkElement) popup).put_Height(((FrameworkElement) this._parentGrid).ActualHeight);
-      this._previewPopup = popup;
-      this._previewPopup.put_IsOpen(true);
-      Grid grid1 = new Grid();
-      ((FrameworkElement) grid1).put_VerticalAlignment((VerticalAlignment) 3);
-      ((FrameworkElement) grid1).put_HorizontalAlignment((HorizontalAlignment) 3);
-      this._previewPopupHostGrid = grid1;
-      ((ICollection<UIElement>) ((Panel) this._parentGrid).Children).Add((UIElement) this._previewPopupHostGrid);
-      if (((ICollection<RowDefinition>) this._parentGrid.RowDefinitions).Count > 0)
-        Grid.SetRowSpan((FrameworkElement) this._previewPopupHostGrid, ((ICollection<RowDefinition>) this._parentGrid.RowDefinitions).Count);
-      if (((ICollection<ColumnDefinition>) this._parentGrid.ColumnDefinitions).Count > 0)
-        Grid.SetColumnSpan((FrameworkElement) this._previewPopupHostGrid, ((ICollection<ColumnDefinition>) this._parentGrid.ColumnDefinitions).Count);
-      ((ICollection<UIElement>) ((Panel) this._previewPopupHostGrid).Children).Add((UIElement) this._previewPopup);
-      Grid grid2 = new Grid();
-      ((FrameworkElement) grid2).put_Width(((FrameworkElement) this._parentGrid).ActualWidth);
-      ((FrameworkElement) grid2).put_Height(((FrameworkElement) this._parentGrid).ActualHeight);
-      this._previewGrid = grid2;
-      this._previewPopup.put_Child((UIElement) this._previewGrid);
-      foreach (RowDefinition rowDefinition1 in (IEnumerable<RowDefinition>) this._parentGrid.RowDefinitions)
-      {
-        RowDefinition rowDefinition2 = new RowDefinition();
-        rowDefinition2.put_Height(rowDefinition1.Height);
-        rowDefinition2.put_MaxHeight(rowDefinition1.MaxHeight);
-        rowDefinition2.put_MinHeight(rowDefinition1.MinHeight);
-        ((ICollection<RowDefinition>) this._previewGrid.RowDefinitions).Add(rowDefinition2);
-      }
-      foreach (ColumnDefinition columnDefinition1 in (IEnumerable<ColumnDefinition>) this._parentGrid.ColumnDefinitions)
-      {
-        GridLength width = columnDefinition1.Width;
-        double maxWidth = columnDefinition1.MaxWidth;
-        double minWidth = columnDefinition1.MinWidth;
-        ColumnDefinition columnDefinition2 = new ColumnDefinition();
-        columnDefinition2.put_Width(width);
-        columnDefinition1.put_MinWidth(minWidth);
-        if (!double.IsInfinity(columnDefinition1.MaxWidth))
-          columnDefinition1.put_MaxWidth(maxWidth);
-        ((ICollection<ColumnDefinition>) this._previewGrid.ColumnDefinitions).Add(columnDefinition2);
-      }
-      CustomGridSplitter customGridSplitter = new CustomGridSplitter();
-      ((UIElement) customGridSplitter).put_Opacity(0.0);
-      customGridSplitter.ShowsPreview = false;
-      ((FrameworkElement) customGridSplitter).put_Width(((FrameworkElement) this).Width);
-      ((FrameworkElement) customGridSplitter).put_Height(((FrameworkElement) this).Height);
-      ((FrameworkElement) customGridSplitter).put_Margin(((FrameworkElement) this).Margin);
-      ((FrameworkElement) customGridSplitter).put_VerticalAlignment(((FrameworkElement) this).VerticalAlignment);
-      ((FrameworkElement) customGridSplitter).put_HorizontalAlignment(((FrameworkElement) this).HorizontalAlignment);
-      customGridSplitter.ResizeBehavior = this.ResizeBehavior;
-      customGridSplitter.ResizeDirection = this.ResizeDirection;
-      customGridSplitter.KeyboardIncrement = this.KeyboardIncrement;
-      this._previewGridSplitter = customGridSplitter;
-      Grid.SetColumn((FrameworkElement) this._previewGridSplitter, Grid.GetColumn((FrameworkElement) this));
-      int columnSpan = Grid.GetColumnSpan((FrameworkElement) this);
-      if (columnSpan > 0)
-        Grid.SetColumnSpan((FrameworkElement) this._previewGridSplitter, columnSpan);
-      Grid.SetRow((FrameworkElement) this._previewGridSplitter, Grid.GetRow((FrameworkElement) this));
-      int rowSpan = Grid.GetRowSpan((FrameworkElement) this);
-      if (rowSpan > 0)
-        Grid.SetRowSpan((FrameworkElement) this._previewGridSplitter, rowSpan);
-      ((ICollection<UIElement>) ((Panel) this._previewGrid).Children).Add((UIElement) this._previewGridSplitter);
-      Border border = new Border();
-      ((FrameworkElement) border).put_Width(((FrameworkElement) this).Width);
-      ((FrameworkElement) border).put_Height(((FrameworkElement) this).Height);
-      ((FrameworkElement) border).put_Margin(((FrameworkElement) this).Margin);
-      ((FrameworkElement) border).put_VerticalAlignment(((FrameworkElement) this).VerticalAlignment);
-      ((FrameworkElement) border).put_HorizontalAlignment(((FrameworkElement) this).HorizontalAlignment);
-      this._previewControlBorder = border;
-      Grid.SetColumn((FrameworkElement) this._previewControlBorder, Grid.GetColumn((FrameworkElement) this));
-      if (columnSpan > 0)
-        Grid.SetColumnSpan((FrameworkElement) this._previewControlBorder, columnSpan);
-      Grid.SetRow((FrameworkElement) this._previewControlBorder, Grid.GetRow((FrameworkElement) this));
-      if (rowSpan > 0)
-        Grid.SetRowSpan((FrameworkElement) this._previewControlBorder, rowSpan);
-      ((ICollection<UIElement>) ((Panel) this._previewGrid).Children).Add((UIElement) this._previewControlBorder);
-      this._previewControl = new GridSplitterPreviewControl();
-      if (this.PreviewStyle != null)
-        ((FrameworkElement) this._previewControl).put_Style(this.PreviewStyle);
-      this._previewControlBorder.put_Child((UIElement) this._previewControl);
-      this._previewPopup.put_Child((UIElement) this._previewGrid);
-      this._previewGridSplitter._dragPointer = new uint?(e.Pointer.PointerId);
-      this._previewGridSplitter._effectiveResizeDirection = this.DetermineEffectiveResizeDirection();
-      this._previewGridSplitter._parentGrid = this._previewGrid;
-      this._previewGridSplitter._lastPosition = (Point) e.GetCurrentPoint((UIElement) this._previewGrid).Position;
-      this._previewGridSplitter._isDragging = true;
-      this._previewGridSplitter.StartDirectDragging(e);
-      this._previewGridSplitter.DraggingCompleted += new EventHandler(this.PreviewGridSplitter_DraggingCompleted);
-    }
-
-    private void PreviewGridSplitter_DraggingCompleted(object sender, EventArgs e)
-    {
-      for (int index = 0; index < ((ICollection<RowDefinition>) this._previewGrid.RowDefinitions).Count; ++index)
-        ((IList<RowDefinition>) this._parentGrid.RowDefinitions)[index].put_Height(((IList<RowDefinition>) this._previewGrid.RowDefinitions)[index].Height);
-      for (int index = 0; index < ((ICollection<ColumnDefinition>) this._previewGrid.ColumnDefinitions).Count; ++index)
-        ((IList<ColumnDefinition>) this._parentGrid.ColumnDefinitions)[index].put_Width(((IList<ColumnDefinition>) this._previewGrid.ColumnDefinitions)[index].Width);
-      this._previewGridSplitter.DraggingCompleted -= new EventHandler(this.PreviewGridSplitter_DraggingCompleted);
-      ((ICollection<UIElement>) ((Panel) this._parentGrid).Children).Remove((UIElement) this._previewPopupHostGrid);
-      this._isDragging = false;
-      this._isDraggingPreview = false;
-      this._dragPointer = new uint?();
-      this._parentGrid = (Grid) null;
-      if (this.DraggingCompleted == null)
-        return;
-      this.DraggingCompleted((object) this, EventArgs.Empty);
-    }
-
-    private void StartDirectDragging(PointerRoutedEventArgs e)
-    {
-      this._isDraggingPreview = false;
-      ((UIElement) this).CapturePointer(e.Pointer);
-    }
-
-    protected virtual void OnPointerMoved(PointerRoutedEventArgs e)
-    {
-      if (!this._isDragging)
-        return;
-      uint? dragPointer = this._dragPointer;
-      uint pointerId = e.Pointer.PointerId;
-      if (((int) dragPointer.GetValueOrDefault() != (int) pointerId ? 1 : (!dragPointer.HasValue ? 1 : 0)) != 0)
-        return;
-      Point position = (Point) e.GetCurrentPoint((UIElement) this._parentGrid).Position;
-      if (this._isDraggingPreview)
-        this.ContinuePreviewDragging(position);
-      else
-        this.ContinueDirectDragging(position);
-      this._lastPosition = position;
-    }
-
-    private void ContinuePreviewDragging(Point position)
-    {
-    }
-
-    private void ContinueDirectDragging(Point position)
-    {
-      if (this._effectiveResizeDirection == GridResizeDirection.Columns)
-        this.ResizeColumns(this._parentGrid, position.X - this._lastPosition.X);
-      else
-        this.ResizeRows(this._parentGrid, position.Y - this._lastPosition.Y);
-    }
-
-    protected virtual void OnPointerReleased(PointerRoutedEventArgs e)
-    {
-      if (!this._isDragging)
-        return;
-      uint? dragPointer = this._dragPointer;
-      uint pointerId = e.Pointer.PointerId;
-      if (((int) dragPointer.GetValueOrDefault() != (int) pointerId ? 1 : (!dragPointer.HasValue ? 1 : 0)) != 0)
-        return;
-      ((UIElement) this).ReleasePointerCapture(e.Pointer);
-      this._isDragging = false;
-      this._isDraggingPreview = false;
-      this._dragPointer = new uint?();
-      this._parentGrid = (Grid) null;
-      if (this.DraggingCompleted == null)
-        return;
-      this.DraggingCompleted((object) this, EventArgs.Empty);
-    }
-
-    protected virtual void OnKeyDown(KeyRoutedEventArgs e)
-    {
-      base.OnKeyDown(e);
-      if (this.DetermineEffectiveResizeDirection() == GridResizeDirection.Columns)
-      {
-        if (e.Key == 37)
+        /// <summary>
+        /// Gets or sets the ResizeBehavior property. This dependency property 
+        /// indicates which columns or rows are resized relative
+        /// to the column or row for which the GridSplitter control is defined.
+        /// </summary>
+        public GridResizeBehavior ResizeBehavior
         {
-          this.ResizeColumns(this.GetGrid(), -this.KeyboardIncrement);
-          e.put_Handled(true);
+            get { return (GridResizeBehavior)GetValue(ResizeBehaviorProperty); }
+            set { SetValue(ResizeBehaviorProperty, value); }
         }
-        else
+        #endregion
+
+        #region ResizeDirection
+        /// <summary>
+        /// ResizeDirection Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty ResizeDirectionProperty =
+            DependencyProperty.Register(
+                "ResizeDirection",
+                typeof(GridResizeDirection),
+                typeof(CustomGridSplitter),
+                new PropertyMetadata(GridResizeDirection.Auto, OnResizeDirectionChanged));
+
+        /// <summary>
+        /// Gets or sets the ResizeDirection property. This dependency property 
+        /// indicates whether the CustomGridSplitter control resizes rows or columns.
+        /// </summary>
+        public GridResizeDirection ResizeDirection
         {
-          if (e.Key != 39)
-            return;
-          this.ResizeColumns(this.GetGrid(), this.KeyboardIncrement);
-          e.put_Handled(true);
+            get { return (GridResizeDirection)GetValue(ResizeDirectionProperty); }
+            set { SetValue(ResizeDirectionProperty, value); }
         }
-      }
-      else if (e.Key == 38)
-      {
-        this.ResizeRows(this.GetGrid(), -this.KeyboardIncrement);
-        e.put_Handled(true);
-      }
-      else
-      {
-        if (e.Key != 40)
-          return;
-        this.ResizeRows(this.GetGrid(), this.KeyboardIncrement);
-        e.put_Handled(true);
-      }
+
+        /// <summary>
+        /// Handles changes to the ResizeDirection property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnResizeDirectionChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (CustomGridSplitter)d;
+            GridResizeDirection oldResizeDirection = (GridResizeDirection)e.OldValue;
+            GridResizeDirection newResizeDirection = target.ResizeDirection;
+            target.OnResizeDirectionChanged(oldResizeDirection, newResizeDirection);
+        }
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the ResizeDirection property.
+        /// </summary>
+        /// <param name="oldResizeDirection">The old ResizeDirection value</param>
+        /// <param name="newResizeDirection">The new ResizeDirection value</param>
+        protected virtual void OnResizeDirectionChanged(
+            GridResizeDirection oldResizeDirection, GridResizeDirection newResizeDirection)
+        {
+            this.DetermineResizeCursor();
+            this.UpdateVisualState();
+        }
+        #endregion
+
+        #region KeyboardIncrement
+        /// <summary>
+        /// KeyboardIncrement Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty KeyboardIncrementProperty =
+            DependencyProperty.Register(
+                "KeyboardIncrement",
+                typeof(double),
+                typeof(CustomGridSplitter),
+                new PropertyMetadata(DefaultKeyboardIncrement));
+
+        /// <summary>
+        /// Gets or sets the KeyboardIncrement property. This dependency property 
+        /// indicates the distance that each press of an arrow key moves
+        /// a CustomGridSplitter control.
+        /// </summary>
+        public double KeyboardIncrement
+        {
+            get { return (double)GetValue(KeyboardIncrementProperty); }
+            set { SetValue(KeyboardIncrementProperty, value); }
+        }
+        #endregion
+
+        #region ShowsPreview
+        /// <summary>
+        /// ShowsPreview Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty ShowsPreviewProperty =
+            DependencyProperty.Register(
+                "ShowsPreview",
+                typeof(bool),
+                typeof(CustomGridSplitter),
+                new PropertyMetadata(false));
+
+        /// <summary>
+        /// Gets or sets the ShowsPreview property. This dependency property
+        /// indicates whether the preview control should be shown when dragged
+        /// instead of directly updating the grid.
+        /// </summary>
+        public bool ShowsPreview
+        {
+            get { return (bool)GetValue(ShowsPreviewProperty); }
+            set { SetValue(ShowsPreviewProperty, value); }
+        }
+        #endregion
+
+        #region PreviewStyle
+        /// <summary>
+        /// PreviewStyle Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty PreviewStyleProperty =
+            DependencyProperty.Register(
+                "PreviewStyle",
+                typeof(Style),
+                typeof(CustomGridSplitter),
+                new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or sets the PreviewStyle property. This dependency property 
+        /// indicates the style of the preview.
+        /// </summary>
+        public Style PreviewStyle
+        {
+            get { return (Style)GetValue(PreviewStyleProperty); }
+            set { SetValue(PreviewStyleProperty, value); }
+        }
+        #endregion
+
+        #region DetermineEffectiveResizeDirection()
+        private GridResizeDirection DetermineEffectiveResizeDirection()
+        {
+            if (ResizeDirection == GridResizeDirection.Columns)
+            {
+                return GridResizeDirection.Columns;
+            }
+
+            if (ResizeDirection == GridResizeDirection.Rows)
+            {
+                return GridResizeDirection.Rows;
+            }
+
+            // Based on GridResizeDirection Enumeration documentation from
+            // http://msdn.microsoft.com/en-us/library/WinRTXamlToolkit.Controls.gridresizedirection(v=VS.110).aspx
+
+            // Space is redistributed based on the values of the HorizontalAlignment, VerticalAlignment, ActualWidth, and ActualHeight properties of the CustomGridSplitter.
+
+            // * If the HorizontalAlignment is not set to Stretch, space is redistributed between columns.
+            if (HorizontalAlignment != HorizontalAlignment.Stretch)
+            {
+                return GridResizeDirection.Columns;
+            }
+
+            // * If the HorizontalAlignment is set to Stretch and the VerticalAlignment is not set to Stretch, space is redistributed between rows.
+            if (this.HorizontalAlignment == HorizontalAlignment.Stretch &&
+                this.VerticalAlignment != VerticalAlignment.Stretch)
+            {
+                return GridResizeDirection.Rows;
+            }
+
+            // * If the following conditions are true, space is redistributed between columns:
+            //   * The HorizontalAlignment is set to Stretch.
+            //   * The VerticalAlignment is set to Stretch.
+            //   * The ActualWidth is less than or equal to the ActualHeight.
+            if (this.HorizontalAlignment == HorizontalAlignment.Stretch &&
+                this.VerticalAlignment == VerticalAlignment.Stretch &&
+                this.ActualWidth <= this.ActualHeight)
+            {
+                return GridResizeDirection.Columns;
+            }
+
+            // * If the following conditions are true, space is redistributed between rows:
+            //   * HorizontalAlignment is set to Stretch.
+            //   * VerticalAlignment is set to Stretch.
+            //   * ActualWidth is greater than the ActualHeight.
+            //if (this.HorizontalAlignment == HorizontalAlignment.Stretch &&
+            //    this.VerticalAlignment == VerticalAlignment.Stretch &&
+            //    this.ActualWidth > this.ActualHeight)
+            {
+                return GridResizeDirection.Rows;
+            }
+        }
+        #endregion
+
+        #region DetermineEffectiveResizeBehavior()
+        private GridResizeBehavior DetermineEffectiveResizeBehavior()
+        {
+            if (ResizeBehavior == GridResizeBehavior.CurrentAndNext)
+            {
+                return GridResizeBehavior.CurrentAndNext;
+            }
+
+            if (ResizeBehavior == GridResizeBehavior.PreviousAndCurrent)
+            {
+                return GridResizeBehavior.PreviousAndCurrent;
+            }
+
+            if (ResizeBehavior == GridResizeBehavior.PreviousAndNext)
+            {
+                return GridResizeBehavior.PreviousAndNext;
+            }
+
+            // Based on GridResizeBehavior Enumeration documentation from
+            // http://msdn.microsoft.com/en-us/library/WinRTXamlToolkit.Controls.gridresizebehavior(v=VS.110).aspx
+
+            // Space is redistributed based on the value of the
+            // HorizontalAlignment and VerticalAlignment properties.
+
+            var effectiveResizeDirection =
+                DetermineEffectiveResizeDirection();
+
+            // If the value of the ResizeDirection property specifies
+            // that space is redistributed between rows,
+            // the redistribution follows these guidelines:
+
+            if (effectiveResizeDirection == GridResizeDirection.Rows)
+            {
+                // * When the VerticalAlignment property is set to Top,
+                //   space is redistributed between the row that is specified
+                //   for the GridSplitter and the row that is above that row.
+                if (this.VerticalAlignment == VerticalAlignment.Top)
+                {
+                    return GridResizeBehavior.PreviousAndCurrent;
+                }
+
+                // * When the VerticalAlignment property is set to Bottom,
+                //   space is redistributed between the row that is specified
+                //   for the GridSplitter and the row that is below that row.
+                if (this.VerticalAlignment == VerticalAlignment.Bottom)
+                {
+                    return GridResizeBehavior.CurrentAndNext;
+                }
+
+                // * When the VerticalAlignment property is set to Center,
+                //   space is redistributed between the row that is above and
+                //   the row that is below the row that is specified
+                //   for the GridSplitter.
+                // * When the VerticalAlignment property is set to Stretch,
+                //   space is redistributed between the row that is above
+                //   and the row that is below the row that is specified
+                //   for the GridSplitter.
+                return GridResizeBehavior.PreviousAndNext;
+            }
+
+            // If the value of the ResizeDirection property specifies
+            // that space is redistributed between columns,
+            // the redistribution follows these guidelines:
+
+            // * When the HorizontalAlignment property is set to Left,
+            //   space is redistributed between the column that is specified
+            //   for the GridSplitter and the column that is to the left.
+            if (this.HorizontalAlignment == HorizontalAlignment.Left)
+            {
+                return GridResizeBehavior.PreviousAndCurrent;
+            }
+
+            // * When the HorizontalAlignment property is set to Right,
+            //   space is redistributed between the column that is specified
+            //   for the GridSplitter and the column that is to the right.
+            if (this.HorizontalAlignment == HorizontalAlignment.Right)
+            {
+                return GridResizeBehavior.CurrentAndNext;
+            }
+
+            // * When the HorizontalAlignment property is set to Center,
+            //   space is redistributed between the columns that are to the left
+            //   and right of the column that is specified for the GridSplitter.
+            // * When the HorizontalAlignment property is set to Stretch,
+            //   space is redistributed between the columns that are to the left
+            //   and right of the column that is specified for the GridSplitter.
+            return GridResizeBehavior.PreviousAndNext;
+        }
+        #endregion
+
+        #region DetermineResizeCursor()
+        private void DetermineResizeCursor()
+        {
+            var effectiveResizeDirection =
+                this.DetermineEffectiveResizeDirection();
+
+            if (effectiveResizeDirection == GridResizeDirection.Columns)
+            {
+                FrameworkElementExtensions.SetCursor(this, new CoreCursor(CoreCursorType.SizeWestEast, 1));
+            }
+            else
+            {
+                FrameworkElementExtensions.SetCursor(this, new CoreCursor(CoreCursorType.SizeNorthSouth, 1));
+            }
+        }
+        #endregion
+
+        #region CTOR - CustomGridSplitter()
+        // The below code throws for some reason, so the focus properties 
+        // for keyboard support had to be moved to the constructor.
+        // 
+        //static CustomGridSplitter()
+        //{
+        //    FocusableProperty.OverrideMetadata(
+        //        typeof(CustomGridSplitter),
+        //        new UIPropertyMetadata(true));
+        //    IsTabStopProperty.OverrideMetadata(
+        //        typeof(CustomGridSplitter),
+        //        new UIPropertyMetadata(true));
+        //}
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomGridSplitter" /> class.
+        /// </summary>
+        public CustomGridSplitter()
+        {
+            this.DefaultStyleKey = typeof(CustomGridSplitter);
+            this.IsTabStop = true;
+            this.DetermineResizeCursor();
+            this.LayoutUpdated += OnLayoutUpdated;
+            this.UpdateVisualState();
+        }
+        #endregion
+
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            UpdateVisualState();
+        }
+
+        protected override void OnLostFocus(RoutedEventArgs e)
+        {
+            UpdateVisualState();
+        }
+
+        private void OnLayoutUpdated(object sender, object e)
+        {
+            UpdateVisualState();
+        }
+
+        #region UpdateVisualState()
+        private void UpdateVisualState()
+        {
+            var resizeDirection = DetermineEffectiveResizeDirection();
+
+            if (resizeDirection == GridResizeDirection.Columns)
+            {
+                VisualStateManager.GoToState(this, VerticalOrientationStateName, true);
+            }
+            else
+            {
+                VisualStateManager.GoToState(this, HorizontalOrientationStateName, true);
+            }
+
+            if (this.FocusState == Windows.UI.Xaml.FocusState.Unfocused)
+            {
+                VisualStateManager.GoToState(this, UnfocusedStateName, true);
+            }
+            else
+            {
+                VisualStateManager.GoToState(this, FocusedStateName, true);
+            }
+        }
+        #endregion
+
+        #region Pointer event handlers
+        protected override void OnPointerEntered(Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            this.DetermineResizeCursor();
+        }
+
+        private uint? _dragPointer;
+
+        protected override void OnPointerPressed(Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (_dragPointer != null)
+                return;
+
+            _dragPointer = e.Pointer.PointerId;
+            _effectiveResizeDirection = this.DetermineEffectiveResizeDirection();
+            _parentGrid = GetGrid();
+            _previewDraggingStartPosition = e.GetCurrentPoint(_parentGrid).Position;
+            _lastPosition = _previewDraggingStartPosition;
+            _isDragging = true;
+
+            if (ShowsPreview)
+            {
+                //this.Dispatcher.Invoke(
+                //    CoreDispatcherPriority.High,
+                //    (s, e2) => StartPreviewDragging(e),
+                //    this,
+                //    null);
+                StartPreviewDragging(e);
+            }
+            else
+                StartDirectDragging(e);
+        }
+
+        private void StartPreviewDragging(Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            _isDraggingPreview = true;
+            _previewPopup = new Popup
+            {
+                Width = _parentGrid.ActualWidth,
+                Height = _parentGrid.ActualHeight
+            };
+
+            _previewPopup.IsOpen = true;
+            _previewPopupHostGrid = new Grid
+            {
+                VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Stretch,
+                HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Stretch
+            };
+
+            _parentGrid.Children.Add(_previewPopupHostGrid);
+            if (_parentGrid.RowDefinitions.Count > 0)
+                Grid.SetRowSpan(_previewPopupHostGrid, _parentGrid.RowDefinitions.Count);
+            if (_parentGrid.ColumnDefinitions.Count > 0)
+                Grid.SetColumnSpan(_previewPopupHostGrid, _parentGrid.ColumnDefinitions.Count);
+            _previewPopupHostGrid.Children.Add(_previewPopup);
+
+            _previewGrid = new Grid
+            {
+                Width = _parentGrid.ActualWidth,
+                Height = _parentGrid.ActualHeight
+            };
+
+            _previewPopup.Child = _previewGrid;
+
+            foreach (var definition in _parentGrid.RowDefinitions)
+            {
+                var definitionCopy = new RowDefinition
+                {
+                    Height = definition.Height,
+                    MaxHeight = definition.MaxHeight,
+                    MinHeight = definition.MinHeight
+                };
+
+                _previewGrid.RowDefinitions.Add(definitionCopy);
+            }
+
+            foreach (var definition in _parentGrid.ColumnDefinitions)
+            {
+                var w = definition.Width;
+                var mxw = definition.MaxWidth;
+                var mnw = definition.MinWidth;
+
+                var definitionCopy = new ColumnDefinition();
+
+                definitionCopy.Width = w;
+                definition.MinWidth = mnw;
+                if (!double.IsInfinity(definition.MaxWidth))
+                {
+                    definition.MaxWidth = mxw;
+                }
+                //{
+                //    Width = definition.Width,
+                //    MaxWidth = definition.MaxWidth,
+                //    MinWidth = definition.MinWidth
+                //};
+
+                _previewGrid.ColumnDefinitions.Add(definitionCopy);
+            }
+
+            _previewGridSplitter = new CustomGridSplitter
+            {
+                Opacity = 0.0,
+                ShowsPreview = false,
+                Width = this.Width,
+                Height = this.Height,
+                Margin = this.Margin,
+                VerticalAlignment = this.VerticalAlignment,
+                HorizontalAlignment = this.HorizontalAlignment,
+                ResizeBehavior = this.ResizeBehavior,
+                ResizeDirection = this.ResizeDirection,
+                KeyboardIncrement = this.KeyboardIncrement
+            };
+
+            Grid.SetColumn(_previewGridSplitter, Grid.GetColumn(this));
+            var cs = Grid.GetColumnSpan(this);
+            if (cs > 0)
+                Grid.SetColumnSpan(_previewGridSplitter, cs);
+            Grid.SetRow(_previewGridSplitter, Grid.GetRow(this));
+            var rs = Grid.GetRowSpan(this);
+            if (rs > 0)
+                Grid.SetRowSpan(_previewGridSplitter, rs);
+            _previewGrid.Children.Add(_previewGridSplitter);
+
+            _previewControlBorder = new Border
+            {
+                Width = this.Width,
+                Height = this.Height,
+                Margin = this.Margin,
+                VerticalAlignment = this.VerticalAlignment,
+                HorizontalAlignment = this.HorizontalAlignment,
+            };
+
+            Grid.SetColumn(_previewControlBorder, Grid.GetColumn(this));
+            if (cs > 0)
+                Grid.SetColumnSpan(_previewControlBorder, cs);
+            Grid.SetRow(_previewControlBorder, Grid.GetRow(this));
+            if (rs > 0)
+                Grid.SetRowSpan(_previewControlBorder, rs);
+            _previewGrid.Children.Add(_previewControlBorder);
+
+            _previewControl = new GridSplitterPreviewControl();
+            if (this.PreviewStyle != null)
+                _previewControl.Style = this.PreviewStyle;
+            _previewControlBorder.Child = _previewControl;
+
+            _previewPopup.Child = _previewGrid;
+            //await this.previewGridSplitter.WaitForLoadedAsync();
+
+            //this.previewGridSplitter.OnPointerPressed(e);
+            _previewGridSplitter._dragPointer = e.Pointer.PointerId;
+            _previewGridSplitter._effectiveResizeDirection = this.DetermineEffectiveResizeDirection();
+            _previewGridSplitter._parentGrid = _previewGrid;
+            _previewGridSplitter._lastPosition = e.GetCurrentPoint(_previewGrid).Position;
+            _previewGridSplitter._isDragging = true;
+            _previewGridSplitter.StartDirectDragging(e);
+            _previewGridSplitter.DraggingCompleted += PreviewGridSplitter_DraggingCompleted;
+        }
+
+        private void PreviewGridSplitter_DraggingCompleted(object sender, EventArgs e)
+        {
+            for (int i = 0; i < _previewGrid.RowDefinitions.Count; i++)
+            {
+                _parentGrid.RowDefinitions[i].Height =
+                    _previewGrid.RowDefinitions[i].Height;
+            }
+
+            for (int i = 0; i < _previewGrid.ColumnDefinitions.Count; i++)
+            {
+                _parentGrid.ColumnDefinitions[i].Width =
+                    _previewGrid.ColumnDefinitions[i].Width;
+            }
+
+            _previewGridSplitter.DraggingCompleted -= PreviewGridSplitter_DraggingCompleted;
+            _parentGrid.Children.Remove(_previewPopupHostGrid);
+
+            _isDragging = false;
+            _isDraggingPreview = false;
+            _dragPointer = null;
+            _parentGrid = null;
+            if (this.DraggingCompleted != null)
+                this.DraggingCompleted(this, EventArgs.Empty);
+        }
+
+        private void StartDirectDragging(Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            _isDraggingPreview = false;
+            this.CapturePointer(e.Pointer);
+            this.Focus(FocusState.Pointer);
+        }
+
+        /// <summary>
+        /// Called before the PointerMoved event occurs.
+        /// </summary>
+        /// <param name="e">Event data for the event.</param>
+        protected override void OnPointerMoved(Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (!_isDragging ||
+                _dragPointer != e.Pointer.PointerId)
+            {
+                return;
+            }
+
+            var position = e.GetCurrentPoint(_parentGrid).Position;
+
+            if (_isDraggingPreview)
+                ContinuePreviewDragging(position);
+            else
+                ContinueDirectDragging(position);
+
+            _lastPosition = position;
+        }
+
+        private void ContinuePreviewDragging(Point position)
+        {
+        }
+
+        private void ContinueDirectDragging(Point position)
+        {
+            if (_effectiveResizeDirection == GridResizeDirection.Columns)
+            {
+                var deltaX = position.X - _lastPosition.X;
+                this.ResizeColumns(_parentGrid, deltaX);
+            }
+            else
+            {
+                var deltaY = position.Y - _lastPosition.Y;
+                this.ResizeRows(_parentGrid, deltaY);
+            }
+        }
+
+        /// <summary>
+        /// Called before the PointerReleased event occurs.
+        /// </summary>
+        /// <param name="e">Event data for the event.</param>
+        protected override void OnPointerReleased(Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (!_isDragging ||
+                _dragPointer != e.Pointer.PointerId)
+            {
+                return;
+            }
+
+            this.ReleasePointerCapture(e.Pointer);
+            _isDragging = false;
+            _isDraggingPreview = false;
+            _dragPointer = null;
+            _parentGrid = null;
+            if (this.DraggingCompleted != null)
+                this.DraggingCompleted(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Called before the KeyDown event occurs.
+        /// </summary>
+        /// <param name="e">The data for the event.</param>
+        protected override void OnKeyDown(Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            GridResizeDirection effectiveResizeDirection =
+                this.DetermineEffectiveResizeDirection();
+
+            if (effectiveResizeDirection == GridResizeDirection.Columns)
+            {
+                if (e.Key == VirtualKey.Left)
+                {
+                    this.ResizeColumns(this.GetGrid(), -KeyboardIncrement);
+                    e.Handled = true;
+                }
+                else if (e.Key == VirtualKey.Right)
+                {
+                    this.ResizeColumns(this.GetGrid(), KeyboardIncrement);
+                    e.Handled = true;
+                }
+            }
+            else
+            {
+                if (e.Key == VirtualKey.Up)
+                {
+                    this.ResizeRows(this.GetGrid(), -KeyboardIncrement);
+                    e.Handled = true;
+                }
+                else if (e.Key == VirtualKey.Down)
+                {
+                    this.ResizeRows(this.GetGrid(), KeyboardIncrement);
+                    e.Handled = true;
+                }
+            }
+        }
+        #endregion
+
+        #region ResizeColumns()
+        private void ResizeColumns(Grid grid, double deltaX)
+        {
+            GridResizeBehavior effectiveGridResizeBehavior =
+                this.DetermineEffectiveResizeBehavior();
+
+            int column = Grid.GetColumn(this);
+            int leftColumn;
+            int rightColumn;
+
+            switch (effectiveGridResizeBehavior)
+            {
+                case GridResizeBehavior.PreviousAndCurrent:
+                    leftColumn = column - 1;
+                    rightColumn = column;
+                    break;
+                case GridResizeBehavior.PreviousAndNext:
+                    leftColumn = column - 1;
+                    rightColumn = column + 1;
+                    break;
+                default:
+                    leftColumn = column;
+                    rightColumn = column + 1;
+                    break;
+            }
+
+            if (rightColumn >= grid.ColumnDefinitions.Count)
+            {
+                return;
+            }
+
+            var leftColumnDefinition = grid.ColumnDefinitions[leftColumn];
+            var rightColumnDefinition = grid.ColumnDefinitions[rightColumn];
+            var leftColumnGridUnitType = leftColumnDefinition.Width.GridUnitType;
+            var rightColumnGridUnitType = rightColumnDefinition.Width.GridUnitType;
+            var leftColumnActualWidth = leftColumnDefinition.ActualWidth;
+            var rightColumnActualWidth = rightColumnDefinition.ActualWidth;
+            var leftColumnMaxWidth = leftColumnDefinition.MaxWidth;
+            var rightColumnMaxWidth = rightColumnDefinition.MaxWidth;
+            var leftColumnMinWidth = leftColumnDefinition.MinWidth;
+            var rightColumnMinWidth = rightColumnDefinition.MinWidth;
+
+            //deltaX = 200;
+            if (leftColumnActualWidth + deltaX > leftColumnMaxWidth)
+            {
+                deltaX = Math.Max(
+                    0,
+                    leftColumnDefinition.MaxWidth - leftColumnActualWidth);
+            }
+
+            if (leftColumnActualWidth + deltaX < leftColumnMinWidth)
+            {
+                deltaX = Math.Min(
+                    0,
+                    leftColumnDefinition.MinWidth - leftColumnActualWidth);
+            }
+
+            if (rightColumnActualWidth - deltaX > rightColumnMaxWidth)
+            {
+                deltaX = -Math.Max(
+                    0,
+                    rightColumnDefinition.MaxWidth - rightColumnActualWidth);
+            }
+
+            if (rightColumnActualWidth - deltaX < rightColumnMinWidth)
+            {
+                deltaX = -Math.Min(
+                    0,
+                    rightColumnDefinition.MinWidth - rightColumnActualWidth);
+            }
+
+            var newLeftColumnActualWidth = leftColumnActualWidth + deltaX;
+            var newRightColumnActualWidth = rightColumnActualWidth - deltaX;
+
+            //grid.BeginInit();
+
+            double totalStarColumnsWidth = 0;
+            double starColumnsAvailableWidth = grid.ActualWidth;
+
+            if (leftColumnGridUnitType ==
+                    GridUnitType.Star ||
+                rightColumnGridUnitType ==
+                    GridUnitType.Star)
+            {
+                foreach (var columnDefinition in grid.ColumnDefinitions)
+                {
+                    if (columnDefinition.Width.GridUnitType ==
+                        GridUnitType.Star)
+                    {
+                        totalStarColumnsWidth +=
+                            columnDefinition.Width.Value;
+                    }
+                    else
+                    {
+                        starColumnsAvailableWidth -=
+                            columnDefinition.ActualWidth;
+                    }
+                }
+            }
+
+            if (leftColumnGridUnitType == GridUnitType.Star)
+            {
+                if (rightColumnGridUnitType == GridUnitType.Star)
+                {
+                    // If both columns are star columns
+                    // - totalStarColumnsWidth won't change and
+                    // as much as one of the columns grows
+                    // - the other column will shrink by the same value.
+
+                    // If there is no width available to star columns
+                    // - we can't resize two of them.
+                    if (starColumnsAvailableWidth < 1)
+                    {
+                        return;
+                    }
+
+                    var oldStarWidth = leftColumnDefinition.Width.Value;
+                    var newStarWidth = Math.Max(
+                        0,
+                        totalStarColumnsWidth * newLeftColumnActualWidth /
+                            starColumnsAvailableWidth);
+                    leftColumnDefinition.Width =
+                        new GridLength(newStarWidth, GridUnitType.Star);
+
+                    rightColumnDefinition.Width =
+                        new GridLength(
+                            Math.Max(
+                                0,
+                                rightColumnDefinition.Width.Value -
+                                    newStarWidth + oldStarWidth),
+                            GridUnitType.Star);
+                }
+                else
+                {
+                    var newStarColumnsAvailableWidth =
+                        starColumnsAvailableWidth +
+                        rightColumnActualWidth -
+                        newRightColumnActualWidth;
+
+                    if (newStarColumnsAvailableWidth - newLeftColumnActualWidth >= 1)
+                    {
+                        var newStarWidth = Math.Max(
+                            0,
+                            (totalStarColumnsWidth -
+                             leftColumnDefinition.Width.Value) *
+                            newLeftColumnActualWidth /
+                            (newStarColumnsAvailableWidth - newLeftColumnActualWidth));
+
+                        leftColumnDefinition.Width =
+                            new GridLength(newStarWidth, GridUnitType.Star);
+                    }
+                }
+            }
+            else
+            {
+                leftColumnDefinition.Width =
+                    new GridLength(
+                        newLeftColumnActualWidth, GridUnitType.Pixel);
+            }
+
+            if (rightColumnGridUnitType ==
+                GridUnitType.Star)
+            {
+                if (leftColumnGridUnitType !=
+                    GridUnitType.Star)
+                {
+                    var newStarColumnsAvailableWidth =
+                        starColumnsAvailableWidth +
+                        leftColumnActualWidth -
+                        newLeftColumnActualWidth;
+
+                    if (newStarColumnsAvailableWidth - newRightColumnActualWidth >= 1)
+                    {
+                        var newStarWidth = Math.Max(
+                            0,
+                            (totalStarColumnsWidth -
+                             rightColumnDefinition.Width.Value) *
+                            newRightColumnActualWidth /
+                            (newStarColumnsAvailableWidth - newRightColumnActualWidth));
+                        rightColumnDefinition.Width =
+                            new GridLength(newStarWidth, GridUnitType.Star);
+                    }
+                }
+                // else handled in the left column width calculation block
+            }
+            else
+            {
+                rightColumnDefinition.Width =
+                    new GridLength(
+                        newRightColumnActualWidth, GridUnitType.Pixel);
+            }
+
+            //grid.EndInit();
+        }
+        #endregion
+
+        #region ResizeRows()
+        private void ResizeRows(Grid grid, double deltaX)
+        {
+            GridResizeBehavior effectiveGridResizeBehavior =
+                this.DetermineEffectiveResizeBehavior();
+
+            int row = Grid.GetRow(this);
+            int upperRow;
+            int lowerRow;
+
+            switch (effectiveGridResizeBehavior)
+            {
+                case GridResizeBehavior.PreviousAndCurrent:
+                    upperRow = row - 1;
+                    lowerRow = row;
+                    break;
+                case GridResizeBehavior.PreviousAndNext:
+                    upperRow = row - 1;
+                    lowerRow = row + 1;
+                    break;
+                default:
+                    upperRow = row;
+                    lowerRow = row + 1;
+                    break;
+            }
+
+            if (lowerRow >= grid.RowDefinitions.Count)
+            {
+                return;
+            }
+
+            var upperRowDefinition = grid.RowDefinitions[upperRow];
+            var lowerRowDefinition = grid.RowDefinitions[lowerRow];
+            var upperRowGridUnitType = upperRowDefinition.Height.GridUnitType;
+            var lowerRowGridUnitType = lowerRowDefinition.Height.GridUnitType;
+            var upperRowActualHeight = upperRowDefinition.ActualHeight;
+            var lowerRowActualHeight = lowerRowDefinition.ActualHeight;
+            var upperRowMaxHeight = upperRowDefinition.MaxHeight;
+            var lowerRowMaxHeight = lowerRowDefinition.MaxHeight;
+            var upperRowMinHeight = upperRowDefinition.MinHeight;
+            var lowerRowMinHeight = lowerRowDefinition.MinHeight;
+
+            //deltaX = 200;
+            if (upperRowActualHeight + deltaX > upperRowMaxHeight)
+            {
+                deltaX = Math.Max(
+                    0,
+                    upperRowDefinition.MaxHeight - upperRowActualHeight);
+            }
+
+            if (upperRowActualHeight + deltaX < upperRowMinHeight)
+            {
+                deltaX = Math.Min(
+                    0,
+                    upperRowDefinition.MinHeight - upperRowActualHeight);
+            }
+
+            if (lowerRowActualHeight - deltaX > lowerRowMaxHeight)
+            {
+                deltaX = -Math.Max(
+                    0,
+                    lowerRowDefinition.MaxHeight - lowerRowActualHeight);
+            }
+
+            if (lowerRowActualHeight - deltaX < lowerRowMinHeight)
+            {
+                deltaX = -Math.Min(
+                    0,
+                    lowerRowDefinition.MinHeight - lowerRowActualHeight);
+            }
+
+            var newUpperRowActualHeight = upperRowActualHeight + deltaX;
+            var newLowerRowActualHeight = lowerRowActualHeight - deltaX;
+
+            //grid.BeginInit();
+
+            double totalStarRowsHeight = 0;
+            double starRowsAvailableHeight = grid.ActualHeight;
+
+            if (upperRowGridUnitType ==
+                    GridUnitType.Star ||
+                lowerRowGridUnitType ==
+                    GridUnitType.Star)
+            {
+                foreach (var rowDefinition in grid.RowDefinitions)
+                {
+                    if (rowDefinition.Height.GridUnitType ==
+                        GridUnitType.Star)
+                    {
+                        totalStarRowsHeight +=
+                            rowDefinition.Height.Value;
+                    }
+                    else
+                    {
+                        starRowsAvailableHeight -=
+                            rowDefinition.ActualHeight;
+                    }
+                }
+            }
+
+            if (upperRowGridUnitType == GridUnitType.Star)
+            {
+                if (lowerRowGridUnitType == GridUnitType.Star)
+                {
+                    // If both rows are star rows
+                    // - totalStarRowsHeight won't change and
+                    // as much as one of the rows grows
+                    // - the other row will shrink by the same value.
+
+                    // If there is no width available to star rows
+                    // - we can't resize two of them.
+                    if (starRowsAvailableHeight < 1)
+                    {
+                        return;
+                    }
+
+                    var oldStarHeight = upperRowDefinition.Height.Value;
+                    var newStarHeight = Math.Max(
+                        0,
+                        totalStarRowsHeight * newUpperRowActualHeight /
+                            starRowsAvailableHeight);
+                    upperRowDefinition.Height =
+                        new GridLength(newStarHeight, GridUnitType.Star);
+
+                    lowerRowDefinition.Height =
+                        new GridLength(
+                            Math.Max(
+                                0,
+                                lowerRowDefinition.Height.Value -
+                                    newStarHeight + oldStarHeight),
+                            GridUnitType.Star);
+                }
+                else
+                {
+                    var newStarRowsAvailableHeight =
+                        starRowsAvailableHeight +
+                        lowerRowActualHeight -
+                        newLowerRowActualHeight;
+
+                    if (newStarRowsAvailableHeight - newUpperRowActualHeight >= 1)
+                    {
+                        var newStarHeight = Math.Max(
+                            0,
+                            (totalStarRowsHeight -
+                             upperRowDefinition.Height.Value) *
+                            newUpperRowActualHeight /
+                            (newStarRowsAvailableHeight - newUpperRowActualHeight));
+
+                        upperRowDefinition.Height =
+                            new GridLength(newStarHeight, GridUnitType.Star);
+                    }
+                }
+            }
+            else
+            {
+                upperRowDefinition.Height =
+                    new GridLength(
+                        newUpperRowActualHeight, GridUnitType.Pixel);
+            }
+
+            if (lowerRowGridUnitType ==
+                GridUnitType.Star)
+            {
+                if (upperRowGridUnitType !=
+                    GridUnitType.Star)
+                {
+                    var newStarRowsAvailableHeight =
+                        starRowsAvailableHeight +
+                        upperRowActualHeight -
+                        newUpperRowActualHeight;
+
+                    if (newStarRowsAvailableHeight - newLowerRowActualHeight >= 1)
+                    {
+                        var newStarHeight = Math.Max(
+                            0,
+                            (totalStarRowsHeight -
+                             lowerRowDefinition.Height.Value) *
+                            newLowerRowActualHeight /
+                            (newStarRowsAvailableHeight - newLowerRowActualHeight));
+                        lowerRowDefinition.Height =
+                            new GridLength(newStarHeight, GridUnitType.Star);
+                    }
+                }
+                // else handled in the upper row width calculation block
+            }
+            else
+            {
+                lowerRowDefinition.Height =
+                    new GridLength(
+                        newLowerRowActualHeight, GridUnitType.Pixel);
+            }
+
+            //grid.EndInit();
+        }
+        #endregion
+
+        #region GetGrid()
+        private Grid GetGrid()
+        {
+            var grid = this.Parent as Grid;
+
+            if (grid == null)
+            {
+                throw new InvalidOperationException(
+                    "CustomGridSplitter only works when hosted in a Grid.");
+            }
+            return grid;
+        }
+        #endregion
     }
 
-    private void ResizeColumns(Grid grid, double deltaX)
+    /// <summary>
+    /// A primitive control used for representing a preview of the manipulated CustomGridSplitter
+    /// </summary>
+    public class GridSplitterPreviewControl : ContentControl
     {
-      GridResizeBehavior effectiveResizeBehavior = this.DetermineEffectiveResizeBehavior();
-      int column = Grid.GetColumn((FrameworkElement) this);
-      int index1;
-      int index2;
-      switch (effectiveResizeBehavior)
-      {
-        case GridResizeBehavior.PreviousAndCurrent:
-          index1 = column - 1;
-          index2 = column;
-          break;
-        case GridResizeBehavior.PreviousAndNext:
-          index1 = column - 1;
-          index2 = column + 1;
-          break;
-        default:
-          index1 = column;
-          index2 = column + 1;
-          break;
-      }
-      if (index2 >= ((ICollection<ColumnDefinition>) grid.ColumnDefinitions).Count)
-        return;
-      ColumnDefinition columnDefinition1 = ((IList<ColumnDefinition>) grid.ColumnDefinitions)[index1];
-      ColumnDefinition columnDefinition2 = ((IList<ColumnDefinition>) grid.ColumnDefinitions)[index2];
-      GridUnitType gridUnitType1 = columnDefinition1.Width.GridUnitType;
-      GridUnitType gridUnitType2 = columnDefinition2.Width.GridUnitType;
-      double actualWidth1 = columnDefinition1.ActualWidth;
-      double actualWidth2 = columnDefinition2.ActualWidth;
-      double maxWidth1 = columnDefinition1.MaxWidth;
-      double maxWidth2 = columnDefinition2.MaxWidth;
-      double minWidth1 = columnDefinition1.MinWidth;
-      double minWidth2 = columnDefinition2.MinWidth;
-      if (actualWidth1 + deltaX > maxWidth1)
-        deltaX = Math.Max(0.0, columnDefinition1.MaxWidth - actualWidth1);
-      if (actualWidth1 + deltaX < minWidth1)
-        deltaX = Math.Min(0.0, columnDefinition1.MinWidth - actualWidth1);
-      if (actualWidth2 - deltaX > maxWidth2)
-        deltaX = -Math.Max(0.0, columnDefinition2.MaxWidth - actualWidth2);
-      if (actualWidth2 - deltaX < minWidth2)
-        deltaX = -Math.Min(0.0, columnDefinition2.MinWidth - actualWidth2);
-      double num1 = actualWidth1 + deltaX;
-      double num2 = actualWidth2 - deltaX;
-      double num3 = 0.0;
-      double actualWidth3 = ((FrameworkElement) grid).ActualWidth;
-      if (gridUnitType1 == GridUnitType.Star || gridUnitType2 == GridUnitType.Star)
-      {
-        foreach (ColumnDefinition columnDefinition3 in (IEnumerable<ColumnDefinition>) grid.ColumnDefinitions)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GridSplitterPreviewControl" /> class.
+        /// </summary>
+        public GridSplitterPreviewControl()
         {
-          if (columnDefinition3.Width.GridUnitType == GridUnitType.Star)
-            num3 += columnDefinition3.Width.Value;
-          else
-            actualWidth3 -= columnDefinition3.ActualWidth;
+            this.DefaultStyleKey = typeof(GridSplitterPreviewControl);
         }
-      }
-      if (gridUnitType1 == GridUnitType.Star)
-      {
-        if (gridUnitType2 == GridUnitType.Star)
-        {
-          if (actualWidth3 < 1.0)
-            return;
-          double num4 = columnDefinition1.Width.Value;
-          double num5 = Math.Max(0.0, num3 * num1 / actualWidth3);
-          columnDefinition1.put_Width(new GridLength(num5, GridUnitType.Star));
-          columnDefinition2.put_Width(new GridLength(Math.Max(0.0, columnDefinition2.Width.Value - num5 + num4), GridUnitType.Star));
-        }
-        else
-        {
-          double num6 = actualWidth3 + actualWidth2 - num2;
-          if (num6 - num1 >= 1.0)
-          {
-            double num7 = Math.Max(0.0, (num3 - columnDefinition1.Width.Value) * num1 / (num6 - num1));
-            columnDefinition1.put_Width(new GridLength(num7, GridUnitType.Star));
-          }
-        }
-      }
-      else
-        columnDefinition1.put_Width(new GridLength(num1, GridUnitType.Pixel));
-      if (gridUnitType2 == GridUnitType.Star)
-      {
-        if (gridUnitType1 == GridUnitType.Star)
-          return;
-        double num8 = actualWidth3 + actualWidth1 - num1;
-        if (num8 - num2 < 1.0)
-          return;
-        double num9 = Math.Max(0.0, (num3 - columnDefinition2.Width.Value) * num2 / (num8 - num2));
-        columnDefinition2.put_Width(new GridLength(num9, GridUnitType.Star));
-      }
-      else
-        columnDefinition2.put_Width(new GridLength(num2, GridUnitType.Pixel));
     }
-
-    private void ResizeRows(Grid grid, double deltaX)
-    {
-      GridResizeBehavior effectiveResizeBehavior = this.DetermineEffectiveResizeBehavior();
-      int row = Grid.GetRow((FrameworkElement) this);
-      int index1;
-      int index2;
-      switch (effectiveResizeBehavior)
-      {
-        case GridResizeBehavior.PreviousAndCurrent:
-          index1 = row - 1;
-          index2 = row;
-          break;
-        case GridResizeBehavior.PreviousAndNext:
-          index1 = row - 1;
-          index2 = row + 1;
-          break;
-        default:
-          index1 = row;
-          index2 = row + 1;
-          break;
-      }
-      if (index2 >= ((ICollection<RowDefinition>) grid.RowDefinitions).Count)
-        return;
-      RowDefinition rowDefinition1 = ((IList<RowDefinition>) grid.RowDefinitions)[index1];
-      RowDefinition rowDefinition2 = ((IList<RowDefinition>) grid.RowDefinitions)[index2];
-      GridUnitType gridUnitType1 = rowDefinition1.Height.GridUnitType;
-      GridUnitType gridUnitType2 = rowDefinition2.Height.GridUnitType;
-      double actualHeight1 = rowDefinition1.ActualHeight;
-      double actualHeight2 = rowDefinition2.ActualHeight;
-      double maxHeight1 = rowDefinition1.MaxHeight;
-      double maxHeight2 = rowDefinition2.MaxHeight;
-      double minHeight1 = rowDefinition1.MinHeight;
-      double minHeight2 = rowDefinition2.MinHeight;
-      if (actualHeight1 + deltaX > maxHeight1)
-        deltaX = Math.Max(0.0, rowDefinition1.MaxHeight - actualHeight1);
-      if (actualHeight1 + deltaX < minHeight1)
-        deltaX = Math.Min(0.0, rowDefinition1.MinHeight - actualHeight1);
-      if (actualHeight2 - deltaX > maxHeight2)
-        deltaX = -Math.Max(0.0, rowDefinition2.MaxHeight - actualHeight2);
-      if (actualHeight2 - deltaX < minHeight2)
-        deltaX = -Math.Min(0.0, rowDefinition2.MinHeight - actualHeight2);
-      double num1 = actualHeight1 + deltaX;
-      double num2 = actualHeight2 - deltaX;
-      double num3 = 0.0;
-      double actualHeight3 = ((FrameworkElement) grid).ActualHeight;
-      if (gridUnitType1 == GridUnitType.Star || gridUnitType2 == GridUnitType.Star)
-      {
-        foreach (RowDefinition rowDefinition3 in (IEnumerable<RowDefinition>) grid.RowDefinitions)
-        {
-          if (rowDefinition3.Height.GridUnitType == GridUnitType.Star)
-            num3 += rowDefinition3.Height.Value;
-          else
-            actualHeight3 -= rowDefinition3.ActualHeight;
-        }
-      }
-      if (gridUnitType1 == GridUnitType.Star)
-      {
-        if (gridUnitType2 == GridUnitType.Star)
-        {
-          if (actualHeight3 < 1.0)
-            return;
-          double num4 = rowDefinition1.Height.Value;
-          double num5 = Math.Max(0.0, num3 * num1 / actualHeight3);
-          rowDefinition1.put_Height(new GridLength(num5, GridUnitType.Star));
-          rowDefinition2.put_Height(new GridLength(Math.Max(0.0, rowDefinition2.Height.Value - num5 + num4), GridUnitType.Star));
-        }
-        else
-        {
-          double num6 = actualHeight3 + actualHeight2 - num2;
-          if (num6 - num1 >= 1.0)
-          {
-            double num7 = Math.Max(0.0, (num3 - rowDefinition1.Height.Value) * num1 / (num6 - num1));
-            rowDefinition1.put_Height(new GridLength(num7, GridUnitType.Star));
-          }
-        }
-      }
-      else
-        rowDefinition1.put_Height(new GridLength(num1, GridUnitType.Pixel));
-      if (gridUnitType2 == GridUnitType.Star)
-      {
-        if (gridUnitType1 == GridUnitType.Star)
-          return;
-        double num8 = actualHeight3 + actualHeight1 - num1;
-        if (num8 - num2 < 1.0)
-          return;
-        double num9 = Math.Max(0.0, (num3 - rowDefinition2.Height.Value) * num2 / (num8 - num2));
-        rowDefinition2.put_Height(new GridLength(num9, GridUnitType.Star));
-      }
-      else
-        rowDefinition2.put_Height(new GridLength(num2, GridUnitType.Pixel));
-    }
-
-    private Grid GetGrid() => ((FrameworkElement) this).Parent is Grid parent ? parent : throw new InvalidOperationException("CustomGridSplitter only works when hosted in a Grid.");
-  }
 }

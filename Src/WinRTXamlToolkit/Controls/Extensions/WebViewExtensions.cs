@@ -1,79 +1,135 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Controls.Extensions.WebViewExtensions
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 
 namespace WinRTXamlToolkit.Controls.Extensions
 {
-  public static class WebViewExtensions
-  {
-    public static async Task<string> GetTitle(this WebView webView) => await webView.InvokeScriptAsync("eval", (IEnumerable<string>) new string[1]
+    /// <summary>
+    /// Extension methods for WebView control.
+    /// </summary>
+    public static class WebViewExtensions
     {
-      "document.title"
-    });
-
-    public static async Task<string> GetAddress(this WebView webView)
-    {
-      string address = await webView.InvokeScriptAsync("eval", (IEnumerable<string>) new string[1]
-      {
-        "document.location.href"
-      });
-      return address != null ? address : ((object) webView.Source).ToString();
-    }
-
-    public static async Task<string> GetHead(this WebView webView)
-    {
-      try
-      {
-        string head = await webView.InvokeScriptAsync("eval", (IEnumerable<string>) new string[1]
+        /// <summary>
+        /// Gets the title of the currently displayed page.
+        /// </summary>
+        /// <param name="webView">The web view.</param>
+        /// <returns></returns>
+        public static string GetTitle(this WebView webView)
         {
-          "document.getElementsByTagName('head')[0].innerHTML"
-        });
-        return head;
-      }
-      catch (Exception ex)
-      {
-        return (string) null;
-      }
-    }
+            return webView.InvokeScript("eval", new[] {"document.title"});
+        }
 
-    private static string GetTagAttributeBySpecificAttribute(
-      string htmlFragment,
-      string tagName,
-      string testAttributeName,
-      string testAttributeValue,
-      string attributeToGet)
-    {
-      Match match1 = new Regex(string.Format("\\<{0}[^\\>]+{1}=\\\"{2}\\\"[^\\>]+{3}=\\\"(?<retGroup>[^\\>]+?)\\\"", (object) tagName, (object) testAttributeName, (object) testAttributeValue, (object) attributeToGet), RegexOptions.Multiline).Match(htmlFragment);
-      if (match1.Success)
-        return match1.Groups["retGroup"].Value;
-      Match match2 = new Regex(string.Format("\\<{0}[^\\>]+{3}=\\\"(?<retGroup>[^\\>]+?)\\\"[^\\>]+{1}=\\\"{2}\\\"", (object) tagName, (object) testAttributeName, (object) testAttributeValue, (object) attributeToGet), RegexOptions.Multiline).Match(htmlFragment);
-      return match2.Success ? match2.Groups["retGroup"].Value : (string) null;
-    }
+        /// <summary>
+        /// Gets the address of the current page.
+        /// </summary>
+        /// <param name="webView">The web view.</param>
+        /// <returns></returns>
+        public static string GetAddress(this WebView webView)
+        {
+            var address = webView.InvokeScript("eval", new[] { "document.location.href" });
 
-    public static async Task<Uri> GetFavIconLink(this WebView webView)
-    {
-      string head = await webView.GetHead();
-      if (head == null)
-        return (Uri) null;
-      head = head.ToLower();
-      string favIconString = WebViewExtensions.GetTagAttributeBySpecificAttribute(head, "link", "rel", "shortcut icon", "href");
-      string address = await webView.GetAddress();
-      Uri uri = new Uri(address);
-      if (favIconString != null)
-      {
-        if (!favIconString.ToLower().StartsWith("http://") && !favIconString.ToLower().StartsWith("https://"))
-          favIconString = string.Format("{0}://{1}/{2}", (object) uri.Scheme, (object) uri.Host, (object) favIconString.TrimStart('/'));
-        return new Uri(favIconString);
-      }
-      return new Uri(string.Format("{0}://{1}/favicon.ico", (object) uri.Scheme, (object) uri.Host));
+            if (address == null)
+            {
+                return webView.Source.ToString();
+            }
+
+            return address;
+        }
+
+        /// <summary>
+        /// Gets the HTML head inner string of the current page.
+        /// </summary>
+        /// <param name="webView">The web view.</param>
+        /// <returns></returns>
+        public static string GetHead(this WebView webView)
+        {
+            return webView.InvokeScript("eval", new[] {"document.getElementsByTagName('head')[0].innerHTML"});
+        }
+
+        /// <summary>
+        /// Gets the tag attribute value for specific other attribute name and value.
+        /// </summary>
+        /// <param name="htmlFragment">The HTML fragment.</param>
+        /// <param name="tagName">Name of the tag.</param>
+        /// <param name="testAttributeName">Name of the test attribute.</param>
+        /// <param name="testAttributeValue">The test attribute value.</param>
+        /// <param name="attributeToGet">The attribute to get.</param>
+        /// <returns></returns>
+        private static string GetTagAttributeBySpecificAttribute(
+            string htmlFragment,
+            string tagName,
+            string testAttributeName,
+            string testAttributeValue,
+            string attributeToGet)
+        {
+            var regex = new Regex(
+                string.Format(
+                    "\\<{0}[^\\>]+{1}=\\\"{2}\\\"[^\\>]+{3}=\\\"(?<retGroup>[^\\>]+?)\\\"",
+                    tagName,
+                    testAttributeName,
+                    testAttributeValue,
+                    attributeToGet),
+                    RegexOptions.Multiline);
+            var match = regex.Match(htmlFragment);
+
+            if (match.Success)
+            {
+                return match.Groups["retGroup"].Value;
+            }
+
+            regex = new Regex(
+                string.Format(
+                    "\\<{0}[^\\>]+{3}=\\\"(?<retGroup>[^\\>]+?)\\\"[^\\>]+{1}=\\\"{2}\\\"",
+                    tagName,
+                    testAttributeName,
+                    testAttributeValue,
+                    attributeToGet),
+                    RegexOptions.Multiline);
+            match = regex.Match(htmlFragment);
+
+            if (match.Success)
+            {
+                return match.Groups["retGroup"].Value;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the fav icon URI.
+        /// </summary>
+        /// <param name="webView">The web view.</param>
+        /// <returns></returns>
+        public static Uri GetFavIconLink(this WebView webView)
+        {
+            var head = webView.GetHead().ToLower();
+            var favIconString = GetTagAttributeBySpecificAttribute(
+                head, "link", "rel", "shortcut icon", "href");
+
+            //if (favIconString == null)
+            //    favIconString = GetTagAttributeBySpecificAttribute(
+            //    head, "meta", "itemprop", "image", "content");
+
+            var address = webView.GetAddress();
+            var uri = new Uri(address);
+
+            if (favIconString != null)
+            {
+                if (!favIconString.ToLower().StartsWith("http://") &&
+                    !favIconString.ToLower().StartsWith("https://"))
+                {
+                    favIconString = string.Format(
+                        "{0}://{1}/{2}",
+                        uri.Scheme,
+                        uri.Host,
+                        favIconString.TrimStart('/'));
+                }
+
+                return new Uri(favIconString);
+            }
+
+            return new Uri(string.Format("{0}://{1}/favicon.ico", uri.Scheme, uri.Host));
+            //return new Uri("http://www.google.com/s2/favicons?domain=" + webView.GetAddress());
+        }
     }
-  }
 }

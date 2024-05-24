@@ -33,7 +33,7 @@ namespace myTube
         {
           try
           {
-            if (upload.Progress.Status == 7)
+            if (upload.Progress.Status == BackgroundTransferStatus.Error)
               await this.CancelUpload(upload);
           }
           catch

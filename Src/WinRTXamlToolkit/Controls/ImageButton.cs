@@ -1,502 +1,921 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Controls.ImageButton
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
+using WinRTXamlToolkit.AwaitableUI;
+using WinRTXamlToolkit.Imaging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using WinRTXamlToolkit.AwaitableUI;
-using WinRTXamlToolkit.Imaging;
 
 namespace WinRTXamlToolkit.Controls
 {
-  [TemplatePart(Name = "PART_NormalStateImage", Type = typeof (Image))]
-  [TemplatePart(Name = "PART_DisabledStateImage", Type = typeof (Image))]
-  [TemplatePart(Name = "PART_HoverStateImage", Type = typeof (Image))]
-  [TemplatePart(Name = "PART_HoverStateRecycledNormalStateImage", Type = typeof (Image))]
-  [TemplatePart(Name = "PART_HoverStateRecycledPressedStateImage", Type = typeof (Image))]
-  [TemplatePart(Name = "PART_PressedStateImage", Type = typeof (Image))]
-  public class ImageButton : Button
-  {
-    private const string NormalStateImageName = "PART_NormalStateImage";
-    private const string HoverStateImageName = "PART_HoverStateImage";
-    private const string HoverStateRecycledNormalStateImageName = "PART_HoverStateRecycledNormalStateImage";
-    private const string HoverStateRecycledPressedStateImageName = "PART_HoverStateRecycledPressedStateImage";
-    private const string PressedStateImageName = "PART_PressedStateImage";
-    private const string DisabledStateImageName = "PART_DisabledStateImage";
-    private Image _normalStateImage;
-    private Image _hoverStateImage;
-    private Image _hoverStateRecycledNormalStateImage;
-    private Image _hoverStateRecycledPressedStateImage;
-    private Image _pressedStateImage;
-    private Image _disabledStateImage;
-    private readonly TaskCompletionSource<bool> _waitForApplyTemplateTaskSource = new TaskCompletionSource<bool>((object) false);
-    public static readonly DependencyProperty StretchProperty = DependencyProperty.Register(nameof (Stretch), (Type) typeof (Stretch), (Type) typeof (ImageButton), new PropertyMetadata((object) (Stretch) 0));
-    public static readonly DependencyProperty RecyclePressedStateImageForHoverProperty = DependencyProperty.Register(nameof (RecyclePressedStateImageForHover), (Type) typeof (bool), (Type) typeof (ImageButton), new PropertyMetadata((object) false, new PropertyChangedCallback(ImageButton.OnRecyclePressedStateImageForHoverChanged)));
-    public static readonly DependencyProperty NormalStateImageSourceProperty = DependencyProperty.Register(nameof (NormalStateImageSource), (Type) typeof (ImageSource), (Type) typeof (ImageButton), new PropertyMetadata((object) null, new PropertyChangedCallback(ImageButton.OnNormalStateImageSourceChanged)));
-    public static readonly DependencyProperty HoverStateImageSourceProperty = DependencyProperty.Register(nameof (HoverStateImageSource), (Type) typeof (ImageSource), (Type) typeof (ImageButton), new PropertyMetadata((object) null, new PropertyChangedCallback(ImageButton.OnHoverStateImageSourceChanged)));
-    public static readonly DependencyProperty PressedStateImageSourceProperty = DependencyProperty.Register(nameof (PressedStateImageSource), (Type) typeof (ImageSource), (Type) typeof (ImageButton), new PropertyMetadata((object) null, new PropertyChangedCallback(ImageButton.OnPressedStateImageSourceChanged)));
-    public static readonly DependencyProperty DisabledStateImageSourceProperty = DependencyProperty.Register(nameof (DisabledStateImageSource), (Type) typeof (ImageSource), (Type) typeof (ImageButton), new PropertyMetadata((object) null, new PropertyChangedCallback(ImageButton.OnDisabledStateImageSourceChanged)));
-    public static readonly DependencyProperty NormalStateImageUriSourceProperty = DependencyProperty.Register(nameof (NormalStateImageUriSource), (Type) typeof (Uri), (Type) typeof (ImageButton), new PropertyMetadata((object) null, new PropertyChangedCallback(ImageButton.OnNormalStateImageUriSourceChanged)));
-    public static readonly DependencyProperty HoverStateImageUriSourceProperty = DependencyProperty.Register(nameof (HoverStateImageUriSource), (Type) typeof (Uri), (Type) typeof (ImageButton), new PropertyMetadata((object) null, new PropertyChangedCallback(ImageButton.OnHoverStateImageUriSourceChanged)));
-    public static readonly DependencyProperty PressedStateImageUriSourceProperty = DependencyProperty.Register(nameof (PressedStateImageUriSource), (Type) typeof (Uri), (Type) typeof (ImageButton), new PropertyMetadata((object) null, new PropertyChangedCallback(ImageButton.OnPressedStateImageUriSourceChanged)));
-    public static readonly DependencyProperty DisabledStateImageUriSourceProperty = DependencyProperty.Register(nameof (DisabledStateImageUriSource), (Type) typeof (Uri), (Type) typeof (ImageButton), new PropertyMetadata((object) null, new PropertyChangedCallback(ImageButton.OnDisabledStateImageUriSourceChanged)));
-    public static readonly DependencyProperty GenerateMissingImagesProperty = DependencyProperty.Register(nameof (GenerateMissingImages), (Type) typeof (bool), (Type) typeof (ImageButton), new PropertyMetadata((object) false, new PropertyChangedCallback(ImageButton.OnGenerateMissingImagesChanged)));
-    public static readonly DependencyProperty GeneratedHoverStateLightenAmountProperty = DependencyProperty.Register(nameof (GeneratedHoverStateLightenAmount), (Type) typeof (double), (Type) typeof (ImageButton), new PropertyMetadata((object) 0.25, new PropertyChangedCallback(ImageButton.OnGeneratedHoverStateLightenAmountChanged)));
-    public static readonly DependencyProperty GeneratedPressedStateLightenAmountProperty = DependencyProperty.Register(nameof (GeneratedPressedStateLightenAmount), (Type) typeof (double), (Type) typeof (ImageButton), new PropertyMetadata((object) 0.5, new PropertyChangedCallback(ImageButton.OnGeneratedPressedStateLightenAmountChanged)));
-    public static readonly DependencyProperty GeneratedDisabledStateGrayscaleAmountProperty = DependencyProperty.Register(nameof (GeneratedDisabledStateGrayscaleAmount), (Type) typeof (double), (Type) typeof (ImageButton), new PropertyMetadata((object) 1.0, new PropertyChangedCallback(ImageButton.OnGeneratedDisabledStateGrayscaleAmountChanged)));
-
-    public Stretch Stretch
+    /// <summary>
+    /// A Button control templated to use images for its states.
+    /// Provides ImageSource properties for each of the button's states as well as mechanisms for generating missing images.
+    /// </summary>
+    [TemplatePart(Name = NormalStateImageName, Type = typeof(Image))]
+    [TemplatePart(Name = HoverStateImageName, Type = typeof(Image))]
+    [TemplatePart(Name = HoverStateRecycledNormalStateImageName, Type = typeof(Image))]
+    [TemplatePart(Name = HoverStateRecycledPressedStateImageName, Type = typeof(Image))]
+    [TemplatePart(Name = PressedStateImageName, Type = typeof(Image))]
+    [TemplatePart(Name = DisabledStateImageName, Type = typeof(Image))]
+    public class ImageButton : Button
     {
-      get => (Stretch) ((DependencyObject) this).GetValue(ImageButton.StretchProperty);
-      set => ((DependencyObject) this).SetValue(ImageButton.StretchProperty, (object) value);
-    }
+        private const string NormalStateImageName = "PART_NormalStateImage";
+        private const string HoverStateImageName = "PART_HoverStateImage";
+        private const string HoverStateRecycledNormalStateImageName = "PART_HoverStateRecycledNormalStateImage";
+        private const string HoverStateRecycledPressedStateImageName = "PART_HoverStateRecycledPressedStateImage";
+        private const string PressedStateImageName = "PART_PressedStateImage";
+        private const string DisabledStateImageName = "PART_DisabledStateImage";
+        private Image _normalStateImage;
+        private Image _hoverStateImage;
+        private Image _hoverStateRecycledNormalStateImage;
+        private Image _hoverStateRecycledPressedStateImage;
+        private Image _pressedStateImage;
+        private Image _disabledStateImage;
+        private readonly TaskCompletionSource<bool> _waitForApplyTemplateTaskSource = new TaskCompletionSource<bool>(false);
 
-    public bool RecyclePressedStateImageForHover
-    {
-      get => (bool) ((DependencyObject) this).GetValue(ImageButton.RecyclePressedStateImageForHoverProperty);
-      set => ((DependencyObject) this).SetValue(ImageButton.RecyclePressedStateImageForHoverProperty, (object) value);
-    }
+        #region RecyclePressedStateImageForHover
+        /// <summary>
+        /// RecyclePressedStateImageForHover Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty RecyclePressedStateImageForHoverProperty =
+            DependencyProperty.Register(
+                "RecyclePressedStateImageForHover",
+                typeof(bool),
+                typeof(ImageButton),
+                new PropertyMetadata(false, OnRecyclePressedStateImageForHoverChanged));
 
-    private static void OnRecyclePressedStateImageForHoverChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      ImageButton imageButton = (ImageButton) d;
-      bool oldValue = (bool) e.OldValue;
-      bool stateImageForHover = imageButton.RecyclePressedStateImageForHover;
-      imageButton.OnRecyclePressedStateImageForHoverChanged(oldValue, stateImageForHover);
-    }
+        /// <summary>
+        /// Gets or sets the RecyclePressedStateImageForHover property. This dependency property 
+        /// indicates whether the PressedStateImageSource should also be used for hover state with 0.5 opacity.
+        /// </summary>
+        public bool RecyclePressedStateImageForHover
+        {
+            get { return (bool)GetValue(RecyclePressedStateImageForHoverProperty); }
+            set { SetValue(RecyclePressedStateImageForHoverProperty, value); }
+        }
 
-    protected virtual void OnRecyclePressedStateImageForHoverChanged(
-      bool oldRecyclePressedStateImageForHover,
-      bool newRecyclePressedStateImageForHover)
-    {
-      this.UpdateRecycledHoverStateImages();
-    }
+        /// <summary>
+        /// Handles changes to the RecyclePressedStateImageForHover property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnRecyclePressedStateImageForHoverChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (ImageButton)d;
+            bool oldRecyclePressedStateImageForHover = (bool)e.OldValue;
+            bool newRecyclePressedStateImageForHover = target.RecyclePressedStateImageForHover;
+            target.OnRecyclePressedStateImageForHoverChanged(oldRecyclePressedStateImageForHover, newRecyclePressedStateImageForHover);
+        }
 
-    public ImageSource NormalStateImageSource
-    {
-      get => (ImageSource) ((DependencyObject) this).GetValue(ImageButton.NormalStateImageSourceProperty);
-      set => ((DependencyObject) this).SetValue(ImageButton.NormalStateImageSourceProperty, (object) value);
-    }
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the RecyclePressedStateImageForHover property.
+        /// </summary>
+        /// <param name="oldRecyclePressedStateImageForHover">The old RecyclePressedStateImageForHover value</param>
+        /// <param name="newRecyclePressedStateImageForHover">The new RecyclePressedStateImageForHover value</param>
+        protected virtual void OnRecyclePressedStateImageForHoverChanged(
+            bool oldRecyclePressedStateImageForHover, bool newRecyclePressedStateImageForHover)
+        {
+            UpdateRecycledHoverStateImages();
+        }
+        #endregion
 
-    private static void OnNormalStateImageSourceChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      ImageButton imageButton = (ImageButton) d;
-      ImageSource oldValue = (ImageSource) e.OldValue;
-      ImageSource stateImageSource = imageButton.NormalStateImageSource;
-      imageButton.OnNormalStateImageSourceChanged(oldValue, stateImageSource);
-    }
+        #region NormalStateImageSource
+        /// <summary>
+        /// NormalStateImageSource Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty NormalStateImageSourceProperty =
+            DependencyProperty.Register(
+                "NormalStateImageSource",
+                typeof(ImageSource),
+                typeof(ImageButton),
+                new PropertyMetadata(null, OnNormalStateImageSourceChanged));
 
-    protected virtual void OnNormalStateImageSourceChanged(
-      ImageSource oldNormalStateImageSource,
-      ImageSource newNormalStateImageSource)
-    {
-      if (newNormalStateImageSource == null)
-        Debugger.Break();
-      this.UpdateNormalStateImage();
-      this.UpdateHoverStateImage();
-      this.UpdateRecycledHoverStateImages();
-      this.UpdatePressedStateImage();
-      this.UpdateDisabledStateImage();
-    }
+        /// <summary>
+        /// Gets or sets the NormalStateImageSource property. This dependency property 
+        /// indicates the ImageSource for the normal state.
+        /// </summary>
+        public ImageSource NormalStateImageSource
+        {
+            get { return (ImageSource)GetValue(NormalStateImageSourceProperty); }
+            set { SetValue(NormalStateImageSourceProperty, value); }
+        }
 
-    public ImageSource HoverStateImageSource
-    {
-      get => (ImageSource) ((DependencyObject) this).GetValue(ImageButton.HoverStateImageSourceProperty);
-      set => ((DependencyObject) this).SetValue(ImageButton.HoverStateImageSourceProperty, (object) value);
-    }
+        /// <summary>
+        /// Handles changes to the NormalStateImageSource property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnNormalStateImageSourceChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (ImageButton)d;
+            ImageSource oldNormalStateImageSource = (ImageSource)e.OldValue;
+            ImageSource newNormalStateImageSource = target.NormalStateImageSource;
+            target.OnNormalStateImageSourceChanged(oldNormalStateImageSource, newNormalStateImageSource);
+        }
 
-    private static void OnHoverStateImageSourceChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      ImageButton imageButton = (ImageButton) d;
-      ImageSource oldValue = (ImageSource) e.OldValue;
-      ImageSource stateImageSource = imageButton.HoverStateImageSource;
-      imageButton.OnHoverStateImageSourceChanged(oldValue, stateImageSource);
-    }
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the NormalStateImageSource property.
+        /// </summary>
+        /// <param name="oldNormalStateImageSource">The old NormalStateImageSource value</param>
+        /// <param name="newNormalStateImageSource">The new NormalStateImageSource value</param>
+        protected virtual void OnNormalStateImageSourceChanged(
+            ImageSource oldNormalStateImageSource, ImageSource newNormalStateImageSource)
+        {
+            if (newNormalStateImageSource == null)
+                Debugger.Break();
 
-    protected virtual void OnHoverStateImageSourceChanged(
-      ImageSource oldHoverStateImageSource,
-      ImageSource newHoverStateImageSource)
-    {
-      this.UpdateHoverStateImage();
-    }
+            UpdateNormalStateImage();
+            UpdateHoverStateImage();
+            UpdateRecycledHoverStateImages();
+            UpdatePressedStateImage();
+            UpdateDisabledStateImage();
+        }
+        #endregion
 
-    public ImageSource PressedStateImageSource
-    {
-      get => (ImageSource) ((DependencyObject) this).GetValue(ImageButton.PressedStateImageSourceProperty);
-      set => ((DependencyObject) this).SetValue(ImageButton.PressedStateImageSourceProperty, (object) value);
-    }
+        #region HoverStateImageSource
+        /// <summary>
+        /// HoverStateImageSource Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty HoverStateImageSourceProperty =
+            DependencyProperty.Register(
+                "HoverStateImageSource",
+                typeof(ImageSource),
+                typeof(ImageButton),
+                new PropertyMetadata(null, OnHoverStateImageSourceChanged));
 
-    private static void OnPressedStateImageSourceChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      ImageButton imageButton = (ImageButton) d;
-      ImageSource oldValue = (ImageSource) e.OldValue;
-      ImageSource stateImageSource = imageButton.PressedStateImageSource;
-      imageButton.OnPressedStateImageSourceChanged(oldValue, stateImageSource);
-    }
+        /// <summary>
+        /// Gets or sets the HoverStateImageSource property. This dependency property 
+        /// indicates the ImageSource to use when the pointer is over the button.
+        /// </summary>
+        public ImageSource HoverStateImageSource
+        {
+            get { return (ImageSource)GetValue(HoverStateImageSourceProperty); }
+            set { SetValue(HoverStateImageSourceProperty, value); }
+        }
 
-    protected virtual void OnPressedStateImageSourceChanged(
-      ImageSource oldPressedStateImageSource,
-      ImageSource newPressedStateImageSource)
-    {
-      this.UpdatePressedStateImage();
-      this.UpdateRecycledHoverStateImages();
-    }
+        /// <summary>
+        /// Handles changes to the HoverStateImageSource property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnHoverStateImageSourceChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (ImageButton)d;
+            ImageSource oldHoverStateImageSource = (ImageSource)e.OldValue;
+            ImageSource newHoverStateImageSource = target.HoverStateImageSource;
+            target.OnHoverStateImageSourceChanged(oldHoverStateImageSource, newHoverStateImageSource);
+        }
 
-    public ImageSource DisabledStateImageSource
-    {
-      get => (ImageSource) ((DependencyObject) this).GetValue(ImageButton.DisabledStateImageSourceProperty);
-      set => ((DependencyObject) this).SetValue(ImageButton.DisabledStateImageSourceProperty, (object) value);
-    }
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the HoverStateImageSource property.
+        /// </summary>
+        /// <param name="oldHoverStateImageSource">The old HoverStateImageSource value</param>
+        /// <param name="newHoverStateImageSource">The new HoverStateImageSource value</param>
+        protected virtual void OnHoverStateImageSourceChanged(
+            ImageSource oldHoverStateImageSource, ImageSource newHoverStateImageSource)
+        {
+            UpdateHoverStateImage();
+        }
+        #endregion
 
-    private static void OnDisabledStateImageSourceChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      ImageButton imageButton = (ImageButton) d;
-      ImageSource oldValue = (ImageSource) e.OldValue;
-      ImageSource stateImageSource = imageButton.DisabledStateImageSource;
-      imageButton.OnDisabledStateImageSourceChanged(oldValue, stateImageSource);
-    }
+        #region PressedStateImageSource
+        /// <summary>
+        /// PressedStateImageSource Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty PressedStateImageSourceProperty =
+            DependencyProperty.Register(
+                "PressedStateImageSource",
+                typeof(ImageSource),
+                typeof(ImageButton),
+                new PropertyMetadata(null, OnPressedStateImageSourceChanged));
 
-    protected virtual void OnDisabledStateImageSourceChanged(
-      ImageSource oldDisabledStateImageSource,
-      ImageSource newDisabledStateImageSource)
-    {
-      if (this._disabledStateImage == null)
-        return;
-      this._disabledStateImage.put_Source(newDisabledStateImageSource);
-    }
+        /// <summary>
+        /// Gets or sets the PressedStateImageSource property. This dependency property 
+        /// indicates the ImageSource to use when the button is pressed.
+        /// </summary>
+        public ImageSource PressedStateImageSource
+        {
+            get { return (ImageSource)GetValue(PressedStateImageSourceProperty); }
+            set { SetValue(PressedStateImageSourceProperty, value); }
+        }
 
-    public Uri NormalStateImageUriSource
-    {
-      get => (Uri) ((DependencyObject) this).GetValue(ImageButton.NormalStateImageUriSourceProperty);
-      set => ((DependencyObject) this).SetValue(ImageButton.NormalStateImageUriSourceProperty, (object) value);
-    }
+        /// <summary>
+        /// Handles changes to the PressedStateImageSource property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnPressedStateImageSourceChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (ImageButton)d;
+            ImageSource oldPressedStateImageSource = (ImageSource)e.OldValue;
+            ImageSource newPressedStateImageSource = target.PressedStateImageSource;
+            target.OnPressedStateImageSourceChanged(oldPressedStateImageSource, newPressedStateImageSource);
+        }
 
-    private static void OnNormalStateImageUriSourceChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      ImageButton imageButton = (ImageButton) d;
-      Uri oldValue = (Uri) e.OldValue;
-      Uri stateImageUriSource = imageButton.NormalStateImageUriSource;
-      imageButton.OnNormalStateImageUriSourceChanged(oldValue, stateImageUriSource);
-    }
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the PressedStateImageSource property.
+        /// </summary>
+        /// <param name="oldPressedStateImageSource">The old PressedStateImageSource value</param>
+        /// <param name="newPressedStateImageSource">The new PressedStateImageSource value</param>
+        protected virtual void OnPressedStateImageSourceChanged(
+            ImageSource oldPressedStateImageSource, ImageSource newPressedStateImageSource)
+        {
+            UpdatePressedStateImage();
+            UpdateRecycledHoverStateImages();
+        }
+        #endregion
 
-    private void OnNormalStateImageUriSourceChanged(
-      Uri oldNormalStateImageUriSource,
-      Uri newNormalStateImageUriSource)
-    {
-      if (newNormalStateImageUriSource != (Uri) null)
-        this.NormalStateImageSource = (ImageSource) new BitmapImage((Uri) newNormalStateImageUriSource);
-      else
-        this.NormalStateImageSource = (ImageSource) null;
-    }
+        #region DisabledStateImageSource
+        /// <summary>
+        /// DisabledStateImageSource Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty DisabledStateImageSourceProperty =
+            DependencyProperty.Register(
+                "DisabledStateImageSource",
+                typeof(ImageSource),
+                typeof(ImageButton),
+                new PropertyMetadata(null, OnDisabledStateImageSourceChanged));
 
-    public Uri HoverStateImageUriSource
-    {
-      get => (Uri) ((DependencyObject) this).GetValue(ImageButton.HoverStateImageUriSourceProperty);
-      set => ((DependencyObject) this).SetValue(ImageButton.HoverStateImageUriSourceProperty, (object) value);
-    }
+        /// <summary>
+        /// Gets or sets the DisabledStateImageSource property. This dependency property 
+        /// indicates the ImageSource to use when the button is Disabled.
+        /// </summary>
+        public ImageSource DisabledStateImageSource
+        {
+            get { return (ImageSource)GetValue(DisabledStateImageSourceProperty); }
+            set { SetValue(DisabledStateImageSourceProperty, value); }
+        }
 
-    private static void OnHoverStateImageUriSourceChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      ImageButton imageButton = (ImageButton) d;
-      Uri oldValue = (Uri) e.OldValue;
-      Uri stateImageUriSource = imageButton.HoverStateImageUriSource;
-      imageButton.OnHoverStateImageUriSourceChanged(oldValue, stateImageUriSource);
-    }
+        /// <summary>
+        /// Handles changes to the DisabledStateImageSource property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnDisabledStateImageSourceChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (ImageButton)d;
+            ImageSource oldDisabledStateImageSource = (ImageSource)e.OldValue;
+            ImageSource newDisabledStateImageSource = target.DisabledStateImageSource;
+            target.OnDisabledStateImageSourceChanged(oldDisabledStateImageSource, newDisabledStateImageSource);
+        }
 
-    private void OnHoverStateImageUriSourceChanged(
-      Uri oldHoverStateImageUriSource,
-      Uri newHoverStateImageUriSource)
-    {
-      if (newHoverStateImageUriSource != (Uri) null)
-        this.HoverStateImageSource = (ImageSource) new BitmapImage((Uri) newHoverStateImageUriSource);
-      else
-        this.HoverStateImageSource = (ImageSource) null;
-    }
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the DisabledStateImageSource property.
+        /// </summary>
+        /// <param name="oldDisabledStateImageSource">The old DisabledStateImageSource value</param>
+        /// <param name="newDisabledStateImageSource">The new DisabledStateImageSource value</param>
+        protected virtual void OnDisabledStateImageSourceChanged(
+            ImageSource oldDisabledStateImageSource, ImageSource newDisabledStateImageSource)
+        {
+            if (_disabledStateImage != null)
+                _disabledStateImage.Source = newDisabledStateImageSource;
+        }
+        #endregion
 
-    public Uri PressedStateImageUriSource
-    {
-      get => (Uri) ((DependencyObject) this).GetValue(ImageButton.PressedStateImageUriSourceProperty);
-      set => ((DependencyObject) this).SetValue(ImageButton.PressedStateImageUriSourceProperty, (object) value);
-    }
+        #region NormalStateImageUriSource
+        /// <summary>
+        /// NormalStateImageUriSource Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty NormalStateImageUriSourceProperty =
+            DependencyProperty.Register(
+                "NormalStateImageUriSource",
+                typeof(Uri),
+                typeof(ImageButton),
+                new PropertyMetadata(null, OnNormalStateImageUriSourceChanged));
 
-    private static void OnPressedStateImageUriSourceChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      ImageButton imageButton = (ImageButton) d;
-      Uri oldValue = (Uri) e.OldValue;
-      Uri stateImageUriSource = imageButton.PressedStateImageUriSource;
-      imageButton.OnPressedStateImageUriSourceChanged(oldValue, stateImageUriSource);
-    }
+        /// <summary>
+        /// Gets or sets the NormalStateImageUriSource property. This dependency property 
+        /// indicates the uri to use for the normal image source.
+        /// </summary>
+        public Uri NormalStateImageUriSource
+        {
+            get { return (Uri)GetValue(NormalStateImageUriSourceProperty); }
+            set { SetValue(NormalStateImageUriSourceProperty, value); }
+        }
 
-    private void OnPressedStateImageUriSourceChanged(
-      Uri oldPressedStateImageUriSource,
-      Uri newPressedStateImageUriSource)
-    {
-      if (newPressedStateImageUriSource != (Uri) null)
-        this.PressedStateImageSource = (ImageSource) new BitmapImage((Uri) newPressedStateImageUriSource);
-      else
-        this.PressedStateImageSource = (ImageSource) null;
-    }
+        /// <summary>
+        /// Handles changes to the NormalStateImageUriSource property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnNormalStateImageUriSourceChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (ImageButton)d;
+            Uri oldNormalStateImageUriSource = (Uri)e.OldValue;
+            Uri newNormalStateImageUriSource = target.NormalStateImageUriSource;
+            target.OnNormalStateImageUriSourceChanged(oldNormalStateImageUriSource, newNormalStateImageUriSource);
+        }
 
-    public Uri DisabledStateImageUriSource
-    {
-      get => (Uri) ((DependencyObject) this).GetValue(ImageButton.DisabledStateImageUriSourceProperty);
-      set => ((DependencyObject) this).SetValue(ImageButton.DisabledStateImageUriSourceProperty, (object) value);
-    }
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the NormalStateImageUriSource property.
+        /// </summary>
+        /// <param name="oldNormalStateImageUriSource">The old NormalStateImageUriSource value</param>
+        /// <param name="newNormalStateImageUriSource">The new NormalStateImageUriSource value</param>
+        private void OnNormalStateImageUriSourceChanged(
+            Uri oldNormalStateImageUriSource, Uri newNormalStateImageUriSource)
+        {
+            if (newNormalStateImageUriSource != null)
+                this.NormalStateImageSource = new BitmapImage(newNormalStateImageUriSource);
+            else
+                this.NormalStateImageSource = null;
+        }
+        #endregion
 
-    private static void OnDisabledStateImageUriSourceChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      ImageButton imageButton = (ImageButton) d;
-      Uri oldValue = (Uri) e.OldValue;
-      Uri stateImageUriSource = imageButton.DisabledStateImageUriSource;
-      imageButton.OnDisabledStateImageUriSourceChanged(oldValue, stateImageUriSource);
-    }
+        #region HoverStateImageUriSource
+        /// <summary>
+        /// HoverStateImageUriSource Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty HoverStateImageUriSourceProperty =
+            DependencyProperty.Register(
+                "HoverStateImageUriSource",
+                typeof(Uri),
+                typeof(ImageButton),
+                new PropertyMetadata(null, OnHoverStateImageUriSourceChanged));
 
-    private void OnDisabledStateImageUriSourceChanged(
-      Uri oldDisabledStateImageUriSource,
-      Uri newDisabledStateImageUriSource)
-    {
-      if (newDisabledStateImageUriSource != (Uri) null)
-        this.DisabledStateImageSource = (ImageSource) new BitmapImage((Uri) newDisabledStateImageUriSource);
-      else
-        this.DisabledStateImageSource = (ImageSource) null;
-    }
+        /// <summary>
+        /// Gets or sets the HoverStateImageUriSource property. This dependency property 
+        /// indicates the uri to use for the normal image source.
+        /// </summary>
+        public Uri HoverStateImageUriSource
+        {
+            get { return (Uri)GetValue(HoverStateImageUriSourceProperty); }
+            set { SetValue(HoverStateImageUriSourceProperty, value); }
+        }
 
-    public bool GenerateMissingImages
-    {
-      get => (bool) ((DependencyObject) this).GetValue(ImageButton.GenerateMissingImagesProperty);
-      set => ((DependencyObject) this).SetValue(ImageButton.GenerateMissingImagesProperty, (object) value);
-    }
+        /// <summary>
+        /// Handles changes to the HoverStateImageUriSource property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnHoverStateImageUriSourceChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (ImageButton)d;
+            Uri oldHoverStateImageUriSource = (Uri)e.OldValue;
+            Uri newHoverStateImageUriSource = target.HoverStateImageUriSource;
+            target.OnHoverStateImageUriSourceChanged(oldHoverStateImageUriSource, newHoverStateImageUriSource);
+        }
 
-    private static void OnGenerateMissingImagesChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      ImageButton imageButton = (ImageButton) d;
-      bool oldValue = (bool) e.OldValue;
-      bool generateMissingImages = imageButton.GenerateMissingImages;
-      imageButton.OnGenerateMissingImagesChanged(oldValue, generateMissingImages);
-    }
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the HoverStateImageUriSource property.
+        /// </summary>
+        /// <param name="oldHoverStateImageUriSource">The old HoverStateImageUriSource value</param>
+        /// <param name="newHoverStateImageUriSource">The new HoverStateImageUriSource value</param>
+        private void OnHoverStateImageUriSourceChanged(
+            Uri oldHoverStateImageUriSource, Uri newHoverStateImageUriSource)
+        {
+            if (newHoverStateImageUriSource != null)
+                this.HoverStateImageSource = new BitmapImage(newHoverStateImageUriSource);
+            else
+                this.HoverStateImageSource = null;
+        }
+        #endregion
 
-    protected virtual void OnGenerateMissingImagesChanged(
-      bool oldGenerateMissingImages,
-      bool newGenerateMissingImages)
-    {
-      this.UpdateHoverStateImage();
-      this.UpdatePressedStateImage();
-      this.UpdateDisabledStateImage();
-    }
+        #region PressedStateImageUriSource
+        /// <summary>
+        /// PressedStateImageUriSource Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty PressedStateImageUriSourceProperty =
+            DependencyProperty.Register(
+                "PressedStateImageUriSource",
+                typeof(Uri),
+                typeof(ImageButton),
+                new PropertyMetadata(null, OnPressedStateImageUriSourceChanged));
 
-    public double GeneratedHoverStateLightenAmount
-    {
-      get => (double) ((DependencyObject) this).GetValue(ImageButton.GeneratedHoverStateLightenAmountProperty);
-      set => ((DependencyObject) this).SetValue(ImageButton.GeneratedHoverStateLightenAmountProperty, (object) value);
-    }
+        /// <summary>
+        /// Gets or sets the PressedStateImageUriSource property. This dependency property 
+        /// indicates the uri to use for the normal image source.
+        /// </summary>
+        public Uri PressedStateImageUriSource
+        {
+            get { return (Uri)GetValue(PressedStateImageUriSourceProperty); }
+            set { SetValue(PressedStateImageUriSourceProperty, value); }
+        }
 
-    private static void OnGeneratedHoverStateLightenAmountChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      ImageButton imageButton = (ImageButton) d;
-      double oldValue = (double) e.OldValue;
-      double stateLightenAmount = imageButton.GeneratedHoverStateLightenAmount;
-      imageButton.OnGeneratedHoverStateLightenAmountChanged(oldValue, stateLightenAmount);
-    }
+        /// <summary>
+        /// Handles changes to the PressedStateImageUriSource property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnPressedStateImageUriSourceChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (ImageButton)d;
+            Uri oldPressedStateImageUriSource = (Uri)e.OldValue;
+            Uri newPressedStateImageUriSource = target.PressedStateImageUriSource;
+            target.OnPressedStateImageUriSourceChanged(oldPressedStateImageUriSource, newPressedStateImageUriSource);
+        }
 
-    protected virtual void OnGeneratedHoverStateLightenAmountChanged(
-      double oldGeneratedHoverStateLightenAmount,
-      double newGeneratedHoverStateLightenAmount)
-    {
-      this.UpdateHoverStateImage();
-    }
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the PressedStateImageUriSource property.
+        /// </summary>
+        /// <param name="oldPressedStateImageUriSource">The old PressedStateImageUriSource value</param>
+        /// <param name="newPressedStateImageUriSource">The new PressedStateImageUriSource value</param>
+        private void OnPressedStateImageUriSourceChanged(
+            Uri oldPressedStateImageUriSource, Uri newPressedStateImageUriSource)
+        {
+            if (newPressedStateImageUriSource != null)
+                this.PressedStateImageSource = new BitmapImage(newPressedStateImageUriSource);
+            else
+                this.PressedStateImageSource = null;
+        }
+        #endregion
 
-    public double GeneratedPressedStateLightenAmount
-    {
-      get => (double) ((DependencyObject) this).GetValue(ImageButton.GeneratedPressedStateLightenAmountProperty);
-      set => ((DependencyObject) this).SetValue(ImageButton.GeneratedPressedStateLightenAmountProperty, (object) value);
-    }
+        #region DisabledStateImageUriSource
+        /// <summary>
+        /// DisabledStateImageUriSource Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty DisabledStateImageUriSourceProperty =
+            DependencyProperty.Register(
+                "DisabledStateImageUriSource",
+                typeof(Uri),
+                typeof(ImageButton),
+                new PropertyMetadata(null, OnDisabledStateImageUriSourceChanged));
 
-    private static void OnGeneratedPressedStateLightenAmountChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      ImageButton imageButton = (ImageButton) d;
-      double oldValue = (double) e.OldValue;
-      double stateLightenAmount = imageButton.GeneratedPressedStateLightenAmount;
-      imageButton.OnGeneratedPressedStateLightenAmountChanged(oldValue, stateLightenAmount);
-    }
+        /// <summary>
+        /// Gets or sets the DisabledStateImageUriSource property. This dependency property 
+        /// indicates the uri to use for the normal image source.
+        /// </summary>
+        public Uri DisabledStateImageUriSource
+        {
+            get { return (Uri)GetValue(DisabledStateImageUriSourceProperty); }
+            set { SetValue(DisabledStateImageUriSourceProperty, value); }
+        }
 
-    protected virtual void OnGeneratedPressedStateLightenAmountChanged(
-      double oldGeneratedPressedStateLightenAmount,
-      double newGeneratedPressedStateLightenAmount)
-    {
-      this.UpdatePressedStateImage();
-    }
+        /// <summary>
+        /// Handles changes to the DisabledStateImageUriSource property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnDisabledStateImageUriSourceChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (ImageButton)d;
+            Uri oldDisabledStateImageUriSource = (Uri)e.OldValue;
+            Uri newDisabledStateImageUriSource = target.DisabledStateImageUriSource;
+            target.OnDisabledStateImageUriSourceChanged(oldDisabledStateImageUriSource, newDisabledStateImageUriSource);
+        }
 
-    public double GeneratedDisabledStateGrayscaleAmount
-    {
-      get => (double) ((DependencyObject) this).GetValue(ImageButton.GeneratedDisabledStateGrayscaleAmountProperty);
-      set => ((DependencyObject) this).SetValue(ImageButton.GeneratedDisabledStateGrayscaleAmountProperty, (object) value);
-    }
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the DisabledStateImageUriSource property.
+        /// </summary>
+        /// <param name="oldDisabledStateImageUriSource">The old DisabledStateImageUriSource value</param>
+        /// <param name="newDisabledStateImageUriSource">The new DisabledStateImageUriSource value</param>
+        private void OnDisabledStateImageUriSourceChanged(
+            Uri oldDisabledStateImageUriSource, Uri newDisabledStateImageUriSource)
+        {
+            if (newDisabledStateImageUriSource != null)
+                this.DisabledStateImageSource = new BitmapImage(newDisabledStateImageUriSource);
+            else
+                this.DisabledStateImageSource = null;
+        }
+        #endregion
 
-    private static void OnGeneratedDisabledStateGrayscaleAmountChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      ImageButton imageButton = (ImageButton) d;
-      double oldValue = (double) e.OldValue;
-      double stateGrayscaleAmount = imageButton.GeneratedDisabledStateGrayscaleAmount;
-      imageButton.OnGeneratedDisabledStateGrayscaleAmountChanged(oldValue, stateGrayscaleAmount);
-    }
+        #region GenerateMissingImages
+        /// <summary>
+        /// GenerateMissingImages Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty GenerateMissingImagesProperty =
+            DependencyProperty.Register(
+                "GenerateMissingImages",
+                typeof(bool),
+                typeof(ImageButton),
+                new PropertyMetadata(false, OnGenerateMissingImagesChanged));
 
-    protected virtual void OnGeneratedDisabledStateGrayscaleAmountChanged(
-      double oldGeneratedDisabledStateGrayscaleAmount,
-      double newGeneratedDisabledStateGrayscaleAmount)
-    {
-      this.UpdateDisabledStateImage();
-    }
+        /// <summary>
+        /// Gets or sets the GenerateMissingImages property. This dependency property 
+        /// indicates whether the missing images should be generated from the normal state image.
+        /// </summary>
+        public bool GenerateMissingImages
+        {
+            get { return (bool)GetValue(GenerateMissingImagesProperty); }
+            set { SetValue(GenerateMissingImagesProperty, value); }
+        }
 
-    private async void GenerateHoverStateImage()
-    {
-      if (DesignMode.DesignModeEnabled)
-        return;
-      WriteableBitmap wb = new WriteableBitmap(1, 1);
-      WriteableBitmap writeableBitmap = await wb.FromBitmapImage((BitmapImage) this.NormalStateImageSource);
-      await wb.WaitForLoadedAsync();
-      wb.Lighten(this.GeneratedHoverStateLightenAmount);
-      this._hoverStateImage.put_Source((ImageSource) wb);
-    }
+        /// <summary>
+        /// Handles changes to the GenerateMissingImages property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnGenerateMissingImagesChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (ImageButton)d;
+            bool oldGenerateMissingImages = (bool)e.OldValue;
+            bool newGenerateMissingImages = target.GenerateMissingImages;
+            target.OnGenerateMissingImagesChanged(oldGenerateMissingImages, newGenerateMissingImages);
+        }
 
-    private async void GeneratePressedStateImage()
-    {
-      if (DesignMode.DesignModeEnabled)
-        return;
-      WriteableBitmap wb = new WriteableBitmap(1, 1);
-      WriteableBitmap writeableBitmap = await wb.FromBitmapImage((BitmapImage) this.NormalStateImageSource);
-      await wb.WaitForLoadedAsync();
-      wb.Lighten(this.GeneratedPressedStateLightenAmount);
-      this._pressedStateImage.put_Source((ImageSource) wb);
-    }
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the GenerateMissingImages property.
+        /// </summary>
+        /// <param name="oldGenerateMissingImages">The old GenerateMissingImages value</param>
+        /// <param name="newGenerateMissingImages">The new GenerateMissingImages value</param>
+        protected virtual void OnGenerateMissingImagesChanged(
+            bool oldGenerateMissingImages, bool newGenerateMissingImages)
+        {
+            UpdateHoverStateImage();
+            UpdatePressedStateImage();
+            UpdateDisabledStateImage();
+        }
+        #endregion
 
-    private async void GenerateDisabledStateImage()
-    {
-      if (DesignMode.DesignModeEnabled)
-        return;
-      WriteableBitmap wb = new WriteableBitmap(1, 1);
-      WriteableBitmap writeableBitmap = await wb.FromBitmapImage((BitmapImage) this.NormalStateImageSource);
-      await wb.WaitForLoadedAsync();
-      wb.Grayscale(this.GeneratedDisabledStateGrayscaleAmount);
-      this._disabledStateImage.put_Source((ImageSource) wb);
-    }
+        #region GeneratedHoverStateLightenAmount
+        /// <summary>
+        /// GeneratedHoverStateLightenAmount Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty GeneratedHoverStateLightenAmountProperty =
+            DependencyProperty.Register(
+                "GeneratedHoverStateLightenAmount",
+                typeof(double),
+                typeof(ImageButton),
+                new PropertyMetadata(0.25, OnGeneratedHoverStateLightenAmountChanged));
 
-    public ImageButton() => ((Control) this).put_DefaultStyleKey((object) typeof (ImageButton));
+        /// <summary>
+        /// Gets or sets the GeneratedHoverStateLightenAmount property. This dependency property 
+        /// indicates the lightening amount to use when generating the hover state image.
+        /// </summary>
+        public double GeneratedHoverStateLightenAmount
+        {
+            get { return (double)GetValue(GeneratedHoverStateLightenAmountProperty); }
+            set { SetValue(GeneratedHoverStateLightenAmountProperty, value); }
+        }
 
-    protected virtual void OnApplyTemplate()
-    {
-      ((FrameworkElement) this).OnApplyTemplate();
-      this._normalStateImage = (Image) ((Control) this).GetTemplateChild("PART_NormalStateImage");
-      this._hoverStateImage = (Image) ((Control) this).GetTemplateChild("PART_HoverStateImage");
-      this._hoverStateRecycledNormalStateImage = (Image) ((Control) this).GetTemplateChild("PART_HoverStateRecycledNormalStateImage");
-      this._hoverStateRecycledPressedStateImage = (Image) ((Control) this).GetTemplateChild("PART_HoverStateRecycledPressedStateImage");
-      this._pressedStateImage = (Image) ((Control) this).GetTemplateChild("PART_PressedStateImage");
-      this._disabledStateImage = (Image) ((Control) this).GetTemplateChild("PART_DisabledStateImage");
-      this._waitForApplyTemplateTaskSource.SetResult(true);
-    }
+        /// <summary>
+        /// Handles changes to the GeneratedHoverStateLightenAmount property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnGeneratedHoverStateLightenAmountChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (ImageButton)d;
+            double oldGeneratedHoverStateLightenAmount = (double)e.OldValue;
+            double newGeneratedHoverStateLightenAmount = target.GeneratedHoverStateLightenAmount;
+            target.OnGeneratedHoverStateLightenAmountChanged(oldGeneratedHoverStateLightenAmount, newGeneratedHoverStateLightenAmount);
+        }
 
-    private async void UpdateNormalStateImage()
-    {
-      if (DesignMode.DesignModeEnabled)
-        return;
-      int num = await this._waitForApplyTemplateTaskSource.Task ? 1 : 0;
-      this._normalStateImage.put_Source(this.NormalStateImageSource);
-    }
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the GeneratedHoverStateLightenAmount property.
+        /// </summary>
+        /// <param name="oldGeneratedHoverStateLightenAmount">The old GeneratedHoverStateLightenAmount value</param>
+        /// <param name="newGeneratedHoverStateLightenAmount">The new GeneratedHoverStateLightenAmount value</param>
+        protected virtual void OnGeneratedHoverStateLightenAmountChanged(
+            double oldGeneratedHoverStateLightenAmount, double newGeneratedHoverStateLightenAmount)
+        {
+            UpdateHoverStateImage();
+        }
+        #endregion
 
-    private async void UpdateHoverStateImage()
-    {
-      if (DesignMode.DesignModeEnabled)
-        return;
-      int num = await this._waitForApplyTemplateTaskSource.Task ? 1 : 0;
-      if (this.HoverStateImageSource != null)
-        this._hoverStateImage.put_Source(this.HoverStateImageSource);
-      else if (this.GenerateMissingImages && this.NormalStateImageSource != null)
-        this.GenerateHoverStateImage();
-      if (this._hoverStateImage.Source != null)
-        return;
-      this._hoverStateImage.put_Source(this.NormalStateImageSource);
-    }
+        #region GeneratedPressedStateLightenAmount
+        /// <summary>
+        /// GeneratedPressedStateLightenAmount Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty GeneratedPressedStateLightenAmountProperty =
+            DependencyProperty.Register(
+                "GeneratedPressedStateLightenAmount",
+                typeof(double),
+                typeof(ImageButton),
+                new PropertyMetadata(0.5, OnGeneratedPressedStateLightenAmountChanged));
 
-    private async void UpdateRecycledHoverStateImages()
-    {
-      if (DesignMode.DesignModeEnabled)
-        return;
-      int num = await this._waitForApplyTemplateTaskSource.Task ? 1 : 0;
-      if (this.RecyclePressedStateImageForHover && this.NormalStateImageSource != null)
-        this._hoverStateRecycledNormalStateImage.put_Source(this.NormalStateImageSource);
-      else
-        this._hoverStateRecycledNormalStateImage.put_Source((ImageSource) null);
-      if (this.RecyclePressedStateImageForHover && this.PressedStateImageSource != null)
-        this._hoverStateRecycledPressedStateImage.put_Source(this.PressedStateImageSource);
-      else
-        this._hoverStateRecycledPressedStateImage.put_Source((ImageSource) null);
-    }
+        /// <summary>
+        /// Gets or sets the GeneratedPressedStateLightenAmount property. This dependency property 
+        /// indicates the lightening amount to use when generating the pressed state image.
+        /// </summary>
+        public double GeneratedPressedStateLightenAmount
+        {
+            get { return (double)GetValue(GeneratedPressedStateLightenAmountProperty); }
+            set { SetValue(GeneratedPressedStateLightenAmountProperty, value); }
+        }
 
-    private async void UpdatePressedStateImage()
-    {
-      if (DesignMode.DesignModeEnabled)
-        return;
-      int num = await this._waitForApplyTemplateTaskSource.Task ? 1 : 0;
-      if (this.PressedStateImageSource != null)
-      {
-        this._pressedStateImage.put_Source(this.PressedStateImageSource);
-      }
-      else
-      {
-        if (!this.GenerateMissingImages || this.NormalStateImageSource == null)
-          return;
-        this.GeneratePressedStateImage();
-      }
-    }
+        /// <summary>
+        /// Handles changes to the GeneratedPressedStateLightenAmount property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnGeneratedPressedStateLightenAmountChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (ImageButton)d;
+            double oldGeneratedPressedStateLightenAmount = (double)e.OldValue;
+            double newGeneratedPressedStateLightenAmount = target.GeneratedPressedStateLightenAmount;
+            target.OnGeneratedPressedStateLightenAmountChanged(oldGeneratedPressedStateLightenAmount, newGeneratedPressedStateLightenAmount);
+        }
 
-    private async void UpdateDisabledStateImage()
-    {
-      if (DesignMode.DesignModeEnabled)
-        return;
-      int num = await this._waitForApplyTemplateTaskSource.Task ? 1 : 0;
-      if (this.DisabledStateImageSource != null)
-      {
-        this._disabledStateImage.put_Source(this.DisabledStateImageSource);
-      }
-      else
-      {
-        if (!this.GenerateMissingImages || this.NormalStateImageSource == null)
-          return;
-        this.GenerateDisabledStateImage();
-      }
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the GeneratedPressedStateLightenAmount property.
+        /// </summary>
+        /// <param name="oldGeneratedPressedStateLightenAmount">The old GeneratedPressedStateLightenAmount value</param>
+        /// <param name="newGeneratedPressedStateLightenAmount">The new GeneratedPressedStateLightenAmount value</param>
+        protected virtual void OnGeneratedPressedStateLightenAmountChanged(
+            double oldGeneratedPressedStateLightenAmount, double newGeneratedPressedStateLightenAmount)
+        {
+            UpdatePressedStateImage();
+        }
+        #endregion
+
+        #region GeneratedDisabledStateGrayscaleAmount
+        /// <summary>
+        /// GeneratedDisabledStateGrayscaleAmount Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty GeneratedDisabledStateGrayscaleAmountProperty =
+            DependencyProperty.Register(
+                "GeneratedDisabledStateGrayscaleAmount",
+                typeof(double),
+                typeof(ImageButton),
+                new PropertyMetadata(1.0, OnGeneratedDisabledStateGrayscaleAmountChanged));
+
+        /// <summary>
+        /// Gets or sets the GeneratedDisabledStateGrayscaleAmount property. This dependency property 
+        /// indicates the grayscale amount to use when generating the disabled state image.
+        /// </summary>
+        public double GeneratedDisabledStateGrayscaleAmount
+        {
+            get { return (double)GetValue(GeneratedDisabledStateGrayscaleAmountProperty); }
+            set { SetValue(GeneratedDisabledStateGrayscaleAmountProperty, value); }
+        }
+
+        /// <summary>
+        /// Handles changes to the GeneratedDisabledStateGrayscaleAmount property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnGeneratedDisabledStateGrayscaleAmountChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (ImageButton)d;
+            double oldGeneratedDisabledStateGrayscaleAmount = (double)e.OldValue;
+            double newGeneratedDisabledStateGrayscaleAmount = target.GeneratedDisabledStateGrayscaleAmount;
+            target.OnGeneratedDisabledStateGrayscaleAmountChanged(oldGeneratedDisabledStateGrayscaleAmount, newGeneratedDisabledStateGrayscaleAmount);
+        }
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes
+        /// to the GeneratedDisabledStateGrayscaleAmount property.
+        /// </summary>
+        /// <param name="oldGeneratedDisabledStateGrayscaleAmount">The old GeneratedDisabledStateGrayscaleAmount value</param>
+        /// <param name="newGeneratedDisabledStateGrayscaleAmount">The new GeneratedDisabledStateGrayscaleAmount value</param>
+        protected virtual void OnGeneratedDisabledStateGrayscaleAmountChanged(
+            double oldGeneratedDisabledStateGrayscaleAmount, double newGeneratedDisabledStateGrayscaleAmount)
+        {
+            UpdateDisabledStateImage();
+        }
+        #endregion
+
+        #region GenerateHoverStateImage()
+        private async void GenerateHoverStateImage()
+        {
+            var wb = new WriteableBitmap(1, 1);
+            await wb.FromBitmapImage((BitmapImage)NormalStateImageSource);
+            await wb.WaitForLoaded();
+            wb.Lighten(GeneratedHoverStateLightenAmount);
+            _hoverStateImage.Source = wb;
+        } 
+        #endregion
+
+        #region GeneratePressedStateImage()
+        private async void GeneratePressedStateImage()
+        {
+            var wb = new WriteableBitmap(1, 1);
+            await wb.FromBitmapImage((BitmapImage)NormalStateImageSource);
+            await wb.WaitForLoaded();
+            wb.Lighten(GeneratedPressedStateLightenAmount);
+            _pressedStateImage.Source = wb;
+        } 
+        #endregion
+
+        #region GenerateDisabledStateImage()
+        private async void GenerateDisabledStateImage()
+        {
+            var wb = new WriteableBitmap(1, 1);
+            await wb.FromBitmapImage((BitmapImage)NormalStateImageSource);
+            await wb.WaitForLoaded();
+            wb.Grayscale(GeneratedDisabledStateGrayscaleAmount);
+            _disabledStateImage.Source = wb;
+        } 
+        #endregion
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImageButton" /> class.
+        /// </summary>
+        public ImageButton()
+        {
+            DefaultStyleKey = typeof (ImageButton);
+        }
+
+        #region OnApplyTemplate()
+        /// <summary>
+        /// Invoked whenever application code or internal processes (such as a rebuilding layout pass) call ApplyTemplate. In simplest terms, this means the method is called just before a UI element displays in your app. Override this method to influence the default post-template logic of a class.
+        /// </summary>
+        protected override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            _normalStateImage = (Image)GetTemplateChild(NormalStateImageName);
+            _hoverStateImage = (Image)GetTemplateChild(HoverStateImageName);
+            _hoverStateRecycledNormalStateImage = (Image)GetTemplateChild(HoverStateRecycledNormalStateImageName);
+            _hoverStateRecycledPressedStateImage = (Image)GetTemplateChild(HoverStateRecycledPressedStateImageName);
+            _pressedStateImage = (Image)GetTemplateChild(PressedStateImageName);
+            _disabledStateImage = (Image)GetTemplateChild(DisabledStateImageName);
+
+            _waitForApplyTemplateTaskSource.SetResult(true);
+            // No need to call these now, since completing the task above should unblock these
+            //UpdateNormalStateImage();
+            //UpdateHoverStateImage();
+            //UpdateRecycledHoverStateImages();
+            //UpdatePressedStateImage();
+            //UpdateDisabledStateImage();
+        }
+        #endregion
+
+        #region UpdateNormalStateImage()
+        private async void UpdateNormalStateImage()
+        {
+            await _waitForApplyTemplateTaskSource.Task;
+
+            _normalStateImage.Source = NormalStateImageSource;
+        }
+        #endregion
+
+        #region UpdateHoverStateImage()
+        private async void UpdateHoverStateImage()
+        {
+            await _waitForApplyTemplateTaskSource.Task;
+
+            if (HoverStateImageSource != null)
+            {
+                _hoverStateImage.Source = HoverStateImageSource;
+            }
+            else if (
+                GenerateMissingImages &&
+                NormalStateImageSource != null)
+            {
+#pragma warning disable 4014
+                GenerateHoverStateImage();
+#pragma warning restore 4014
+            }
+
+            // If hover state is still not set - need to use normal state at least to avoid missing image
+            if (_hoverStateImage.Source == null)
+                _hoverStateImage.Source = NormalStateImageSource;
+        } 
+        #endregion
+
+        #region UpdateRecycledHoverStateImages()
+        private async void UpdateRecycledHoverStateImages()
+        {
+            await _waitForApplyTemplateTaskSource.Task;
+
+            if (RecyclePressedStateImageForHover &&
+                NormalStateImageSource != null)
+                _hoverStateRecycledNormalStateImage.Source = NormalStateImageSource;
+            else
+                _hoverStateRecycledNormalStateImage.Source = null;
+
+            if (RecyclePressedStateImageForHover &&
+                PressedStateImageSource != null)
+                _hoverStateRecycledPressedStateImage.Source = PressedStateImageSource;
+            else
+                _hoverStateRecycledPressedStateImage.Source = null;
+        } 
+        #endregion
+
+        #region UpdatePressedStateImage()
+        private async void UpdatePressedStateImage()
+        {
+            await _waitForApplyTemplateTaskSource.Task;
+
+            if (PressedStateImageSource != null)
+            {
+                _pressedStateImage.Source = PressedStateImageSource;
+            }
+            else if (
+                GenerateMissingImages &&
+                NormalStateImageSource != null)
+            {
+#pragma warning disable 4014
+                GeneratePressedStateImage();
+#pragma warning restore 4014
+            }
+        } 
+        #endregion
+
+        #region UpdateDisabledStateImage()
+        private async void UpdateDisabledStateImage()
+        {
+            await _waitForApplyTemplateTaskSource.Task;
+
+            if (DisabledStateImageSource != null)
+            {
+                _disabledStateImage.Source = DisabledStateImageSource;
+            }
+            else if (
+                GenerateMissingImages &&
+                NormalStateImageSource != null)
+            {
+#pragma warning disable 4014
+                GenerateDisabledStateImage();
+#pragma warning restore 4014
+            }
+        } 
+        #endregion
     }
-  }
 }

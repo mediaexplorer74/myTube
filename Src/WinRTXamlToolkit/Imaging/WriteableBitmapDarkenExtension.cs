@@ -1,36 +1,45 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Imaging.WriteableBitmapDarkenExtension
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using Windows.UI.Xaml.Media.Imaging;
+﻿using Windows.UI.Xaml.Media.Imaging;
 
 namespace WinRTXamlToolkit.Imaging
 {
-  public static class WriteableBitmapDarkenExtension
-  {
-    public static WriteableBitmap Darken(this WriteableBitmap target, double amount)
+    /// <summary>
+    /// WriteableBitmap extensions to make the image darker.
+    /// </summary>
+    public static class WriteableBitmapDarkenExtension
     {
-      IBufferExtensions.PixelBufferInfo pixels = target.PixelBuffer.GetPixels();
-      for (int index = 0; index < pixels.Bytes.Length; index += 4)
-      {
-        if (pixels.Bytes[index + 3] > (byte) 0)
+        /// <summary>
+        /// Darkens the specified bitmap.
+        /// </summary>
+        /// <param name="target">The target bitmap.</param>
+        /// <param name="amount">The 0..1 range amount to darken by where 0 does not affect the bitmap and 1 makes the bitmap completely black.</param>
+        /// <returns></returns>
+        public static WriteableBitmap Darken(this WriteableBitmap target, double amount)
         {
-          double num1 = (double) pixels.Bytes[index + 2];
-          double num2 = (double) pixels.Bytes[index + 1];
-          double num3 = (double) pixels.Bytes[index];
-          double num4 = num1 * (1.0 - amount);
-          double num5 = num2 * (1.0 - amount);
-          double num6 = num3 * (1.0 - amount);
-          pixels.Bytes[index] = (byte) num6;
-          pixels.Bytes[index + 1] = (byte) num5;
-          pixels.Bytes[index + 2] = (byte) num4;
+            var pixels = target.PixelBuffer.GetPixels();
+
+            for (int i = 0; i < pixels.Bytes.Length; i += 4)
+            {
+                byte a = pixels.Bytes[i + 3];
+
+                if (a > 0)
+                {
+                    double rd = (double)pixels.Bytes[i + 2]; // 0..255 range red, alpha-premultiplied
+                    double gd = (double)pixels.Bytes[i + 1]; // 0..255 range green, alpha-premultiplied
+                    double bd = (double)pixels.Bytes[i + 0]; // 0..255 range blue, alpha-premultiplied
+
+                    double newR = rd * (1 - amount);
+                    double newG = gd * (1 - amount);
+                    double newB = bd * (1 - amount);
+
+                    pixels.Bytes[i + 0] = (byte)newB;
+                    pixels.Bytes[i + 1] = (byte)newG;
+                    pixels.Bytes[i + 2] = (byte)newR;
+                }
+            }
+
+            pixels.UpdateFromBytes();
+            target.Invalidate();
+            return target;
         }
-      }
-      pixels.UpdateFromBytes();
-      target.Invalidate();
-      return target;
     }
-  }
 }

@@ -1,36 +1,48 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Async.AsyncManualResetEvent
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 namespace WinRTXamlToolkit.Async
 {
-  public class AsyncManualResetEvent
-  {
-    private volatile TaskCompletionSource<bool> _tcs = new TaskCompletionSource<bool>();
-
-    public Task WaitAsync() => (Task) this._tcs.Task;
-
-    public void Set()
+    /// <summary>
+    /// Notifies one or more waiting awaiters that an event has occurred
+    /// </summary>
+    public class AsyncManualResetEvent
     {
-      TaskCompletionSource<bool> tcs = this._tcs;
-      Task.Factory.StartNew<bool>((Func<object, bool>) (s => ((TaskCompletionSource<bool>) s).TrySetResult(true)), (object) tcs, CancellationToken.None, TaskCreationOptions.PreferFairness, TaskScheduler.Default);
-      tcs.Task.Wait();
-    }
+        private volatile TaskCompletionSource<bool> _tcs = new TaskCompletionSource<bool>();
 
-    public void Reset()
-    {
-      TaskCompletionSource<bool> tcs;
-      do
-      {
-        tcs = this._tcs;
-      }
-      while (tcs.Task.IsCompleted && Interlocked.CompareExchange<TaskCompletionSource<bool>>(ref this._tcs, new TaskCompletionSource<bool>(), tcs) != tcs);
+        /// <summary>
+        /// Waits the async.
+        /// </summary>
+        /// <returns></returns>
+        public Task WaitAsync()
+        {
+            return _tcs.Task;
+        }
+
+        //public void Set() { m_tcs.TrySetResult(true); }
+        /// <summary>
+        /// Sets the state of the event to signaled, allowing one or more waiting awaiters to proceed.
+        /// </summary>
+        public void Set()
+        {
+            var tcs = _tcs;
+            Task.Factory.StartNew(s => ((TaskCompletionSource<bool>)s).TrySetResult(true),
+                tcs, CancellationToken.None, TaskCreationOptions.PreferFairness, TaskScheduler.Default);
+            tcs.Task.Wait();
+        }
+
+        /// <summary>
+        /// Sets the state of the event to nonsignaled, causing awaiters to block.
+        /// </summary>
+        public void Reset()
+        {
+            while (true)
+            {
+                var tcs = _tcs;
+                if (!tcs.Task.IsCompleted ||
+                    Interlocked.CompareExchange(ref _tcs, new TaskCompletionSource<bool>(), tcs) == tcs)
+                    return;
+            }
+        } 
     }
-  }
 }

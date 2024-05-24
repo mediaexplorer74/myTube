@@ -1,26 +1,34 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.AwaitableUI.WriteableBitmapExtensions
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace WinRTXamlToolkit.AwaitableUI
 {
-  public static class WriteableBitmapExtensions
-  {
-    public static async Task WaitForLoadedAsync(this WriteableBitmap wb, int timeoutInMs = 0)
+    /// <summary>
+    /// Extension methods for awaiting WriteableBitmap events.
+    /// </summary>
+    public static class WriteableBitmapExtensions
     {
-      int totalWait = 0;
-      while (((BitmapSource) wb).PixelWidth <= 1 && ((BitmapSource) wb).PixelHeight <= 1)
-      {
-        await Task.Delay(10);
-        totalWait += 10;
-        if (timeoutInMs > 0 && totalWait > timeoutInMs)
-          break;
-      }
+        /// <summary>
+        /// Waits for the given WriteableBitmap to be loaded (non-zero size).
+        /// </summary>
+        /// <param name="wb">The WriteableBitmap to wait for.</param>
+        /// <param name="timeoutInMs">The timeout in ms after which the wait will be cancelled. Use 0 to wait without a timeout.</param>
+        /// <returns></returns>
+        public async static Task WaitForLoaded(this WriteableBitmap wb, int timeoutInMs = 0)
+        {
+            int totalWait = 0;
+
+            while (
+                wb.PixelWidth <= 1 &&
+                wb.PixelHeight <= 1)
+            {
+                await Task.Delay(10);
+                totalWait += 10;
+
+                if (timeoutInMs > 0 &&
+                    totalWait > timeoutInMs)
+                    return;
+            }
+        }
     }
-  }
 }

@@ -1,140 +1,272 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Controls.Extensions.GridViewExtensions
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using Microsoft.CSharp.RuntimeBinder;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace WinRTXamlToolkit.Controls.Extensions
 {
-  public static class GridViewExtensions
-  {
-    public static readonly DependencyProperty BindableSelectionProperty = DependencyProperty.RegisterAttached("BindableSelection", (Type) typeof (object), (Type) typeof (GridViewExtensions), new PropertyMetadata((object) null, new PropertyChangedCallback(GridViewExtensions.OnBindableSelectionChanged)));
-    public static readonly DependencyProperty BindableSelectionHandlerProperty = DependencyProperty.RegisterAttached("BindableSelectionHandler", (Type) typeof (GridViewBindableSelectionHandler), (Type) typeof (GridViewExtensions), new PropertyMetadata((object) null));
-    public static readonly DependencyProperty ItemToBringIntoViewProperty = DependencyProperty.RegisterAttached("ItemToBringIntoView", (Type) typeof (object), (Type) typeof (GridViewExtensions), new PropertyMetadata((object) null, new PropertyChangedCallback(GridViewExtensions.OnItemToBringIntoViewChanged)));
-
-    public static ObservableCollection<object> GetBindableSelection(DependencyObject d) => (ObservableCollection<object>) d.GetValue(GridViewExtensions.BindableSelectionProperty);
-
-    public static void SetBindableSelection(DependencyObject d, ObservableCollection<object> value) => d.SetValue(GridViewExtensions.BindableSelectionProperty, (object) value);
-
-    private static void OnBindableSelectionChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
+    /// <remarks>
+    /// Note: ListViewExtensions can be used for GridViews as well, since the extensions actually work on ListViewBase
+    /// which both ListView and GridView derive from.
+    /// </remarks>
+    public static class GridViewExtensions
     {
-      object oldValue = e.OldValue;
-      object obj1 = d.GetValue(GridViewExtensions.BindableSelectionProperty);
-      // ISSUE: reference to a compiler-generated field
-      if (GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site1 == null)
-      {
-        // ISSUE: reference to a compiler-generated field
-        GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site1 = CallSite<Func<CallSite, object, bool>>.Create(Binder.UnaryOperation(CSharpBinderFlags.None, ExpressionType.IsTrue, (Type) typeof (GridViewExtensions), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[1]
+        #region BindableSelection
+        /// <summary>
+        /// BindableSelection Attached Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty BindableSelectionProperty =
+            DependencyProperty.RegisterAttached(
+                "BindableSelection",
+                typeof (object),
+                typeof (GridViewExtensions),
+                new PropertyMetadata(null, OnBindableSelectionChanged));
+
+        /// <summary>
+        /// Gets the BindableSelection property. This dependency property 
+        /// indicates the list of selected items that is synchronized
+        /// with the items selected in the GridView.
+        /// </summary>
+        public static ObservableCollection<object> GetBindableSelection(DependencyObject d)
         {
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null)
-        }));
-      }
-      // ISSUE: reference to a compiler-generated field
-      Func<CallSite, object, bool> target1 = GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site1.Target;
-      // ISSUE: reference to a compiler-generated field
-      CallSite<Func<CallSite, object, bool>> pSite1 = GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site1;
-      // ISSUE: reference to a compiler-generated field
-      if (GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site2 == null)
-      {
-        // ISSUE: reference to a compiler-generated field
-        GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site2 = CallSite<Func<CallSite, object, object, object>>.Create(Binder.BinaryOperation(CSharpBinderFlags.None, ExpressionType.NotEqual, (Type) typeof (GridViewExtensions), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[2]
+            return (ObservableCollection<object>)d.GetValue(BindableSelectionProperty);
+        }
+
+        /// <summary>
+        /// Sets the BindableSelection property. This dependency property 
+        /// indicates the list of selected items that is synchronized
+        /// with the items selected in the GridView.
+        /// </summary>
+        public static void SetBindableSelection(
+            DependencyObject d,
+            ObservableCollection<object> value)
         {
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.Constant, (string) null)
-        }));
-      }
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: reference to a compiler-generated field
-      object obj2 = GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site2.Target((CallSite) GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site2, oldValue, (object) null);
-      if (target1((CallSite) pSite1, obj2))
-      {
-        GridViewBindableSelectionHandler selectionHandler = GridViewExtensions.GetBindableSelectionHandler(d);
-        GridViewExtensions.SetBindableSelectionHandler(d, (GridViewBindableSelectionHandler) null);
-        selectionHandler.Detach();
-      }
-      // ISSUE: reference to a compiler-generated field
-      if (GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site3 == null)
-      {
-        // ISSUE: reference to a compiler-generated field
-        GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site3 = CallSite<Func<CallSite, object, bool>>.Create(Binder.UnaryOperation(CSharpBinderFlags.None, ExpressionType.IsTrue, (Type) typeof (GridViewExtensions), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[1]
+            d.SetValue(BindableSelectionProperty, value);
+        }
+
+        /// <summary>
+        /// Handles changes to the BindableSelection property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnBindableSelectionChanged(
+            DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
         {
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null)
-        }));
-      }
-      // ISSUE: reference to a compiler-generated field
-      Func<CallSite, object, bool> target2 = GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site3.Target;
-      // ISSUE: reference to a compiler-generated field
-      CallSite<Func<CallSite, object, bool>> pSite3 = GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site3;
-      // ISSUE: reference to a compiler-generated field
-      if (GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site4 == null)
-      {
-        // ISSUE: reference to a compiler-generated field
-        GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site4 = CallSite<Func<CallSite, object, object, object>>.Create(Binder.BinaryOperation(CSharpBinderFlags.None, ExpressionType.NotEqual, (Type) typeof (GridViewExtensions), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[2]
+            dynamic oldBindableSelection = e.OldValue;
+            dynamic newBindableSelection = d.GetValue(BindableSelectionProperty);
+
+            if (oldBindableSelection != null)
+            {
+                var handler = GetBindableSelectionHandler(d);
+                SetBindableSelectionHandler(d, null);
+                handler.Detach();
+            }
+
+            if (newBindableSelection != null)
+            {
+                var handler = new GridViewBindableSelectionHandler(
+                    (GridView)d, newBindableSelection);
+                SetBindableSelectionHandler(d, handler);
+            }
+        }
+        #endregion
+
+        #region BindableSelectionHandler
+        /// <summary>
+        /// BindableSelectionHandler Attached Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty BindableSelectionHandlerProperty =
+            DependencyProperty.RegisterAttached(
+                "BindableSelectionHandler",
+                typeof (GridViewBindableSelectionHandler),
+                typeof (GridViewExtensions),
+                new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets the BindableSelectionHandler property. This dependency property 
+        /// indicates BindableSelectionHandler for a GridView - used
+        /// to manage synchronization of BindableSelection and SelectedItems.
+        /// </summary>
+        public static GridViewBindableSelectionHandler GetBindableSelectionHandler(
+            DependencyObject d)
         {
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.Constant, (string) null)
-        }));
-      }
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: reference to a compiler-generated field
-      object obj3 = GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site4.Target((CallSite) GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site4, obj1, (object) null);
-      if (!target2((CallSite) pSite3, obj3))
-        return;
-      // ISSUE: reference to a compiler-generated field
-      if (GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site5 == null)
-      {
-        // ISSUE: reference to a compiler-generated field
-        GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site5 = CallSite<Func<CallSite, Type, GridView, object, GridViewBindableSelectionHandler>>.Create(Binder.InvokeConstructor(CSharpBinderFlags.None, (Type) typeof (GridViewExtensions), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[3]
+            return
+                (GridViewBindableSelectionHandler)
+                d.GetValue(BindableSelectionHandlerProperty);
+        }
+
+        /// <summary>
+        /// Sets the BindableSelectionHandler property. This dependency property 
+        /// indicates BindableSelectionHandler for a GridView - used to manage synchronization of BindableSelection and SelectedItems.
+        /// </summary>
+        public static void SetBindableSelectionHandler(
+            DependencyObject d,
+            GridViewBindableSelectionHandler value)
         {
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType | CSharpArgumentInfoFlags.IsStaticType, (string) null),
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, (string) null),
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null)
-        }));
-      }
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: reference to a compiler-generated field
-      GridViewBindableSelectionHandler selectionHandler1 = GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site5.Target((CallSite) GridViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site5, typeof (GridViewBindableSelectionHandler), (GridView) d, obj1);
-      GridViewExtensions.SetBindableSelectionHandler(d, selectionHandler1);
+            d.SetValue(BindableSelectionHandlerProperty, value);
+        }
+        #endregion
+
+        #region ItemToBringIntoView
+        /// <summary>
+        /// ItemToBringIntoView Attached Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty ItemToBringIntoViewProperty =
+            DependencyProperty.RegisterAttached(
+                "ItemToBringIntoView",
+                typeof (object),
+                typeof (GridViewExtensions),
+                new PropertyMetadata(null, OnItemToBringIntoViewChanged));
+
+        /// <summary>
+        /// Gets the ItemToBringIntoView property. This dependency property 
+        /// indicates the item that should be brought into view.
+        /// </summary>
+        public static object GetItemToBringIntoView(DependencyObject d)
+        {
+            return (object)d.GetValue(ItemToBringIntoViewProperty);
+        }
+
+        /// <summary>
+        /// Sets the ItemToBringIntoView property. This dependency property 
+        /// indicates the item that should be brought into view when first set.
+        /// </summary>
+        public static void SetItemToBringIntoView(DependencyObject d, object value)
+        {
+            d.SetValue(ItemToBringIntoViewProperty, value);
+        }
+
+        /// <summary>
+        /// Handles changes to the ItemToBringIntoView property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnItemToBringIntoViewChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            object newItemToBringIntoView =
+                (object)d.GetValue(ItemToBringIntoViewProperty);
+
+            if (newItemToBringIntoView != null)
+            {
+                var GridView = (GridView)d;
+                GridView.ScrollIntoView(newItemToBringIntoView);
+            }
+        }
+        #endregion
+
+        /// <summary>
+        /// Scrolls a vertical GridView to the bottom.
+        /// </summary>
+        /// <param name="GridView"></param>
+        public static void ScrollToBottom(this GridView GridView)
+        {
+            var scrollViewer = GridView.GetFirstDescendantOfType<ScrollViewer>();
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.ScrollableHeight);
+        }
     }
 
-    public static GridViewBindableSelectionHandler GetBindableSelectionHandler(DependencyObject d) => (GridViewBindableSelectionHandler) d.GetValue(GridViewExtensions.BindableSelectionHandlerProperty);
-
-    public static void SetBindableSelectionHandler(
-      DependencyObject d,
-      GridViewBindableSelectionHandler value)
+    public class GridViewBindableSelectionHandler
     {
-      d.SetValue(GridViewExtensions.BindableSelectionHandlerProperty, (object) value);
+        private GridView _GridView;
+        private dynamic _boundSelection;
+        private readonly NotifyCollectionChangedEventHandler _handler;
+
+        public GridViewBindableSelectionHandler(
+            GridView GridView, dynamic boundSelection)
+        {
+            _handler = OnBoundSelectionChanged;
+            Attach(GridView, boundSelection);
+        }
+
+        private void Attach(GridView GridView, dynamic boundSelection)
+        {
+            _GridView = GridView;
+            _GridView.Unloaded += OnGridViewUnloaded;
+            _GridView.SelectionChanged += OnGridViewSelectionChanged;
+            _GridView.SelectedItems.Clear();
+
+            _boundSelection = boundSelection;
+
+            var eventInfo =
+                _boundSelection.GetType().GetDeclaredEvent("CollectionChanged");
+            eventInfo.AddEventHandler(_boundSelection, _handler);
+            //_boundSelection.CollectionChanged += OnBoundSelectionChanged;
+        }
+
+        private void OnGridViewSelectionChanged(
+            object sender, SelectionChangedEventArgs e)
+        {
+            foreach (dynamic item in e.RemovedItems)
+            {
+                _boundSelection.Remove(item);
+            }
+            foreach (dynamic item in e.AddedItems)
+            {
+                _boundSelection.Add(item);
+            }
+        }
+
+        private void OnBoundSelectionChanged(
+            object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action ==
+                NotifyCollectionChangedAction.Reset)
+            {
+                _GridView.SelectedItems.Clear();
+
+                foreach (var item in _boundSelection)
+                {
+                    _GridView.SelectedItems.Add(item);
+                }
+
+                return;
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    _GridView.SelectedItems.Remove(item);
+                }
+            }
+
+            if (e.NewItems != null)
+            {
+                foreach (var item in e.NewItems)
+                {
+                    _GridView.SelectedItems.Add(item);
+                }
+            }
+        }
+
+        private void OnGridViewUnloaded(object sender, RoutedEventArgs e)
+        {
+            Detach();
+        }
+
+        internal void Detach()
+        {
+            _GridView.Unloaded -= OnGridViewUnloaded;
+            _GridView.SelectionChanged -= OnGridViewSelectionChanged;
+            _GridView = null;
+            var eventInfo =
+                _boundSelection.GetType().GetDeclaredEvent("CollectionChanged");
+            eventInfo.RemoveEventHandler(_boundSelection, _handler);
+            _boundSelection = null;
+        }
     }
-
-    public static object GetItemToBringIntoView(DependencyObject d) => d.GetValue(GridViewExtensions.ItemToBringIntoViewProperty);
-
-    public static void SetItemToBringIntoView(DependencyObject d, object value) => d.SetValue(GridViewExtensions.ItemToBringIntoViewProperty, value);
-
-    private static void OnItemToBringIntoViewChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      object obj = d.GetValue(GridViewExtensions.ItemToBringIntoViewProperty);
-      if (obj == null)
-        return;
-      ((ListViewBase) d).ScrollIntoView(obj);
-    }
-
-    public static void ScrollToBottom(this GridView GridView)
-    {
-      ScrollViewer descendantOfType = ((DependencyObject) GridView).GetFirstDescendantOfType<ScrollViewer>();
-      descendantOfType.ChangeView((double?) new double?(), (double?) new double?(descendantOfType.ScrollableHeight), (float?) new float?());
-    }
-  }
 }

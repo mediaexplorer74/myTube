@@ -1,44 +1,58 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Async.AsyncLock
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace WinRTXamlToolkit.Async
 {
-  public class AsyncLock
-  {
-    private readonly AsyncSemaphore _semaphore;
-    private readonly Task<AsyncLock.Releaser> _releaser;
-
-    public AsyncLock()
+    /// <summary>
+    /// Defines a critical section with a mutual-exclusion lock.
+    /// </summary>
+    public class AsyncLock
     {
-      this._semaphore = new AsyncSemaphore(1);
-      this._releaser = Task.FromResult<AsyncLock.Releaser>(new AsyncLock.Releaser(this));
+        private readonly AsyncSemaphore _semaphore;
+        private readonly Task<Releaser> _releaser;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AsyncLock" /> class.
+        /// </summary>
+        public AsyncLock()
+        {
+            _semaphore = new AsyncSemaphore(1);
+            _releaser = Task.FromResult(new Releaser(this));
+        }
+
+        /// <summary>
+        /// Waits for an open slot, then returns a disposable Releaser struct to be used in a using block marking the critical section.
+        /// </summary>
+        /// <returns></returns>
+        public Task<Releaser> LockAsync()
+        {
+            var wait = _semaphore.WaitAsync();
+
+            return wait.IsCompleted ?
+                _releaser :
+                wait.ContinueWith((_, state) => new Releaser((AsyncLock)state),
+                    this, CancellationToken.None,
+                    TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+        }
+
+        /// <summary>
+        /// Disposable Releaser to make it easy to use the AsyncLock in a scoped manner with a using block.
+        /// </summary>
+        public struct Releaser : IDisposable
+        {
+            private readonly AsyncLock _toRelease;
+
+            internal Releaser(AsyncLock toRelease) { _toRelease = toRelease; }
+
+            /// <summary>
+            /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            /// </summary>
+            public void Dispose()
+            {
+                if (_toRelease != null)
+                    _toRelease._semaphore.Release();
+            }
+        }
     }
-
-    public Task<AsyncLock.Releaser> LockAsync()
-    {
-      Task task = this._semaphore.WaitAsync();
-      return !task.IsCompleted ? task.ContinueWith<AsyncLock.Releaser>((Func<Task, object, AsyncLock.Releaser>) ((_, state) => new AsyncLock.Releaser((AsyncLock) state)), (object) this, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default) : this._releaser;
-    }
-
-    public struct Releaser : IDisposable
-    {
-      private readonly AsyncLock _toRelease;
-
-      internal Releaser(AsyncLock toRelease) => this._toRelease = toRelease;
-
-      public void Dispose()
-      {
-        if (this._toRelease == null)
-          return;
-        this._toRelease._semaphore.Release();
-      }
-    }
-  }
 }

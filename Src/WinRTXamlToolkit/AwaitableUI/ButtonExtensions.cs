@@ -1,37 +1,71 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.AwaitableUI.ButtonExtensions
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
+﻿#if SILVERLIGHT
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls.Primitives;
+#elif NETFX_CORE
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
+#elif WPF
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls.Primitives;
+#endif
 
 namespace WinRTXamlToolkit.AwaitableUI
 {
-  public static class ButtonExtensions
-  {
-    public static async Task<RoutedEventArgs> WaitForClickAsync(this ButtonBase button) => await EventAsync.FromRoutedEvent((Action<RoutedEventHandler>) (eh => WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>((Func<RoutedEventHandler, EventRegistrationToken>) new Func<RoutedEventHandler, EventRegistrationToken>(button.add_Click), (Action<EventRegistrationToken>) new Action<EventRegistrationToken>(button.remove_Click), eh)), (Action<RoutedEventHandler>) (eh => WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>((Action<EventRegistrationToken>) new Action<EventRegistrationToken>(button.remove_Click), eh)));
-
-    public static async Task<ButtonBase> WaitForClickAsync(this IEnumerable<ButtonBase> buttons)
+    /// <summary>
+    /// Extension methods for waiting for button clicks
+    /// on one or one of a collection of buttons.
+    /// </summary>
+    public static class ButtonExtensions
     {
-      TaskCompletionSource<ButtonBase> tcs = new TaskCompletionSource<ButtonBase>();
-      RoutedEventHandler reh = (RoutedEventHandler) null;
-      reh = (RoutedEventHandler) ((s, e) =>
-      {
-        foreach (ButtonBase button in buttons)
-          WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>((Action<EventRegistrationToken>) new Action<EventRegistrationToken>(button.remove_Click), reh);
-        tcs.SetResult((ButtonBase) s);
-      });
-      foreach (ButtonBase button in buttons)
-        WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>((Func<RoutedEventHandler, EventRegistrationToken>) new Func<RoutedEventHandler, EventRegistrationToken>(button.add_Click), (Action<EventRegistrationToken>) new Action<EventRegistrationToken>(button.remove_Click), reh);
-      return await tcs.Task;
-    }
+        /// <summary>
+        /// Waits for the button Click event.
+        /// </summary>
+        public static async Task<RoutedEventArgs> WaitForClickAsync(this ButtonBase button)
+        {
+            return await EventAsync.FromRoutedEvent(
+                eh => button.Click += eh,
+                eh => button.Click -= eh);
+        }
 
-    public static async Task<ButtonBase> WaitForClickAsync(params ButtonBase[] buttons) => await ((IEnumerable<ButtonBase>) buttons).WaitForClickAsync();
-  }
+        /// <summary>
+        /// Waits for the Click event from any of the buttons and returns the first button clicked.
+        /// </summary>
+        public static async Task<ButtonBase> WaitForClickAsync(this IEnumerable<ButtonBase> buttons)
+        {
+            var tcs = new TaskCompletionSource<ButtonBase>();
+
+            RoutedEventHandler reh = null;
+
+            reh = (s, e) =>
+            {
+                foreach (var button in buttons)
+                {
+                    button.Click -= reh;
+                }
+
+                tcs.SetResult((ButtonBase)s);
+            };
+
+            foreach (var button in buttons)
+            {
+                button.Click += reh;
+            }
+
+            return await tcs.Task;
+        }
+
+        /// <summary>
+        /// Waits for the Click event from any of the buttons and returns the first button clicked.
+        /// </summary>
+        public static async Task<ButtonBase> WaitForClickAsync(params ButtonBase[] buttons)
+        {
+            return await buttons.WaitForClickAsync();
+        }
+    }
 }

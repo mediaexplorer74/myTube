@@ -45,11 +45,11 @@ namespace myTube.Helpers
       double duration)
     {
       ColorAnimation colorAnimation = new ColorAnimation();
-      ((Timeline) colorAnimation).put_Duration((Duration) TimeSpan.FromSeconds(duration));
+      ((Timeline) colorAnimation).Duration = (Duration) TimeSpan.FromSeconds(duration);
       Storyboard.SetTarget((Timeline) colorAnimation, target);
       Storyboard.SetTargetProperty((Timeline) colorAnimation, new PropertyPath("(UIElement.Background).(SolidColorBrush.Color)").Path);
-      colorAnimation.put_From(new Color?(from));
-      colorAnimation.put_To(new Color?(to));
+      colorAnimation.From = new Color?(from);
+      colorAnimation.To = new Color?(to);
       return colorAnimation;
     }
 
@@ -59,10 +59,10 @@ namespace myTube.Helpers
       double duration)
     {
       ColorAnimation colorAnimation = new ColorAnimation();
-      ((Timeline) colorAnimation).put_Duration((Duration) TimeSpan.FromSeconds(duration));
+      ((Timeline) colorAnimation).Duration = (Duration) TimeSpan.FromSeconds(duration);
       Storyboard.SetTarget((Timeline) colorAnimation, target);
       Storyboard.SetTargetProperty((Timeline) colorAnimation, new PropertyPath("(UIElement.Background).(SolidColorBrush.Color)").Path);
-      colorAnimation.put_To(new Color?(to));
+      colorAnimation.To = new Color?(to);
       return colorAnimation;
     }
 
@@ -100,12 +100,12 @@ namespace myTube.Helpers
       DoubleAnimation doubleAnimation = new DoubleAnimation();
       Storyboard.SetTarget((Timeline) doubleAnimation, Element);
       Storyboard.SetTargetProperty((Timeline) doubleAnimation, Property);
-      doubleAnimation.put_To(new double?(To));
+      doubleAnimation.To = new double?(To);
       ExponentialEase exponentialEase = new ExponentialEase();
-      ((EasingFunctionBase) exponentialEase).put_EasingMode((EasingMode) 2);
-      exponentialEase.put_Exponent(Ease);
-      doubleAnimation.put_EasingFunction((EasingFunctionBase) exponentialEase);
-      ((Timeline) doubleAnimation).put_Duration((Duration) TimeSpan.FromSeconds(Duration));
+      ((EasingFunctionBase) exponentialEase).EasingMode = (EasingMode) 2;
+      exponentialEase.Exponent = Ease;
+      doubleAnimation.EasingFunction = (EasingFunctionBase) exponentialEase;
+      ((Timeline) doubleAnimation).Duration = (Duration) TimeSpan.FromSeconds(Duration);
       return doubleAnimation;
     }
 
@@ -119,9 +119,9 @@ namespace myTube.Helpers
       DoubleAnimation doubleAnimation = new DoubleAnimation();
       Storyboard.SetTarget((Timeline) doubleAnimation, Element);
       Storyboard.SetTargetProperty((Timeline) doubleAnimation, new PropertyPath(Property).Path);
-      doubleAnimation.put_To(new double?(To));
-      doubleAnimation.put_EasingFunction(Ease);
-      ((Timeline) doubleAnimation).put_Duration((Duration) TimeSpan.FromSeconds(Duration));
+      doubleAnimation.To = new double?(To);
+      doubleAnimation.EasingFunction = Ease;
+      ((Timeline) doubleAnimation).Duration = (Duration) TimeSpan.FromSeconds(Duration);
       return doubleAnimation;
     }
 
@@ -136,19 +136,21 @@ namespace myTube.Helpers
       DoubleAnimation doubleAnimation = new DoubleAnimation();
       Storyboard.SetTarget((Timeline) doubleAnimation, Element);
       Storyboard.SetTargetProperty((Timeline) doubleAnimation, new PropertyPath(Property).Path);
-      doubleAnimation.put_To(new double?(To));
+      doubleAnimation.To = new double?(To);
+
       if (Ease != null)
-        doubleAnimation.put_EasingFunction(Ease);
-      ((Timeline) doubleAnimation).put_BeginTime(new TimeSpan?(TimeSpan.FromSeconds(startTime)));
-      ((Timeline) doubleAnimation).put_Duration((Duration) TimeSpan.FromSeconds(Duration));
+        doubleAnimation.EasingFunction = Ease;
+
+      ((Timeline) doubleAnimation).BeginTime = new TimeSpan?(TimeSpan.FromSeconds(startTime));
+      ((Timeline) doubleAnimation).Duration = (Duration) TimeSpan.FromSeconds(Duration);
       return doubleAnimation;
     }
 
     public static ExponentialEase Ease(EasingMode Mode, double exponent)
     {
       ExponentialEase exponentialEase = new ExponentialEase();
-      ((EasingFunctionBase) exponentialEase).put_EasingMode(Mode);
-      exponentialEase.put_Exponent(exponent);
+      ((EasingFunctionBase) exponentialEase).EasingMode = Mode;
+      exponentialEase.Exponent = exponent;
       return exponentialEase;
     }
 
@@ -158,9 +160,9 @@ namespace myTube.Helpers
       double bounciness)
     {
       Windows.UI.Xaml.Media.Animation.BounceEase bounceEase = new Windows.UI.Xaml.Media.Animation.BounceEase();
-      ((EasingFunctionBase) bounceEase).put_EasingMode(Mode);
-      bounceEase.put_Bounces(bounces);
-      bounceEase.put_Bounciness(bounciness);
+      ((EasingFunctionBase) bounceEase).EasingMode = Mode;
+      bounceEase.Bounces = bounces;
+      bounceEase.Bounciness = bounciness;
       return bounceEase;
     }
 
@@ -183,7 +185,7 @@ namespace myTube.Helpers
     public static Storyboard Animation(ColorAnimation cAni)
     {
       Storyboard storyboard = new Storyboard();
-      ((Timeline) storyboard).put_Duration(((Timeline) cAni).Duration);
+      ((Timeline) storyboard).Duration = ((Timeline) cAni).Duration;
       ((ICollection<Timeline>) storyboard.Children).Add((Timeline) cAni);
       return storyboard;
     }
@@ -191,7 +193,7 @@ namespace myTube.Helpers
     public static Storyboard Animation(double time)
     {
       Storyboard storyboard = new Storyboard();
-      ((Timeline) storyboard).put_Duration((Duration) TimeSpan.FromSeconds(time));
+      ((Timeline) storyboard).Duration = (Duration) TimeSpan.FromSeconds(time);
       return storyboard;
     }
 
@@ -208,7 +210,7 @@ namespace myTube.Helpers
 
     public static DoubleAnimation SetFrom(this DoubleAnimation da, double from)
     {
-      da.put_From(new double?(from));
+      da.From = new double?(from);
       return da;
     }
   }

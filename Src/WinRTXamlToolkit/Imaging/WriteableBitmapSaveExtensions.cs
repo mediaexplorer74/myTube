@@ -1,97 +1,145 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Imaging.WriteableBitmapSaveExtensions
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
-using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace WinRTXamlToolkit.Imaging
 {
-  public static class WriteableBitmapSaveExtensions
-  {
-    public static async Task<StorageFile> SaveToFile(this WriteableBitmap writeableBitmap) => await writeableBitmap.SaveToFile(KnownFolders.PicturesLibrary, string.Format("{0}_{1}.png", (object) DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"), (object) Guid.NewGuid()), (CreationCollisionOption) 0);
-
-    public static async Task<StorageFile> SaveToFile(
-      this WriteableBitmap writeableBitmap,
-      StorageFolder storageFolder)
+    /// <summary>
+    /// Extension methods used for saving a WriteableBitmap to a file.
+    /// </summary>
+    public static class WriteableBitmapSaveExtensions
     {
-      return await writeableBitmap.SaveToFile(storageFolder, string.Format("{0}_{1}.png", (object) DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"), (object) Guid.NewGuid()), (CreationCollisionOption) 0);
-    }
-
-    public static async Task<StorageFile> SaveToFile(
-      this WriteableBitmap writeableBitmap,
-      StorageFolder storageFolder,
-      string fileName,
-      CreationCollisionOption options = 1)
-    {
-      StorageFile outputFile = await storageFolder.CreateFileAsync(fileName, options);
-      string ext = Path.GetExtension(fileName);
-      Guid encoderId;
-      if (((IEnumerable<string>) new string[2]
-      {
-        ".bmp",
-        ".dib"
-      }).Contains<string>(ext))
-        encoderId = BitmapEncoder.BmpEncoderId;
-      else if (((IEnumerable<string>) new string[2]
-      {
-        ".tiff",
-        ".tif"
-      }).Contains<string>(ext))
-        encoderId = BitmapEncoder.TiffEncoderId;
-      else if (((IEnumerable<string>) new string[1]
-      {
-        ".gif"
-      }).Contains<string>(ext))
-        encoderId = BitmapEncoder.GifEncoderId;
-      else if (((IEnumerable<string>) new string[5]
-      {
-        ".jpg",
-        ".jpeg",
-        ".jpe",
-        ".jfif",
-        ".jif"
-      }).Contains<string>(ext))
-        encoderId = BitmapEncoder.JpegEncoderId;
-      else
-        encoderId = !((IEnumerable<string>) new string[3]
+        /// <summary>
+        /// Saves the WriteableBitmap to a png file with a unique file name.
+        /// </summary>
+        /// <param name="writeableBitmap">The writeable bitmap.</param>
+        /// <returns>The file the bitmap was saved to.</returns>
+        public static async Task<StorageFile> SaveToFile(
+            this WriteableBitmap writeableBitmap)
         {
-          ".hdp",
-          ".jxr",
-          ".wdp"
-        }).Contains<string>(ext) ? BitmapEncoder.PngEncoderId : BitmapEncoder.JpegXREncoderId;
-      await writeableBitmap.SaveToFile(outputFile, encoderId);
-      return outputFile;
-    }
-
-    public static async Task SaveToFile(
-      this WriteableBitmap writeableBitmap,
-      StorageFile outputFile,
-      Guid encoderId)
-    {
-      Stream stream = WindowsRuntimeBufferExtensions.AsStream(writeableBitmap.PixelBuffer);
-      byte[] pixels = new byte[(IntPtr) (uint) stream.Length];
-      int num1 = await stream.ReadAsync(pixels, 0, pixels.Length);
-      using (IRandomAccessStream writeStream = await outputFile.OpenAsync((FileAccessMode) 1))
-      {
-        BitmapEncoder encoder = await BitmapEncoder.CreateAsync(encoderId, writeStream);
-        encoder.SetPixelData((BitmapPixelFormat) 87, (BitmapAlphaMode) 0, (uint) ((BitmapSource) writeableBitmap).PixelWidth, (uint) ((BitmapSource) writeableBitmap).PixelHeight, 96.0, 96.0, pixels);
-        await encoder.FlushAsync();
-        using (IOutputStream outputStream = writeStream.GetOutputStreamAt(0UL))
-        {
-          int num2 = await outputStream.FlushAsync() ? 1 : 0;
+            return await writeableBitmap.SaveToFile(
+                KnownFolders.PicturesLibrary,
+                string.Format(
+                    "{0}_{1}.png",
+                    DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
+                    Guid.NewGuid()),
+                CreationCollisionOption.GenerateUniqueName);
         }
-      }
+
+        /// <summary>
+        /// Saves the WriteableBitmap to a png file in the given folder with a unique file name.
+        /// </summary>
+        /// <param name="writeableBitmap">The writeable bitmap.</param>
+        /// <param name="storageFolder">The storage folder.</param>
+        /// <returns>The file the bitmap was saved to.</returns>
+        public static async Task<StorageFile> SaveToFile(
+            this WriteableBitmap writeableBitmap,
+            StorageFolder storageFolder)
+        {
+            return await writeableBitmap.SaveToFile(
+                storageFolder,
+                string.Format(
+                    "{0}_{1}.png",
+                    DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
+                    Guid.NewGuid()),
+                CreationCollisionOption.GenerateUniqueName);
+        }
+
+        /// <summary>
+        /// Saves the WriteableBitmap to a file in the given folder with the given file name.
+        /// </summary>
+        /// <param name="writeableBitmap">The writeable bitmap.</param>
+        /// <param name="storageFolder">The storage folder.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="options">
+        /// The enum value that determines how responds if the fileName is the same
+        /// as the name of an existing file in the current folder. Defaults to ReplaceExisting.
+        /// </param>
+        /// <returns></returns>
+        public static async Task<StorageFile> SaveToFile(
+            this WriteableBitmap writeableBitmap,
+            StorageFolder storageFolder,
+            string fileName,
+            CreationCollisionOption options = CreationCollisionOption.ReplaceExisting)
+        {
+            StorageFile outputFile =
+                await storageFolder.CreateFileAsync(
+                    fileName,
+                    options);
+
+            Guid encoderId;
+
+            var ext = Path.GetExtension(fileName);
+
+            if (new[] { ".bmp", ".dib" }.Contains(ext))
+            {
+                encoderId = BitmapEncoder.BmpEncoderId;
+            }
+            else if (new[] { ".tiff", ".tif" }.Contains(ext))
+            {
+                encoderId = BitmapEncoder.TiffEncoderId;
+            }
+            else if (new[] { ".gif" }.Contains(ext))
+            {
+                encoderId = BitmapEncoder.TiffEncoderId;
+            }
+            else if (new[] { ".jpg", ".jpeg", ".jpe", ".jfif", ".jif" }.Contains(ext))
+            {
+                encoderId = BitmapEncoder.TiffEncoderId;
+            }
+            else if (new[] { ".hdp", ".jxr", ".wdp" }.Contains(ext))
+            {
+                encoderId = BitmapEncoder.JpegXREncoderId;
+            }
+            else //if (new [] {".png"}.Contains(ext))
+            {
+                encoderId = BitmapEncoder.PngEncoderId;
+            }
+
+            await writeableBitmap.SaveToFile(outputFile, encoderId);
+
+            return outputFile;
+        }
+
+        /// <summary>
+        /// Saves the WriteableBitmap to the given file with the specified BitmapEncoder ID.
+        /// </summary>
+        /// <param name="writeableBitmap">The writeable bitmap.</param>
+        /// <param name="outputFile">The output file.</param>
+        /// <param name="encoderId">The encoder id.</param>
+        /// <returns></returns>
+        public static async Task SaveToFile(
+            this WriteableBitmap writeableBitmap,
+            StorageFile outputFile,
+            Guid encoderId)
+        {
+            Stream stream = writeableBitmap.PixelBuffer.AsStream();
+            byte[] pixels = new byte[(uint)stream.Length];
+            await stream.ReadAsync(pixels, 0, pixels.Length);
+
+            using (var writeStream = await outputFile.OpenAsync(FileAccessMode.ReadWrite))
+            {
+                var encoder = await BitmapEncoder.CreateAsync(encoderId, writeStream);
+                encoder.SetPixelData(
+                    BitmapPixelFormat.Bgra8,
+                    BitmapAlphaMode.Premultiplied,
+                    (uint)writeableBitmap.PixelWidth,
+                    (uint)writeableBitmap.PixelHeight,
+                    96,
+                    96,
+                    pixels);
+                await encoder.FlushAsync();
+
+                using (var outputStream = writeStream.GetOutputStreamAt(0))
+                {
+                    await outputStream.FlushAsync();
+                }
+            }
+        }
     }
-  }
 }

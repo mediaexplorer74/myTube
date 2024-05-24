@@ -1,41 +1,136 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Imaging.PixelMath
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-namespace WinRTXamlToolkit.Imaging
+﻿namespace WinRTXamlToolkit.Imaging
 {
-  public static class PixelMath
-  {
-    public static double Max(double v1, double v2, double v3) => v1 <= v2 ? (v2 <= v3 ? v3 : v2) : (v1 <= v3 ? v3 : v1);
-
-    public static double Max(double v1, double v2, double v3, double v4) => v1 <= v2 ? (v2 <= v3 ? (v3 <= v4 ? v4 : v3) : (v2 <= v4 ? v4 : v2)) : (v1 <= v3 ? (v3 <= v4 ? v4 : v3) : (v1 <= v4 ? v4 : v1));
-
-    public static double Min(double v1, double v2, double v3) => v1 >= v2 ? (v2 >= v3 ? v3 : v2) : (v1 >= v3 ? v3 : v1);
-
-    public static double Min(double v1, double v2, double v3, double v4) => v1 >= v2 ? (v2 >= v3 ? (v3 >= v4 ? v4 : v3) : (v2 >= v4 ? v4 : v2)) : (v1 >= v3 ? (v3 >= v4 ? v4 : v3) : (v1 >= v4 ? v4 : v1));
-
-    public static byte Max(byte v1, byte v2, byte v3) => (int) v1 <= (int) v2 ? ((int) v2 <= (int) v3 ? v3 : v2) : ((int) v1 <= (int) v3 ? v3 : v1);
-
-    public static byte Max(byte v1, byte v2, byte v3, byte v4) => (int) v1 <= (int) v2 ? ((int) v2 <= (int) v3 ? ((int) v3 <= (int) v4 ? v4 : v3) : ((int) v2 <= (int) v4 ? v4 : v2)) : ((int) v1 <= (int) v3 ? ((int) v3 <= (int) v4 ? v4 : v3) : ((int) v1 <= (int) v4 ? v4 : v1));
-
-    public static byte Min(byte v1, byte v2, byte v3) => (int) v1 >= (int) v2 ? ((int) v2 >= (int) v3 ? v3 : v2) : ((int) v1 >= (int) v3 ? v3 : v1);
-
-    public static byte Min(byte v1, byte v2, byte v3, byte v4) => (int) v1 >= (int) v2 ? ((int) v2 >= (int) v3 ? ((int) v3 >= (int) v4 ? v4 : v3) : ((int) v2 >= (int) v4 ? v4 : v2)) : ((int) v1 >= (int) v3 ? ((int) v3 >= (int) v4 ? v4 : v3) : ((int) v1 >= (int) v4 ? v4 : v1));
-
-    public static double Clamp(this double value, double min, double max)
+    /// <summary>
+    /// Contains basic pixel processing helper methods for double- and byte-type pixel color components.
+    /// </summary>
+    public static class PixelMath
     {
-      if (value < min)
-        return min;
-      return value <= max ? value : max;
-    }
+        #region Min(), Max() - 3-4 parameters
+        /// <summary>
+        /// Returns the maximum of 3 numbers.
+        /// </summary>
+        /// <param name="v1">The v1.</param>
+        /// <param name="v2">The v2.</param>
+        /// <param name="v3">The v3.</param>
+        /// <returns></returns>
+        public static double Max(double v1, double v2, double v3)
+        {
+            return v1 > v2 ? (v1 > v3 ? v1 : v3) : (v2 > v3 ? v2 : v3);
+        }
 
-    public static byte Clamp(this byte value, byte min, byte max)
-    {
-      if ((int) value < (int) min)
-        return min;
-      return (int) value <= (int) max ? value : max;
+        /// <summary>
+        /// Returns the maximum of 4 numbers.
+        /// </summary>
+        /// <param name="v1">The v1.</param>
+        /// <param name="v2">The v2.</param>
+        /// <param name="v3">The v3.</param>
+        /// <param name="v4">The v4.</param>
+        /// <returns></returns>
+        public static double Max(double v1, double v2, double v3, double v4)
+        {
+            return v1 > v2 ? (v1 > v3 ? (v1 > v4 ? v1 : v4) : (v3 > v4 ? v3 : v4)) : (v2 > v3 ? (v2 > v4 ? v2 : v4) : (v3 > v4 ? v3 : v4));
+        }
+
+        /// <summary>
+        /// Returns the minimum of 3 numbers.
+        /// </summary>
+        /// <param name="v1">The v1.</param>
+        /// <param name="v2">The v2.</param>
+        /// <param name="v3">The v3.</param>
+        /// <returns></returns>
+        public static double Min(double v1, double v2, double v3)
+        {
+            return v1 < v2 ? (v1 < v3 ? v1 : v3) : (v2 < v3 ? v2 : v3);
+        }
+
+        /// <summary>
+        /// Returns the minimum of 4 numbers.
+        /// </summary>
+        /// <param name="v1">The v1.</param>
+        /// <param name="v2">The v2.</param>
+        /// <param name="v3">The v3.</param>
+        /// <param name="v4">The v4.</param>
+        /// <returns></returns>
+        public static double Min(double v1, double v2, double v3, double v4)
+        {
+            return v1 < v2 ? (v1 < v3 ? (v1 < v4 ? v1 : v4) : (v3 < v4 ? v3 : v4)) : (v2 < v3 ? (v2 < v4 ? v2 : v4) : (v3 < v4 ? v3 : v4));
+        }
+
+        /// <summary>
+        /// Returns the maximum of 3 numbers.
+        /// </summary>
+        /// <param name="v1">The v1.</param>
+        /// <param name="v2">The v2.</param>
+        /// <param name="v3">The v3.</param>
+        /// <returns></returns>
+        public static byte Max(byte v1, byte v2, byte v3)
+        {
+            return v1 > v2 ? (v1 > v3 ? v1 : v3) : (v2 > v3 ? v2 : v3);
+        }
+
+        /// <summary>
+        /// Returns the maximum of 4 numbers.
+        /// </summary>
+        /// <param name="v1">The v1.</param>
+        /// <param name="v2">The v2.</param>
+        /// <param name="v3">The v3.</param>
+        /// <param name="v4">The v4.</param>
+        /// <returns></returns>
+        public static byte Max(byte v1, byte v2, byte v3, byte v4)
+        {
+            return v1 > v2 ? (v1 > v3 ? (v1 > v4 ? v1 : v4) : (v3 > v4 ? v3 : v4)) : (v2 > v3 ? (v2 > v4 ? v2 : v4) : (v3 > v4 ? v3 : v4));
+        }
+
+        /// <summary>
+        /// Returns the minimum of 3 numbers.
+        /// </summary>
+        /// <param name="v1">The v1.</param>
+        /// <param name="v2">The v2.</param>
+        /// <param name="v3">The v3.</param>
+        /// <returns></returns>
+        public static byte Min(byte v1, byte v2, byte v3)
+        {
+            return v1 < v2 ? (v1 < v3 ? v1 : v3) : (v2 < v3 ? v2 : v3);
+        }
+
+        /// <summary>
+        /// Returns the minimum of 4 numbers.
+        /// </summary>
+        /// <param name="v1">The v1.</param>
+        /// <param name="v2">The v2.</param>
+        /// <param name="v3">The v3.</param>
+        /// <param name="v4">The v4.</param>
+        /// <returns></returns>
+        public static byte Min(byte v1, byte v2, byte v3, byte v4)
+        {
+            return v1 < v2 ? (v1 < v3 ? (v1 < v4 ? v1 : v4) : (v3 < v4 ? v3 : v4)) : (v2 < v3 ? (v2 < v4 ? v2 : v4) : (v3 < v4 ? v3 : v4));
+        } 
+        #endregion
+
+        #region Clamp()
+        /// <summary>
+        /// Clamps the specified value to the given inclusive min..max range.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="min">The min.</param>
+        /// <param name="max">The max.</param>
+        /// <returns></returns>
+        public static double Clamp(this double value, double min, double max)
+        {
+            return value < min ? min : (value > max ? max : value);
+        }
+
+        /// <summary>
+        /// Clamps the specified value to the given inclusive min..max range.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="min">The min.</param>
+        /// <param name="max">The max.</param>
+        /// <returns></returns>
+        public static byte Clamp(this byte value, byte min, byte max)
+        {
+            return value < min ? min : (value > max ? max : value);
+        } 
+        #endregion
     }
-  }
 }

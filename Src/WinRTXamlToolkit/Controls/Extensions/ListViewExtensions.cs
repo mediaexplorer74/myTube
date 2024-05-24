@@ -1,140 +1,271 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Controls.Extensions.ListViewExtensions
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using Microsoft.CSharp.RuntimeBinder;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace WinRTXamlToolkit.Controls.Extensions
 {
-  public static class ListViewExtensions
-  {
-    public static readonly DependencyProperty BindableSelectionProperty = DependencyProperty.RegisterAttached("BindableSelection", (Type) typeof (object), (Type) typeof (ListViewExtensions), new PropertyMetadata((object) null, new PropertyChangedCallback(ListViewExtensions.OnBindableSelectionChanged)));
-    public static readonly DependencyProperty BindableSelectionHandlerProperty = DependencyProperty.RegisterAttached("BindableSelectionHandler", (Type) typeof (ListViewBindableSelectionHandler), (Type) typeof (ListViewExtensions), new PropertyMetadata((object) null));
-    public static readonly DependencyProperty ItemToBringIntoViewProperty = DependencyProperty.RegisterAttached("ItemToBringIntoView", (Type) typeof (object), (Type) typeof (ListViewExtensions), new PropertyMetadata((object) null, new PropertyChangedCallback(ListViewExtensions.OnItemToBringIntoViewChanged)));
-
-    public static ObservableCollection<object> GetBindableSelection(DependencyObject d) => (ObservableCollection<object>) d.GetValue(ListViewExtensions.BindableSelectionProperty);
-
-    public static void SetBindableSelection(DependencyObject d, ObservableCollection<object> value) => d.SetValue(ListViewExtensions.BindableSelectionProperty, (object) value);
-
-    private static void OnBindableSelectionChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
+    /// <summary>
+    /// Extension methods and attached properties for the ListView class.
+    /// </summary>
+    public static class ListViewExtensions
     {
-      object oldValue = e.OldValue;
-      object obj1 = d.GetValue(ListViewExtensions.BindableSelectionProperty);
-      // ISSUE: reference to a compiler-generated field
-      if (ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site1 == null)
-      {
-        // ISSUE: reference to a compiler-generated field
-        ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site1 = CallSite<Func<CallSite, object, bool>>.Create(Binder.UnaryOperation(CSharpBinderFlags.None, ExpressionType.IsTrue, (Type) typeof (ListViewExtensions), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[1]
+        #region BindableSelection
+        /// <summary>
+        /// BindableSelection Attached Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty BindableSelectionProperty =
+            DependencyProperty.RegisterAttached(
+                "BindableSelection",
+                typeof (object),
+                typeof (ListViewExtensions),
+                new PropertyMetadata(null, OnBindableSelectionChanged));
+
+        /// <summary>
+        /// Gets the BindableSelection property. This dependency property 
+        /// indicates the list of selected items that is synchronized
+        /// with the items selected in the ListView.
+        /// </summary>
+        public static ObservableCollection<object> GetBindableSelection(DependencyObject d)
         {
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null)
-        }));
-      }
-      // ISSUE: reference to a compiler-generated field
-      Func<CallSite, object, bool> target1 = ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site1.Target;
-      // ISSUE: reference to a compiler-generated field
-      CallSite<Func<CallSite, object, bool>> pSite1 = ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site1;
-      // ISSUE: reference to a compiler-generated field
-      if (ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site2 == null)
-      {
-        // ISSUE: reference to a compiler-generated field
-        ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site2 = CallSite<Func<CallSite, object, object, object>>.Create(Binder.BinaryOperation(CSharpBinderFlags.None, ExpressionType.NotEqual, (Type) typeof (ListViewExtensions), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[2]
+            return (ObservableCollection<object>)d.GetValue(BindableSelectionProperty);
+        }
+
+        /// <summary>
+        /// Sets the BindableSelection property. This dependency property 
+        /// indicates the list of selected items that is synchronized
+        /// with the items selected in the ListView.
+        /// </summary>
+        public static void SetBindableSelection(
+            DependencyObject d,
+            ObservableCollection<object> value)
         {
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.Constant, (string) null)
-        }));
-      }
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: reference to a compiler-generated field
-      object obj2 = ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site2.Target((CallSite) ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site2, oldValue, (object) null);
-      if (target1((CallSite) pSite1, obj2))
-      {
-        ListViewBindableSelectionHandler selectionHandler = ListViewExtensions.GetBindableSelectionHandler(d);
-        ListViewExtensions.SetBindableSelectionHandler(d, (ListViewBindableSelectionHandler) null);
-        selectionHandler.Detach();
-      }
-      // ISSUE: reference to a compiler-generated field
-      if (ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site3 == null)
-      {
-        // ISSUE: reference to a compiler-generated field
-        ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site3 = CallSite<Func<CallSite, object, bool>>.Create(Binder.UnaryOperation(CSharpBinderFlags.None, ExpressionType.IsTrue, (Type) typeof (ListViewExtensions), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[1]
+            d.SetValue(BindableSelectionProperty, value);
+        }
+
+        /// <summary>
+        /// Handles changes to the BindableSelection property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnBindableSelectionChanged(
+            DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
         {
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null)
-        }));
-      }
-      // ISSUE: reference to a compiler-generated field
-      Func<CallSite, object, bool> target2 = ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site3.Target;
-      // ISSUE: reference to a compiler-generated field
-      CallSite<Func<CallSite, object, bool>> pSite3 = ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site3;
-      // ISSUE: reference to a compiler-generated field
-      if (ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site4 == null)
-      {
-        // ISSUE: reference to a compiler-generated field
-        ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site4 = CallSite<Func<CallSite, object, object, object>>.Create(Binder.BinaryOperation(CSharpBinderFlags.None, ExpressionType.NotEqual, (Type) typeof (ListViewExtensions), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[2]
+            dynamic oldBindableSelection = e.OldValue;
+            dynamic newBindableSelection = d.GetValue(BindableSelectionProperty);
+
+            if (oldBindableSelection != null)
+            {
+                var handler = GetBindableSelectionHandler(d);
+                SetBindableSelectionHandler(d, null);
+                handler.Detach();
+            }
+
+            if (newBindableSelection != null)
+            {
+                var handler = new ListViewBindableSelectionHandler(
+                    (ListViewBase)d, newBindableSelection);
+                SetBindableSelectionHandler(d, handler);
+            }
+        }
+        #endregion
+
+        #region BindableSelectionHandler
+        /// <summary>
+        /// BindableSelectionHandler Attached Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty BindableSelectionHandlerProperty =
+            DependencyProperty.RegisterAttached(
+                "BindableSelectionHandler",
+                typeof (ListViewBindableSelectionHandler),
+                typeof (ListViewExtensions),
+                new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets the BindableSelectionHandler property. This dependency property 
+        /// indicates BindableSelectionHandler for a ListView - used
+        /// to manage synchronization of BindableSelection and SelectedItems.
+        /// </summary>
+        public static ListViewBindableSelectionHandler GetBindableSelectionHandler(
+            DependencyObject d)
         {
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null),
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.Constant, (string) null)
-        }));
-      }
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: reference to a compiler-generated field
-      object obj3 = ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site4.Target((CallSite) ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site4, obj1, (object) null);
-      if (!target2((CallSite) pSite3, obj3))
-        return;
-      // ISSUE: reference to a compiler-generated field
-      if (ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site5 == null)
-      {
-        // ISSUE: reference to a compiler-generated field
-        ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site5 = CallSite<Func<CallSite, Type, ListViewBase, object, ListViewBindableSelectionHandler>>.Create(Binder.InvokeConstructor(CSharpBinderFlags.None, (Type) typeof (ListViewExtensions), (IEnumerable<CSharpArgumentInfo>) new CSharpArgumentInfo[3]
+            return
+                (ListViewBindableSelectionHandler)
+                d.GetValue(BindableSelectionHandlerProperty);
+        }
+
+        /// <summary>
+        /// Sets the BindableSelectionHandler property. This dependency property 
+        /// indicates BindableSelectionHandler for a ListView - used to manage synchronization of BindableSelection and SelectedItems.
+        /// </summary>
+        public static void SetBindableSelectionHandler(
+            DependencyObject d,
+            ListViewBindableSelectionHandler value)
         {
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType | CSharpArgumentInfoFlags.IsStaticType, (string) null),
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, (string) null),
-          CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, (string) null)
-        }));
-      }
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: reference to a compiler-generated field
-      ListViewBindableSelectionHandler selectionHandler1 = ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site5.Target((CallSite) ListViewExtensions.\u003COnBindableSelectionChanged\u003Eo__SiteContainer0.\u003C\u003Ep__Site5, typeof (ListViewBindableSelectionHandler), (ListViewBase) d, obj1);
-      ListViewExtensions.SetBindableSelectionHandler(d, selectionHandler1);
+            d.SetValue(BindableSelectionHandlerProperty, value);
+        }
+        #endregion
+
+        #region ItemToBringIntoView
+        /// <summary>
+        /// ItemToBringIntoView Attached Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty ItemToBringIntoViewProperty =
+            DependencyProperty.RegisterAttached(
+                "ItemToBringIntoView",
+                typeof (object),
+                typeof (ListViewExtensions),
+                new PropertyMetadata(null, OnItemToBringIntoViewChanged));
+
+        /// <summary>
+        /// Gets the ItemToBringIntoView property. This dependency property 
+        /// indicates the item that should be brought into view.
+        /// </summary>
+        public static object GetItemToBringIntoView(DependencyObject d)
+        {
+            return (object)d.GetValue(ItemToBringIntoViewProperty);
+        }
+
+        /// <summary>
+        /// Sets the ItemToBringIntoView property. This dependency property 
+        /// indicates the item that should be brought into view when first set.
+        /// </summary>
+        public static void SetItemToBringIntoView(DependencyObject d, object value)
+        {
+            d.SetValue(ItemToBringIntoViewProperty, value);
+        }
+
+        /// <summary>
+        /// Handles changes to the ItemToBringIntoView property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnItemToBringIntoViewChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            object newItemToBringIntoView =
+                (object)d.GetValue(ItemToBringIntoViewProperty);
+
+            if (newItemToBringIntoView != null)
+            {
+                var listView = (ListView)d;
+                listView.ScrollIntoView(newItemToBringIntoView);
+            }
+        }
+        #endregion
+
+        /// <summary>
+        /// Scrolls a vertical ListView to the bottom.
+        /// </summary>
+        /// <param name="listView"></param>
+        public static void ScrollToBottom(this ListView listView)
+        {
+            var scrollViewer = listView.GetFirstDescendantOfType<ScrollViewer>();
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.ScrollableHeight);
+        }
     }
 
-    public static ListViewBindableSelectionHandler GetBindableSelectionHandler(DependencyObject d) => (ListViewBindableSelectionHandler) d.GetValue(ListViewExtensions.BindableSelectionHandlerProperty);
-
-    public static void SetBindableSelectionHandler(
-      DependencyObject d,
-      ListViewBindableSelectionHandler value)
+    public class ListViewBindableSelectionHandler
     {
-      d.SetValue(ListViewExtensions.BindableSelectionHandlerProperty, (object) value);
+        private ListViewBase _listView;
+        private dynamic _boundSelection;
+        private readonly NotifyCollectionChangedEventHandler _handler;
+
+        public ListViewBindableSelectionHandler(
+            ListViewBase listView, dynamic boundSelection)
+        {
+            _handler = OnBoundSelectionChanged;
+            Attach(listView, boundSelection);
+        }
+
+        private void Attach(ListViewBase listView, dynamic boundSelection)
+        {
+            _listView = listView;
+            _listView.Unloaded += OnListViewUnloaded;
+            _listView.SelectionChanged += OnListViewSelectionChanged;
+            _listView.SelectedItems.Clear();
+
+            _boundSelection = boundSelection;
+
+            var eventInfo =
+                _boundSelection.GetType().GetDeclaredEvent("CollectionChanged");
+            eventInfo.AddEventHandler(_boundSelection, _handler);
+            //_boundSelection.CollectionChanged += OnBoundSelectionChanged;
+        }
+
+        private void OnListViewSelectionChanged(
+            object sender, SelectionChangedEventArgs e)
+        {
+            foreach (dynamic item in e.RemovedItems)
+            {
+                _boundSelection.Remove(item);
+            }
+            foreach (dynamic item in e.AddedItems)
+            {
+                _boundSelection.Add(item);
+            }
+        }
+
+        private void OnBoundSelectionChanged(
+            object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action ==
+                NotifyCollectionChangedAction.Reset)
+            {
+                _listView.SelectedItems.Clear();
+
+                foreach (var item in _boundSelection)
+                {
+                    _listView.SelectedItems.Add(item);
+                }
+
+                return;
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    _listView.SelectedItems.Remove(item);
+                }
+            }
+
+            if (e.NewItems != null)
+            {
+                foreach (var item in e.NewItems)
+                {
+                    _listView.SelectedItems.Add(item);
+                }
+            }
+        }
+
+        private void OnListViewUnloaded(object sender, RoutedEventArgs e)
+        {
+            Detach();
+        }
+
+        internal void Detach()
+        {
+            _listView.Unloaded -= OnListViewUnloaded;
+            _listView.SelectionChanged -= OnListViewSelectionChanged;
+            _listView = null;
+            var eventInfo =
+                _boundSelection.GetType().GetDeclaredEvent("CollectionChanged");
+            eventInfo.RemoveEventHandler(_boundSelection, _handler);
+            _boundSelection = null;
+        }
     }
-
-    public static object GetItemToBringIntoView(DependencyObject d) => d.GetValue(ListViewExtensions.ItemToBringIntoViewProperty);
-
-    public static void SetItemToBringIntoView(DependencyObject d, object value) => d.SetValue(ListViewExtensions.ItemToBringIntoViewProperty, value);
-
-    private static void OnItemToBringIntoViewChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      object obj = d.GetValue(ListViewExtensions.ItemToBringIntoViewProperty);
-      if (obj == null)
-        return;
-      ((ListViewBase) d).ScrollIntoView(obj);
-    }
-
-    public static void ScrollToBottom(this ListView listView)
-    {
-      ScrollViewer descendantOfType = ((DependencyObject) listView).GetFirstDescendantOfType<ScrollViewer>();
-      descendantOfType.ChangeView((double?) new double?(), (double?) new double?(descendantOfType.ScrollableHeight), (float?) new float?());
-    }
-  }
 }

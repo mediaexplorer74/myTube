@@ -76,28 +76,11 @@ namespace myTube
     {
       add
       {
-                TypedEventHandler<IVideoHandler, StepForwardBackwardRequestedEventArgs> typedEventHandler1 = default;//this.StepForwardBackwardRequested;
-        TypedEventHandler<IVideoHandler, StepForwardBackwardRequestedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          //typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, StepForwardBackwardRequestedEventArgs>>(ref this.StepForwardBackwardRequested, (TypedEventHandler<IVideoHandler, StepForwardBackwardRequestedEventArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+         this.StepForwardBackwardRequested += value;
       }
       remove
       {
-                TypedEventHandler<IVideoHandler, StepForwardBackwardRequestedEventArgs> typedEventHandler1 = default;//this.StepForwardBackwardRequested;
-        TypedEventHandler<IVideoHandler, StepForwardBackwardRequestedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-         // typedEventHandler1 = 
-         //               Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, 
-         //               StepForwardBackwardRequestedEventArgs>>(
-         //                   ref this.StepForwardBackwardRequested, (TypedEventHandler<IVideoHandler, StepForwardBackwardRequestedEventArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+         this.StepForwardBackwardRequested -= value;
       }
     }
 
@@ -107,33 +90,23 @@ namespace myTube
 
     public abstract TimeSpan Duration { get; protected set; }
 
-    public ObservableCollection<VideoCastingDevice> CastingDevices { get; private set; } = new ObservableCollection<VideoCastingDevice>();
+    public ObservableCollection<VideoCastingDevice> CastingDevices { get; private set; } 
+            = new ObservableCollection<VideoCastingDevice>();
 
-    public event TypedEventHandler<IVideoHandler, PlaybackSpeedChangedEventArgs> PlaybackRateChanged
-    {
-      add
-      {
-        TypedEventHandler<IVideoHandler, PlaybackSpeedChangedEventArgs> typedEventHandler1 = this.PlaybackRateChanged;
-        TypedEventHandler<IVideoHandler, PlaybackSpeedChangedEventArgs> typedEventHandler2;
-        do
+
+        public event TypedEventHandler<IVideoHandler, PlaybackSpeedChangedEventArgs> PlaybackRateChanged
         {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, PlaybackSpeedChangedEventArgs>>(ref this.PlaybackRateChanged, (TypedEventHandler<IVideoHandler, PlaybackSpeedChangedEventArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
+            add
+            {
+                this.PlaybackRateChanged += value;
+            }
+            remove
+            {
+                this.PlaybackRateChanged -= value;
+            }
         }
-        while (typedEventHandler1 != typedEventHandler2);
-      }
-      remove
-      {
-        TypedEventHandler<IVideoHandler, PlaybackSpeedChangedEventArgs> typedEventHandler1 = this.PlaybackRateChanged;
-        TypedEventHandler<IVideoHandler, PlaybackSpeedChangedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, PlaybackSpeedChangedEventArgs>>(ref this.PlaybackRateChanged, (TypedEventHandler<IVideoHandler, PlaybackSpeedChangedEventArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
-      }
-    }
+
+       
 
     public bool SupportsVariablePlaybackRate { get; protected set; }
 
@@ -147,22 +120,25 @@ namespace myTube
         float playbackRate = this.PlaybackRate;
         this.playbackRate = value;
         this.SetPlaybackRate(value);
+
         if (!this.SupportsVariablePlaybackRate)
           return;
-                TypedEventHandler<IVideoHandler, PlaybackSpeedChangedEventArgs> playbackRateChanged = default;//this.PlaybackRateChanged;
-        if (playbackRateChanged == null)
-          return;
-        playbackRateChanged.Invoke(this, new PlaybackSpeedChangedEventArgs()
-        {
-          OldSpeed = playbackRate,
-          NewSpeed = value
-        });
+
+        //TypedEventHandler<IVideoHandler, PlaybackSpeedChangedEventArgs> playbackRateChanged = this.PlaybackRateChanged;
+            this.PlaybackRateChanged += (sender, e) => 
+            {
+                e = new PlaybackSpeedChangedEventArgs()
+                {                    
+                    OldSpeed = playbackRate,
+                    NewSpeed = value
+                };                    
+            };               
       }
     }
 
     public bool SupportsCaptions { get; protected set; }
 
-    protected virtual void SetPlaybackRate(float rate)
+    public virtual void SetPlaybackRate(float rate)
     {
     }
 
@@ -172,7 +148,9 @@ namespace myTube
       set => this.playbackSpeeds = value;
     }
 
-    public void NextPlaybackRate() => this.PlaybackRate = this.playbackSpeeds[(this.playbackSpeeds.IndexOfClosest(this.PlaybackRate) + 1) % this.playbackSpeeds.Length];
+    public void NextPlaybackRate() => this.PlaybackRate 
+            = this.playbackSpeeds[(this.playbackSpeeds.IndexOfClosest(this.PlaybackRate) + 1)
+                % this.playbackSpeeds.Length];
 
     public abstract bool SupportsBackgroundAudio { get; protected set; }
 
@@ -186,7 +164,9 @@ namespace myTube
         if (!(value != this.PositionOverride))
           return;
         this.PositionOverride = value;
-                TypedEventHandler<IVideoHandler, PositionChangedEventArgs> positionChanged = default;//this.PositionChanged;
+
+                TypedEventHandler<IVideoHandler, PositionChangedEventArgs> positionChanged = default;
+                //this.PositionChanged;
         if (positionChanged == null)
           return;
         positionChanged.Invoke(this, new PositionChangedEventArgs()
@@ -209,27 +189,16 @@ namespace myTube
 
     public event TypedEventHandler<IVideoHandler, ProjectionChangedEventArgs> ProjectionChanged
     {
+            
       add
       {
-                TypedEventHandler<IVideoHandler, ProjectionChangedEventArgs> typedEventHandler1 = default;//this.ProjectionChanged;
-        TypedEventHandler<IVideoHandler, ProjectionChangedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          //typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, ProjectionChangedEventArgs>>(ref this.ProjectionChanged, (TypedEventHandler<IVideoHandler, ProjectionChangedEventArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+        // Subscribe to the event
+        this.ProjectionChanged += value;             
       }
       remove
       {
-                TypedEventHandler<IVideoHandler, ProjectionChangedEventArgs> typedEventHandler1 = default;//this.ProjectionChanged;
-        TypedEventHandler<IVideoHandler, ProjectionChangedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, ProjectionChangedEventArgs>>(ref this.ProjectionChanged, (TypedEventHandler<IVideoHandler, ProjectionChangedEventArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+            // Unsubscribe from the event
+            this.ProjectionChanged -= value;
       }
     }
 
@@ -283,25 +252,11 @@ namespace myTube
     {
       add
       {
-                TypedEventHandler<IVideoHandler, FramerateChangedEventArgs> typedEventHandler1 = default;//this.FramerateChanged;
-        TypedEventHandler<IVideoHandler, FramerateChangedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          //typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, FramerateChangedEventArgs>>(ref this.FramerateChanged, (TypedEventHandler<IVideoHandler, FramerateChangedEventArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+         this.FramerateChanged += value;
       }
       remove
       {
-                TypedEventHandler<IVideoHandler, FramerateChangedEventArgs> typedEventHandler1 = default;//this.FramerateChanged;
-        TypedEventHandler<IVideoHandler, FramerateChangedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          //typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, FramerateChangedEventArgs>>(ref this.FramerateChanged, (TypedEventHandler<IVideoHandler, FramerateChangedEventArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+          this.FramerateChanged -= value;
       }
     }
 
@@ -351,25 +306,11 @@ namespace myTube
     {
       add
       {
-                TypedEventHandler<IVideoHandler, MediaEndedArgs> typedEventHandler1 = default;//this.MediaEnded;
-        TypedEventHandler<IVideoHandler, MediaEndedArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, MediaEndedArgs>>(ref this.MediaEnded, (TypedEventHandler<IVideoHandler, MediaEndedArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+        this.MediaEnded += value;
       }
       remove
       {
-                TypedEventHandler<IVideoHandler, MediaEndedArgs> typedEventHandler1 = default;//this.MediaEnded;
-        TypedEventHandler<IVideoHandler, MediaEndedArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, MediaEndedArgs>>(ref this.MediaEnded, (TypedEventHandler<IVideoHandler, MediaEndedArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+         this.MediaEnded -= value;
       }
     }
 
@@ -377,25 +318,11 @@ namespace myTube
     {
       add
       {
-                TypedEventHandler<IVideoHandler, MediaRunningChangedArgs> typedEventHandler1 = default;//this.MediaRunningChanged;
-        TypedEventHandler<IVideoHandler, MediaRunningChangedArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, MediaRunningChangedArgs>>(ref this.MediaRunningChanged, (TypedEventHandler<IVideoHandler, MediaRunningChangedArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+         this.MediaRunningChanged += value;
       }
       remove
       {
-                TypedEventHandler<IVideoHandler, MediaRunningChangedArgs> typedEventHandler1 = default;//this.MediaRunningChanged;
-        TypedEventHandler<IVideoHandler, MediaRunningChangedArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, MediaRunningChangedArgs>>(ref this.MediaRunningChanged, (TypedEventHandler<IVideoHandler, MediaRunningChangedArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+         this.MediaRunningChanged -= value;
       }
     }
 
@@ -403,25 +330,11 @@ namespace myTube
     {
       add
       {
-                TypedEventHandler<IVideoHandler, VideoHandlerState> typedEventHandler1 = default;//this.StateChanged;
-        TypedEventHandler<IVideoHandler, VideoHandlerState> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          //typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, VideoHandlerState>>(ref this.StateChanged, (TypedEventHandler<IVideoHandler, VideoHandlerState>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+        this.StateChanged += value;       
       }
       remove
       {
-                TypedEventHandler<IVideoHandler, VideoHandlerState> typedEventHandler1 = default;//this.StateChanged;
-        TypedEventHandler<IVideoHandler, VideoHandlerState> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          //typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, VideoHandlerState>>(ref this.StateChanged, (TypedEventHandler<IVideoHandler, VideoHandlerState>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+        this.StateChanged -= value;
       }
     }
 
@@ -429,25 +342,11 @@ namespace myTube
     {
       add
       {
-        TypedEventHandler<IVideoHandler, MediaOpenedEventArgs> typedEventHandler1 = this.MediaOpened;
-        TypedEventHandler<IVideoHandler, MediaOpenedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, MediaOpenedEventArgs>>(ref this.MediaOpened, (TypedEventHandler<IVideoHandler, MediaOpenedEventArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+        this.MediaOpened += value;       
       }
       remove
       {
-        TypedEventHandler<IVideoHandler, MediaOpenedEventArgs> typedEventHandler1 = this.MediaOpened;
-        TypedEventHandler<IVideoHandler, MediaOpenedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, MediaOpenedEventArgs>>(ref this.MediaOpened, (TypedEventHandler<IVideoHandler, MediaOpenedEventArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+        this.MediaOpened -= value;
       }
     }
 
@@ -455,25 +354,11 @@ namespace myTube
     {
       add
       {
-        TypedEventHandler<IVideoHandler, MediaOpenedEventArgs> typedEventHandler1 = this.MediaOpening;
-        TypedEventHandler<IVideoHandler, MediaOpenedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, MediaOpenedEventArgs>>(ref this.MediaOpening, (TypedEventHandler<IVideoHandler, MediaOpenedEventArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+        this.MediaOpening += value;       
       }
       remove
       {
-        TypedEventHandler<IVideoHandler, MediaOpenedEventArgs> typedEventHandler1 = this.MediaOpening;
-        TypedEventHandler<IVideoHandler, MediaOpenedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, MediaOpenedEventArgs>>(ref this.MediaOpening, (TypedEventHandler<IVideoHandler, MediaOpenedEventArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+        this.MediaOpening -= value;
       }
     }
 
@@ -481,25 +366,11 @@ namespace myTube
     {
       add
       {
-        TypedEventHandler<IVideoHandler, MediaFailedEventArgs> typedEventHandler1 = this.MediaFailed;
-        TypedEventHandler<IVideoHandler, MediaFailedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, MediaFailedEventArgs>>(ref this.MediaFailed, (TypedEventHandler<IVideoHandler, MediaFailedEventArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+        this.MediaFailed += value;      
       }
       remove
       {
-                TypedEventHandler<IVideoHandler, MediaFailedEventArgs> typedEventHandler1 = default;//this.MediaFailed;
-        TypedEventHandler<IVideoHandler, MediaFailedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, MediaFailedEventArgs>>(ref this.MediaFailed, (TypedEventHandler<IVideoHandler, MediaFailedEventArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+        this.MediaFailed -= value;
       }
     }
 
@@ -561,51 +432,23 @@ namespace myTube
     {
       add
       {
-        TypedEventHandler<IVideoHandler, FoundCastingDeviceEventArgs> typedEventHandler1 = this.FoundCastingDevice;
-        TypedEventHandler<IVideoHandler, FoundCastingDeviceEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, FoundCastingDeviceEventArgs>>(ref this.FoundCastingDevice, (TypedEventHandler<IVideoHandler, FoundCastingDeviceEventArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+                this.FoundCastingDevice += value;
       }
       remove
       {
-        TypedEventHandler<IVideoHandler, FoundCastingDeviceEventArgs> typedEventHandler1 = this.FoundCastingDevice;
-        TypedEventHandler<IVideoHandler, FoundCastingDeviceEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, FoundCastingDeviceEventArgs>>(ref this.FoundCastingDevice, (TypedEventHandler<IVideoHandler, FoundCastingDeviceEventArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
-      }
+                this.FoundCastingDevice -= value;
+            }
     }
 
     public event TypedEventHandler<IVideoHandler, PositionChangedEventArgs> PositionChanged
     {
       add
       {
-        TypedEventHandler<IVideoHandler, PositionChangedEventArgs> typedEventHandler1 = this.PositionChanged;
-        TypedEventHandler<IVideoHandler, PositionChangedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, PositionChangedEventArgs>>(ref this.PositionChanged, (TypedEventHandler<IVideoHandler, PositionChangedEventArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+                this.PositionChanged += value;
       }
       remove
       {
-        TypedEventHandler<IVideoHandler, PositionChangedEventArgs> typedEventHandler1 = this.PositionChanged;
-        TypedEventHandler<IVideoHandler, PositionChangedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, PositionChangedEventArgs>>(ref this.PositionChanged, (TypedEventHandler<IVideoHandler, PositionChangedEventArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+                this.PositionChanged -= value;
       }
     }
 
@@ -613,25 +456,11 @@ namespace myTube
     {
       add
       {
-        TypedEventHandler<IVideoHandler, PlaylistButtonsEventArgs> typedEventHandler1 = this.PlaylistButtonsSet;
-        TypedEventHandler<IVideoHandler, PlaylistButtonsEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, PlaylistButtonsEventArgs>>(ref this.PlaylistButtonsSet, (TypedEventHandler<IVideoHandler, PlaylistButtonsEventArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+                this.PlaylistButtonsSet += value;
       }
       remove
       {
-        TypedEventHandler<IVideoHandler, PlaylistButtonsEventArgs> typedEventHandler1 = this.PlaylistButtonsSet;
-        TypedEventHandler<IVideoHandler, PlaylistButtonsEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, PlaylistButtonsEventArgs>>(ref this.PlaylistButtonsSet, (TypedEventHandler<IVideoHandler, PlaylistButtonsEventArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+                this.PlaylistButtonsSet -= value;
       }
     }
 
@@ -639,25 +468,11 @@ namespace myTube
     {
       add
       {
-        TypedEventHandler<IVideoHandler, NextVideoEventArgs> typedEventHandler1 = this.NextVideo;
-        TypedEventHandler<IVideoHandler, NextVideoEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, NextVideoEventArgs>>(ref this.NextVideo, (TypedEventHandler<IVideoHandler, NextVideoEventArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+                this.NextVideo += value;
       }
       remove
       {
-        TypedEventHandler<IVideoHandler, NextVideoEventArgs> typedEventHandler1 = this.NextVideo;
-        TypedEventHandler<IVideoHandler, NextVideoEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, NextVideoEventArgs>>(ref this.NextVideo, (TypedEventHandler<IVideoHandler, NextVideoEventArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+                this.NextVideo -= value;
       }
     }
 
@@ -665,25 +480,11 @@ namespace myTube
     {
       add
       {
-                TypedEventHandler<IVideoHandler, BookmarkableActionEventArgs> typedEventHandler1 = default;//this.BookmarkableAction;
-        TypedEventHandler<IVideoHandler, BookmarkableActionEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          //typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, BookmarkableActionEventArgs>>(ref this.BookmarkableAction, (TypedEventHandler<IVideoHandler, BookmarkableActionEventArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+                this.BookmarkableAction += value;
       }
       remove
       {
-        TypedEventHandler<IVideoHandler, BookmarkableActionEventArgs> typedEventHandler1 = this.BookmarkableAction;
-        TypedEventHandler<IVideoHandler, BookmarkableActionEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, BookmarkableActionEventArgs>>(ref this.BookmarkableAction, (TypedEventHandler<IVideoHandler, BookmarkableActionEventArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+                this.BookmarkableAction -= value;
       }
     }
 
@@ -758,25 +559,11 @@ namespace myTube
     {
       add
       {
-        TypedEventHandler<IVideoHandler, QualityChangedEventArgs> typedEventHandler1 = this.QualityChanged;
-        TypedEventHandler<IVideoHandler, QualityChangedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, QualityChangedEventArgs>>(ref this.QualityChanged, (TypedEventHandler<IVideoHandler, QualityChangedEventArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+                this.QualityChanged += value;
       }
       remove
       {
-        TypedEventHandler<IVideoHandler, QualityChangedEventArgs> typedEventHandler1 = this.QualityChanged;
-        TypedEventHandler<IVideoHandler, QualityChangedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, QualityChangedEventArgs>>(ref this.QualityChanged, (TypedEventHandler<IVideoHandler, QualityChangedEventArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+                this.QualityChanged -= value;
       }
     }
 
@@ -784,25 +571,11 @@ namespace myTube
     {
       add
       {
-        TypedEventHandler<IVideoHandler, QualityChangedEventArgs> typedEventHandler1 = this.QualityChangeFailed;
-        TypedEventHandler<IVideoHandler, QualityChangedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, QualityChangedEventArgs>>(ref this.QualityChangeFailed, (TypedEventHandler<IVideoHandler, QualityChangedEventArgs>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+                this.QualityChangeFailed += value;
       }
       remove
       {
-        TypedEventHandler<IVideoHandler, QualityChangedEventArgs> typedEventHandler1 = this.QualityChangeFailed;
-        TypedEventHandler<IVideoHandler, QualityChangedEventArgs> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, QualityChangedEventArgs>>(ref this.QualityChangeFailed, (TypedEventHandler<IVideoHandler, QualityChangedEventArgs>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+                this.QualityChangeFailed -= value;
       }
     }
 
@@ -810,28 +583,15 @@ namespace myTube
     {
       add
       {
-        TypedEventHandler<IVideoHandler, SubtitleDeclaration[]> typedEventHandler1 = this.ListOfCaptionsChanged;
-        TypedEventHandler<IVideoHandler, SubtitleDeclaration[]> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, SubtitleDeclaration[]>>(ref this.ListOfCaptionsChanged, (TypedEventHandler<IVideoHandler, SubtitleDeclaration[]>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+                this.ListOfCaptionsChanged += value;
       }
       remove
       {
-        TypedEventHandler<IVideoHandler, SubtitleDeclaration[]> typedEventHandler1 = this.ListOfCaptionsChanged;
-        TypedEventHandler<IVideoHandler, SubtitleDeclaration[]> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<IVideoHandler, SubtitleDeclaration[]>>(ref this.ListOfCaptionsChanged, (TypedEventHandler<IVideoHandler, SubtitleDeclaration[]>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+                this.ListOfCaptionsChanged -= value;
       }
     }
 
+        
     public SubtitleDeclaration[] ListOfCaptions
     {
       get => this.listOfCaptions;
@@ -840,11 +600,16 @@ namespace myTube
         if (this.listOfCaptions == value)
           return;
         this.listOfCaptions = value;
-        this.ListOfCaptionsChanged?.Invoke(this, value);
-      }
+            //this.ListOfCaptionsChanged?.Invoke(this, value);
+            //this.ListOfCaptionsChanged += value;
+       }
     }
 
-    public YouTubeQuality CurrentQuality
+
+      
+
+
+        public YouTubeQuality CurrentQuality
     {
       get => this.quality;
       private set
@@ -878,14 +643,15 @@ namespace myTube
         this.mediaRunning = value;
         this.OnMediaRunningChanged(value);
 
-                //RnD
-                TypedEventHandler<IVideoHandler, MediaRunningChangedArgs> mediaRunningChanged
-                            = default;//this.MediaRunningChanged;
-        if (mediaRunningChanged != null)
-          mediaRunningChanged.Invoke(this, new MediaRunningChangedArgs()
-          {
-            MediaRunning = value
-          });
+        this.MediaRunningChanged += (sender, e) =>
+
+        { 
+            e = new MediaRunningChangedArgs()
+            {
+                MediaRunning = value
+            };
+        };
+
         if (this.HandlesTransportControls || this.TransportControls == null)
           return;
         if (!this.IsOpeningVideo)
@@ -952,25 +718,27 @@ namespace myTube
 
     protected void UpdateThumbnail(Uri uri) => this.UpdateThumbnail(uri, (Stretch) 3);
 
-    protected void UpdateThumbnail(Uri uri, Stretch stretch) => this.UpdateThumbnail(uri, (IRandomAccessStream) null, stretch);
+    protected void UpdateThumbnail(Uri uri, Stretch stretch) 
+            => this.UpdateThumbnail(uri, (IRandomAccessStream) null, stretch);
 
-    protected void UpdateThumbnail(IRandomAccessStream stream, Stretch stretch) => this.UpdateThumbnail((Uri) null, stream, stretch);
+    protected void UpdateThumbnail(IRandomAccessStream stream, Stretch stretch) 
+            => this.UpdateThumbnail((Uri) null, stream, stretch);
 
     private void UpdateThumbnail(Uri uri, IRandomAccessStream stream, Stretch stretch)
     {
-            /*
-      // ISSUE: reference to a compiler-generated field
-      TypedEventHandler<IVideoHandler, MediaThumbnailChanged> thumbnailChanged = this.ThumbnailChanged;
-      if (thumbnailChanged == null)
-        return;
-      thumbnailChanged.Invoke(this, new MediaThumbnailChanged()
-      {
-        Uri = uri,
-        Stream = stream,
-        StretchMode = stretch
-      });
-            */
-    }
+
+        this.ThumbnailChanged += (sender, e) => 
+        {
+
+               e = new MediaThumbnailChanged()
+                {
+                    Uri = uri,
+                    Stream = stream,
+                    StretchMode = stretch
+                };
+        };         
+            
+     }
 
         protected void RemoveThumbnail()
         {
@@ -1050,27 +818,29 @@ namespace myTube
         else
           entry = this.NormalRepeatMode != PlaylistRepeatMode.One ? (YouTubeEntry) null : this.CurrentEntry;
       }
-      // ISSUE: reference to a compiler-generated field
-      TypedEventHandler<IVideoHandler, MediaEndedArgs> mediaEnded = this.MediaEnded;
-      if (mediaEnded != null)
-        mediaEnded.Invoke(this, new MediaEndedArgs()
+
+        this.MediaEnded += (sender, e) =>
         {
-          CurrentEntry = this.CurrentEntry,
-          HasPlaylist = false,
-          NextEntry = entry
-        });
-      if (entry != null && entry != this.CurrentEntry)
-      {
+            e = new MediaEndedArgs()
+            {
+                CurrentEntry = this.CurrentEntry,
+                HasPlaylist = false,
+                NextEntry = entry
+            };
+        };
+
+        if (entry != null && entry != this.CurrentEntry)
+        {
         this.OpenVideo(entry, this.RequestedQuality, TimeSpan.Zero, false, true);
-        // ISSUE: reference to a compiler-generated field
-        TypedEventHandler<IVideoHandler, NextVideoEventArgs> nextVideo = this.NextVideo;
-        if (nextVideo == null)
-          return;
-        nextVideo.Invoke(this, new NextVideoEventArgs()
-        {
-          CurrentEntry = this.CurrentEntry,
-          NextEntry = entry
-        });
+
+            this.NextVideo += (sender, e) =>
+            {
+                e = new NextVideoEventArgs()
+                {
+                    CurrentEntry = this.CurrentEntry,
+                    NextEntry = entry
+                };
+            };
       }
       else if (entry == this.CurrentEntry)
       {
@@ -1178,19 +948,21 @@ namespace myTube
       return (VideoInfoPreload) null;
     }
 
-    protected virtual async Task<VideoInfoPreload> PreloadRequested(string videoID) => (VideoInfoPreload) null;
+        protected virtual async Task<VideoInfoPreload> PreloadRequested(string videoID)
+        {
+            return (VideoInfoPreload)null;
+        }
 
-    protected void ReportNextEntry(YouTubeEntry nextEntry)
+        protected void ReportNextEntry(YouTubeEntry nextEntry)
     {
-      // ISSUE: reference to a compiler-generated field
-      TypedEventHandler<IVideoHandler, NextVideoEventArgs> nextVideo = this.NextVideo;
-      if (nextVideo == null)
-        return;
-      nextVideo.Invoke(this, new NextVideoEventArgs()
-      {
-        CurrentEntry = this.CurrentEntry,
-        NextEntry = nextEntry
-      });
+        this.NextVideo += (sender, e) =>
+        {
+            e = new NextVideoEventArgs()
+            {
+                CurrentEntry = this.CurrentEntry,
+                NextEntry = nextEntry
+            };
+        };
     }
 
     public async Task<T> GetPreloadedInfo<T>(string videoID)
@@ -1230,13 +1002,11 @@ namespace myTube
       {
         this.preloadTimer = new DispatcherTimer();
         this.preloadTimer.Interval = TimeSpan.FromSeconds(10.0);
-        DispatcherTimer preloadTimer = this.preloadTimer;
-        
-        //RnD        
-        //WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>, 
-        //    EventRegistrationToken>(preloadTimer.add_Tick), 
-        //    new Action<EventRegistrationToken>(preloadTimer.remove_Tick), 
-        //    new EventHandler<object>(this.PreloadTimer_Tick));
+        DispatcherTimer preloadTimer = this.preloadTimer;        
+       
+         preloadTimer.Tick += new EventHandler<object>(this.PreloadTimer_Tick);
+         // Remove the event handler later using -=
+         preloadTimer.Tick -= new EventHandler<object>(this.PreloadTimer_Tick);
       }
       MediaUsageArgs mediaUsageArgs = this.lastMediaUsageArgs = this.ApplyMediaElementsOverride(registration);
       if (!this.HandlesTransportControls)
@@ -1339,23 +1109,25 @@ namespace myTube
         return;
       ivideoHandler.CallBookmarkableAction();
       ivideoHandler.OpenVideo(entry, ivideoHandler.RequestedQuality, TimeSpan.Zero, false, true);
-      // ISSUE: reference to a compiler-generated field
-      TypedEventHandler<IVideoHandler, NextVideoEventArgs> nextVideo = ivideoHandler.NextVideo;
-      if (nextVideo == null)
-        return;
-      nextVideo.Invoke(ivideoHandler, new NextVideoEventArgs()
-      {
-        CurrentEntry = ivideoHandler.CurrentEntry,
-        NextEntry = entry
-      });
+            
+        ivideoHandler.NextVideo += (sender, e) =>
+        {
+            e = new NextVideoEventArgs()
+            {
+                CurrentEntry = ivideoHandler.CurrentEntry,
+                NextEntry = entry
+            };
+        };
     }
 
     protected abstract MediaUsageArgs ApplyMediaElementsOverride(
       VideoHandlerRegistration registration);
 
-    public Task<bool> OpenVideo(YouTubeEntry entry, YouTubeQuality quality) => this.OpenVideo(entry, quality, TimeSpan.Zero);
+    public Task<bool> OpenVideo(YouTubeEntry entry, YouTubeQuality quality)
+            => this.OpenVideo(entry, quality, TimeSpan.Zero);
 
-    public Task<bool> OpenVideo(YouTubeEntry entry, YouTubeQuality quality, TimeSpan seekToOnOpen) => this.OpenVideo(entry, quality, seekToOnOpen, true, false);
+    public Task<bool> OpenVideo(YouTubeEntry entry, YouTubeQuality quality, TimeSpan seekToOnOpen)
+            => this.OpenVideo(entry, quality, seekToOnOpen, true, false);
 
     public async Task<bool> OpenVideoFromCurrentPlaylist(
       YouTubeEntry entry,
@@ -1366,14 +1138,15 @@ namespace myTube
       if (ivideoHandler.PlaylistHelper == null || !ivideoHandler.PlaylistHelper.HasEntryID(entry.ID))
         return await ivideoHandler.OpenVideo(entry, quality, seekToOnOpen);
       ivideoHandler.PlaylistHelper.SetIndexBasedOnID(entry.ID);
-      // ISSUE: reference to a compiler-generated field
-      TypedEventHandler<IVideoHandler, NextVideoEventArgs> nextVideo = ivideoHandler.NextVideo;
-      if (nextVideo != null)
-        nextVideo.Invoke(ivideoHandler, new NextVideoEventArgs()
+
+        ivideoHandler.NextVideo += (sender, e) =>
         {
-          CurrentEntry = ivideoHandler.CurrentEntry,
-          NextEntry = entry
-        });
+            e = new NextVideoEventArgs()
+            {
+                CurrentEntry = ivideoHandler.CurrentEntry,
+                NextEntry = entry
+            };
+        };
       return await ivideoHandler.OpenVideo(entry, quality, seekToOnOpen, false, true);
     }
 
@@ -1399,15 +1172,17 @@ namespace myTube
           quality = YouTubeQuality.Audio;
         videoStateTask = (Task<TransferManager.State>) null;
       }
-      // ISSUE: reference to a compiler-generated field
-      TypedEventHandler<IVideoHandler, MediaOpenedEventArgs> mediaOpening = ivideoHandler.MediaOpening;
-      if (mediaOpening != null)
-        mediaOpening.Invoke(ivideoHandler, new MediaOpenedEventArgs()
+
+        ivideoHandler.MediaOpening += (sender, e) =>
         {
-          FinalQuality = quality,
-          RequestedQuality = requestedQuality,
-          Entry = entry
-        });
+            e = new MediaOpenedEventArgs()
+            {
+                FinalQuality = quality,
+                RequestedQuality = requestedQuality,
+                Entry = entry
+            };
+        };
+
       YouTubeQuality qual = quality;
       ivideoHandler.IsOpeningVideo = true;
       ivideoHandler.listOfCaptions = new SubtitleDeclaration[0];
@@ -1418,16 +1193,19 @@ namespace myTube
       catch (Exception ex)
       {
         ivideoHandler.IsOpeningVideo = false;
-        // ISSUE: reference to a compiler-generated field
-        TypedEventHandler<IVideoHandler, MediaFailedEventArgs> mediaFailed = ivideoHandler.MediaFailed;
-        if (mediaFailed != null)
-          mediaFailed.Invoke(ivideoHandler, new MediaFailedEventArgs()
-          {
-            Entry = entry,
-            Exception = ex,
-            Quality = quality,
-            WillContinueToNextVideo = ivideoHandler.PlaylistHelper != null && !(ex is CastingException) && ivideoHandler.PlaylistRepeatMode != 0
-          });
+
+        ivideoHandler.MediaFailed += (sender, e) =>
+        {
+            e = new MediaFailedEventArgs()
+            {
+                Entry = entry,
+                Exception = ex,
+                Quality = quality,
+                WillContinueToNextVideo = ivideoHandler.PlaylistHelper != null 
+                && !(ex is CastingException) && ivideoHandler.PlaylistRepeatMode != 0
+            };
+        };
+
         if (ivideoHandler.PlaylistHelper != null && !(ex is CastingException) && ivideoHandler.PlaylistRepeatMode != PlaylistRepeatMode.None)
           ivideoHandler.Next();
         if (!ivideoHandler.IsOpeningVideo && ivideoHandler.State == VideoHandlerState.Unknown || ivideoHandler.State == VideoHandlerState.Stopped)
@@ -1674,14 +1452,14 @@ namespace myTube
       IVideoHandler ivideoHandler = this;
       ivideoHandler.CastingDevices.Add(device);
       device.AddedAt = DateTimeOffset.Now;
-      // ISSUE: reference to a compiler-generated field
-      TypedEventHandler<IVideoHandler, FoundCastingDeviceEventArgs> foundCastingDevice = ivideoHandler.FoundCastingDevice;
-      if (foundCastingDevice == null)
-        return;
-      foundCastingDevice.Invoke(ivideoHandler, new FoundCastingDeviceEventArgs()
+
+      ivideoHandler.FoundCastingDevice += (sender, e) =>
       {
-        Device = device
-      });
+        e = new FoundCastingDeviceEventArgs()
+        {
+            Device = device
+        };
+      };
     }
 
     public async Task<IList<VideoCastingDevice>> FindCastingDevices()
@@ -1724,35 +1502,37 @@ namespace myTube
       YouTubeQuality? nullable = new YouTubeQuality?();
       if (ivideoHandler.SupportsBackgroundAudio || quality != YouTubeQuality.Audio)
         nullable = await ivideoHandler.ChangeQualityOverride(quality);
+
       if (nullable.HasValue)
       {
         ivideoHandler.RequestedQuality = quality;
         ivideoHandler.CurrentQuality = nullable.Value;
-        QualityChangedEventArgs changedEventArgs = new QualityChangedEventArgs()
+
+        ivideoHandler.QualityChanged += (sender, e) =>
         {
-          NewQuality = nullable.Value,
-          OldQuality = current,
-          RequestedQuality = quality,
-          ChangedByUser = changedByUser,
-          Position = pos
+            e = new QualityChangedEventArgs()
+            {
+                NewQuality = nullable.Value,
+                OldQuality = current,
+                RequestedQuality = quality,
+                ChangedByUser = changedByUser,
+                Position = pos
+            };
         };
-        // ISSUE: reference to a compiler-generated field
-        ivideoHandler.QualityChanged?.Invoke(ivideoHandler, changedEventArgs);
       }
       else
       {
-        // ISSUE: reference to a compiler-generated field
-        TypedEventHandler<IVideoHandler, QualityChangedEventArgs> qualityChangeFailed = ivideoHandler.QualityChangeFailed;
-        if (qualityChangeFailed == null)
-          return;
-        qualityChangeFailed.Invoke(ivideoHandler, new QualityChangedEventArgs()
+        ivideoHandler.QualityChangeFailed += (sender, e) =>
         {
-          NewQuality = quality,
-          OldQuality = current,
-          RequestedQuality = quality,
-          ChangedByUser = changedByUser,
-          Position = pos
-        });
+                e = new QualityChangedEventArgs()
+                {
+                    NewQuality = quality,
+                    OldQuality = current,
+                    RequestedQuality = quality,
+                    ChangedByUser = changedByUser,
+                    Position = pos
+                };
+        };
       }
     }
 

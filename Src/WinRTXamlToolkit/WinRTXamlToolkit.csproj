@@ -133,158 +133,87 @@
     <Compile Include="AwaitableUI\EventAsync.cs" />
     <Compile Include="AwaitableUI\FrameworkElementExtensions.cs" />
     <Compile Include="AwaitableUI\MediaElementExtensions.cs" />
-    <Compile Include="AwaitableUI\ScrollViewerExtensions.cs" />
     <Compile Include="AwaitableUI\SelectorExtensions.cs" />
     <Compile Include="AwaitableUI\StoryboardExtensions.cs" />
-    <Compile Include="AwaitableUI\UIElementExtensions.cs" />
     <Compile Include="AwaitableUI\WebViewExtensions.cs" />
     <Compile Include="AwaitableUI\WriteableBitmapExtensions.cs" />
-    <Compile Include="Common\ImplicitDataTemplateSelector.cs" />
-    <Compile Include="Common\ImplicitStyleSelector.cs" />
-    <Compile Include="Common\WeakEventListener`3.cs" />
-    <Compile Include="Controls\AlternativeFrame.cs" />
-    <Compile Include="Controls\AlternativeNavigatingCancelEventArgs.cs" />
-    <Compile Include="Controls\AlternativeNavigatingCancelEventHandler.cs" />
-    <Compile Include="Controls\AlternativeNavigationEventArgs.cs" />
-    <Compile Include="Controls\AlternativeNavigationEventHandler.cs" />
-    <Compile Include="Controls\AlternativePage.cs" />
-    <Compile Include="Controls\AnimatingContainer.cs" />
-    <Compile Include="Controls\AnimationMode.cs" />
-    <Compile Include="Controls\AutoCompleteTextBox.cs" />
-    <Compile Include="Controls\AxisOfFlip.cs" />
+    <Compile Include="Common\WeakEventListener.cs" />
+    <Compile Include="Controls\AlternativeFrame\AlternativeFrame.cs" />
+    <Compile Include="Controls\AlternativeFrame\AlternativeNavigatingCancelEventArgs.cs" />
+    <Compile Include="Controls\AlternativeFrame\AlternativeNavigationEventArgs.cs" />
+    <Compile Include="Controls\AlternativeFrame\AlternativePage.cs" />
+    <Compile Include="Controls\AlternativeFrame\CutTransition.cs" />
+    <Compile Include="Controls\AlternativeFrame\DissolveTransition.cs" />
+    <Compile Include="Controls\AlternativeFrame\Enums.cs" />
+    <Compile Include="Controls\AlternativeFrame\FadeAnimation.cs" />
+    <Compile Include="Controls\AlternativeFrame\FlipAnimation.cs" />
+    <Compile Include="Controls\AlternativeFrame\FlipTransition.cs" />
+    <Compile Include="Controls\AlternativeFrame\JournalEntry.cs" />
+    <Compile Include="Controls\AlternativeFrame\PageTransition.cs" />
+    <Compile Include="Controls\AlternativeFrame\PageTransitionAnimation.cs" />
+    <Compile Include="Controls\AlternativeFrame\PushTransition.cs" />
+    <Compile Include="Controls\AlternativeFrame\SlideAnimation.cs" />
+    <Compile Include="Controls\AlternativeFrame\WipeAnimation.cs" />
+    <Compile Include="Controls\AlternativeFrame\WipeTransition.cs" />
+    <Compile Include="Controls\AnimatingContainer.xaml.cs">
+      <DependentUpon>AnimatingContainer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Behaviors\FlickBehavior.cs" />
     <Compile Include="Controls\Behaviors\HighlightBehavior.cs" />
-    <Compile Include="Controls\Behaviors\ParallaxBackgroundBehavior.cs" />
     <Compile Include="Controls\CameraCaptureControl.cs" />
-    <Compile Include="Controls\CameraInitializationResult.cs" />
-    <Compile Include="Controls\CancelEventHandler.cs" />
-    <Compile Include="Controls\CascadeDirection.cs" />
-    <Compile Include="Controls\CascadeSequence.cs" />
-    <Compile Include="Controls\CascadingImageControl.cs" />
-    <Compile Include="Controls\CascadingTextBlock.cs" />
-    <Compile Include="Controls\ColorPicker.cs" />
-    <Compile Include="Controls\Common\PropertyChangeEventSource`1.cs" />
-    <Compile Include="Controls\CountdownControl.cs" />
+    <Compile Include="Controls\CascadingTextBlock.xaml.cs">
+      <DependentUpon>CascadingTextBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ColorPicker\ColorPicker.cs" />
+    <Compile Include="Controls\ColorPicker\HueRingPicker.cs" />
+    <Compile Include="Controls\ColorPicker\TrianglePicker.cs" />
+    <Compile Include="Controls\CountdownControl.xaml.cs">
+      <DependentUpon>CountdownControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CustomAppBar\CustomAppBar.cs" />
     <Compile Include="Controls\CustomGridSplitter.cs" />
-    <Compile Include="Controls\CutTransition.cs" />
-    <Compile Include="Controls\Data\DataTemplateExtensions.cs" />
     <Compile Include="Controls\Data\HierarchicalDataTemplate.cs" />
-    <Compile Include="Controls\DelayedLoadControl.cs" />
-    <Compile Include="Controls\DirectionOfMotion.cs" />
-    <Compile Include="Controls\DissolveTransition.cs" />
-    <Compile Include="Controls\Dock.cs" />
-    <Compile Include="Controls\DockPanel.cs" />
-    <Compile Include="Controls\DoublePoint.cs" />
+    <Compile Include="Controls\DelayedLoadControl\DelayedLoadControl.cs" />
     <Compile Include="Controls\Extensions\AnimationHelper.cs" />
-    <Compile Include="Controls\Extensions\AutoSelectOnFocusHandler.cs" />
-    <Compile Include="Controls\Extensions\AutoTabOnMaxLengthHandler.cs" />
-    <Compile Include="Controls\Extensions\ButtonBaseExtensions.cs" />
-    <Compile Include="Controls\Extensions\ButtonStateEventBehavior.cs" />
-    <Compile Include="Controls\Extensions\ClipToBoundsHandler.cs" />
+    <Compile Include="Controls\Extensions\AppBarExtensions.cs" />
     <Compile Include="Controls\Extensions\ContentControlExtensions.cs" />
     <Compile Include="Controls\Extensions\ControlExtensions.cs" />
-    <Compile Include="Controls\Extensions\CursorDisplayHandler.cs" />
-    <Compile Include="Controls\Extensions\FadeInOnLoadedHandler.cs" />
-    <Compile Include="Controls\Extensions\FieldValidationExtensions.cs" />
-    <Compile Include="Controls\Extensions\FieldValidationHandler`1.cs" />
-    <Compile Include="Controls\Extensions\Forms\FocusTracker.cs" />
     <Compile Include="Controls\Extensions\FrameworkElementExtensions.cs" />
-    <Compile Include="Controls\Extensions\GridViewBindableSelectionHandler.cs" />
     <Compile Include="Controls\Extensions\GridViewExtensions.cs" />
     <Compile Include="Controls\Extensions\GridViewItemExtensions.cs" />
     <Compile Include="Controls\Extensions\ImageExtensions.cs" />
-    <Compile Include="Controls\Extensions\ImageLoadedTransitionTypes.cs" />
-    <Compile Include="Controls\Extensions\ItemsControlExtensions.cs" />
-    <Compile Include="Controls\Extensions\ListBoxBindableSelectionHandler.cs" />
     <Compile Include="Controls\Extensions\ListBoxExtensions.cs" />
     <Compile Include="Controls\Extensions\ListBoxItemExtensions.cs" />
-    <Compile Include="Controls\Extensions\ListViewBindableSelectionHandler.cs" />
     <Compile Include="Controls\Extensions\ListViewExtensions.cs" />
     <Compile Include="Controls\Extensions\ListViewItemExtensions.cs" />
-    <Compile Include="Controls\Extensions\ManipulationInertiaStartingRoutedEventArgsExtensio.cs" />
     <Compile Include="Controls\Extensions\MessageDialogExtensions.cs" />
-    <Compile Include="Controls\Extensions\PageExtensions.cs" />
-    <Compile Include="Controls\Extensions\PasswordAutoSelectOnFocusHandler.cs" />
-    <Compile Include="Controls\Extensions\PasswordAutoTabOnMaxLengthHandler.cs" />
-    <Compile Include="Controls\Extensions\PasswordBoxFocusExtensions.cs" />
-    <Compile Include="Controls\Extensions\PasswordBoxFormatValidationHandler.cs" />
     <Compile Include="Controls\Extensions\RichTextBlockExtensions.cs" />
-    <Compile Include="Controls\Extensions\ScrollViewerAnimatedScrollHandler.cs" />
     <Compile Include="Controls\Extensions\ScrollViewerExtensions.cs" />
     <Compile Include="Controls\Extensions\StyleExtensions.cs" />
     <Compile Include="Controls\Extensions\TextBlockExtensions.cs" />
-    <Compile Include="Controls\Extensions\TextBoxFocusExtensions.cs" />
     <Compile Include="Controls\Extensions\TextBoxFormatValidationHandler.cs" />
+    <Compile Include="Controls\Extensions\TextBoxValidationExtensions.cs" />
     <Compile Include="Controls\Extensions\UIElementAnimationExtensions.cs" />
-    <Compile Include="Controls\Extensions\ValidationChecks.cs" />
     <Compile Include="Controls\Extensions\ViewboxExtensions.cs" />
-    <Compile Include="Controls\Extensions\VisualStateExtensions.cs" />
     <Compile Include="Controls\Extensions\VisualTreeHelperExtensions.cs" />
     <Compile Include="Controls\Extensions\WebViewExtensions.cs" />
-    <Compile Include="Controls\FadeAnimation.cs" />
-    <Compile Include="Controls\FlipAnimation.cs" />
-    <Compile Include="Controls\FlipTransition.cs" />
-    <Compile Include="Controls\FocusVisualizer.cs" />
-    <Compile Include="Controls\FrameCache.cs" />
-    <Compile Include="Controls\FxContentControl.cs" />
-    <Compile Include="Controls\Fx\AlphaExpandShaderEffect.cs" />
-    <Compile Include="Controls\Fx\BlurShaderEffect.cs" />
-    <Compile Include="Controls\Fx\CpuShaderEffect.cs" />
-    <Compile Include="Controls\GridResizeBehavior.cs" />
-    <Compile Include="Controls\GridResizeDirection.cs" />
-    <Compile Include="Controls\GridSplitterPreviewControl.cs" />
-    <Compile Include="Controls\HeaderedItemsControl.cs" />
-    <Compile Include="Controls\HueRingPicker.cs" />
+    <Compile Include="Controls\HeaderedItemsControl\HeaderedItemsControl.cs" />
+    <Compile Include="Controls\HeaderedItemsControl\ItemsControlHelper.cs" />
     <Compile Include="Controls\ImageButton.cs" />
     <Compile Include="Controls\ImageToggleButton.cs" />
-    <Compile Include="Controls\InputDialog.cs" />
-    <Compile Include="Controls\InteractionHelper.cs" />
-    <Compile Include="Controls\ItemsControlHelper.cs" />
-    <Compile Include="Controls\IToolStripElement.cs" />
-    <Compile Include="Controls\IUpdateVisualState.cs" />
-    <Compile Include="Controls\JournalEntry.cs" />
+    <Compile Include="Controls\InputDialog\InputDialog.cs" />
     <Compile Include="Controls\LayoutTransformControl.cs" />
     <Compile Include="Controls\ListItemButton.cs" />
-    <Compile Include="Controls\NavigationCacheMode.cs" />
-    <Compile Include="Controls\NavigationState.cs" />
-    <Compile Include="Controls\NumericExtensions.cs" />
     <Compile Include="Controls\NumericUpDown.cs" />
-    <Compile Include="Controls\NumericUpDownValueBarVisibility.cs" />
-    <Compile Include="Controls\OrientedSize.cs" />
-    <Compile Include="Controls\PageTransition.cs" />
-    <Compile Include="Controls\PageTransitionAnimation.cs" />
-    <Compile Include="Controls\PageTransitionMode.cs" />
     <Compile Include="Controls\PieSlice.cs" />
-    <Compile Include="Controls\PushTransition.cs" />
+    <Compile Include="Controls\PropertyChangeEventSource.cs" />
     <Compile Include="Controls\RingSlice.cs" />
-    <Compile Include="Controls\RoutedPropertyChangedEventArgs`1.cs" />
-    <Compile Include="Controls\RoutedPropertyChangedEventHandler`1.cs" />
-    <Compile Include="Controls\ScrollExtensions.cs" />
-    <Compile Include="Controls\SimpleThemingListBox.cs" />
-    <Compile Include="Controls\SimpleThemingListBoxItem.cs" />
-    <Compile Include="Controls\SlideAnimation.cs" />
-    <Compile Include="Controls\SquareGrid.cs" />
-    <Compile Include="Controls\ToolBarButton.cs" />
-    <Compile Include="Controls\ToolBarToggleButton.cs" />
-    <Compile Include="Controls\ToolStrip.cs" />
-    <Compile Include="Controls\ToolWindow.cs" />
-    <Compile Include="Controls\TreeView.cs" />
-    <Compile Include="Controls\TreeViewItem.cs" />
-    <Compile Include="Controls\TrianglePicker.cs" />
-    <Compile Include="Controls\UniformGrid.cs" />
-    <Compile Include="Controls\UpDownTextBox.cs" />
-    <Compile Include="Controls\VisualStates.cs" />
-    <Compile Include="Controls\WatermarkPasswordBox.cs" />
+    <Compile Include="Controls\UniformGrid\UniformGrid.cs" />
     <Compile Include="Controls\WatermarkTextBox.cs" />
-    <Compile Include="Controls\WindowEdgeSnapBehavior.cs" />
-    <Compile Include="Controls\WindowMovableArea.cs" />
-    <Compile Include="Controls\WindowStartupLocation.cs" />
-    <Compile Include="Controls\WindowStates.cs" />
-    <Compile Include="Controls\WipeAnimation.cs" />
-    <Compile Include="Controls\WipeTransition.cs" />
-    <Compile Include="Controls\WrapPanel.cs" />
+    <Compile Include="Controls\WebBrowser\WebBrowser.cs" />
+    <Compile Include="Controls\WrapPanel\OrientedSize.cs" />
+    <Compile Include="Controls\WrapPanel\WrapPanel.cs" />
     <Compile Include="Converters\BooleanToDataTemplateConverter.cs" />
-    <Compile Include="Converters\BooleanToDoubleConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\ColorToBrushConverter.cs" />
     <Compile Include="Converters\DoubleToIntConverter.cs" />
@@ -292,14 +221,14 @@
     <Compile Include="Converters\NullableBoolToBoolConverter.cs" />
     <Compile Include="Converters\NullableBoolToVisibilityConverter.cs" />
     <Compile Include="Converters\PolynomialConverter.cs" />
+    <Compile Include="Converters\ProjectionRotationToVisibilityConverter.cs" />
     <Compile Include="Converters\SecondsToTimeSpanStringConverter.cs" />
+    <Compile Include="Device\DeviceHelper.cs" />
+    <Compile Include="Diagnostics\LittleWatson.cs" />
     <Compile Include="Imaging\BitmapImageLoadExtensions.cs" />
     <Compile Include="Imaging\ColorExtensions.cs" />
-    <Compile Include="Imaging\HslColor.cs" />
-    <Compile Include="Imaging\HsvColor.cs" />
     <Compile Include="Imaging\IBufferExtensions.cs" />
     <Compile Include="Imaging\PixelMath.cs" />
-    <Compile Include="Imaging\RenderTargetBitmapSaveExtensions.cs" />
     <Compile Include="Imaging\WriteableBitmapBlitBlockExtensions.cs" />
     <Compile Include="Imaging\WriteableBitmapColorPickerExtensions.cs" />
     <Compile Include="Imaging\WriteableBitmapCopyExtensions.cs" />
@@ -311,45 +240,72 @@
     <Compile Include="Imaging\WriteableBitmapLightenExtension.cs" />
     <Compile Include="Imaging\WriteableBitmapLoadExtensions.cs" />
     <Compile Include="Imaging\WriteableBitmapSaveExtensions.cs" />
-    <Compile Include="Input\Key.cs" />
-    <Compile Include="Input\KeyCombination.cs" />
-    <Compile Include="Input\KeyCommand.cs" />
-    <Compile Include="Input\KeyCommandCollection.cs" />
-    <Compile Include="Input\KeyGesture.cs" />
-    <Compile Include="Input\KeyGestureRecognizer.cs" />
-    <Compile Include="Input\VirtualKeyExtensions.cs" />
     <Compile Include="Interactivity\Behavior.cs" />
     <Compile Include="Interactivity\BehaviorCollection.cs" />
-    <Compile Include="Interactivity\Behavior`1.cs" />
+    <Compile Include="Interactivity\BehaviorOfT.cs" />
     <Compile Include="Interactivity\Interaction.cs" />
     <Compile Include="IO\Extensions\FileNameMimeContentConversion.cs" />
+    <Compile Include="IO\Extensions\StorageFileExtensions.cs" />
     <Compile Include="IO\Extensions\StorageFolderExtensions.cs" />
-    <Compile Include="IO\Extensions\StorageItemExtensions.cs" />
     <Compile Include="IO\Extensions\StringIOExtensions.cs" />
     <Compile Include="IO\ScaledImageFile.cs" />
     <Compile Include="IO\Serialization\JsonSerialization.cs" />
     <Compile Include="IO\Serialization\XmlSerialization.cs" />
+    <Compile Include="Licensing\LicenseHelper.cs" />
     <Compile Include="Net\WebFile.cs" />
     <Compile Include="Net\WebHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="System\Windows\Automation\Peers\TreeViewAutomationPeer.cs" />
-    <Compile Include="System\Windows\Automation\Peers\TreeViewItemAutomationPeer.cs" />
     <Compile Include="Tools\BackgroundTimer.cs" />
-    <Compile Include="Tools\Calculator.cs" />
-    <Compile Include="Tools\EnumerableExtensions.cs" />
     <Compile Include="Tools\EnumExtensions.cs" />
-    <Compile Include="Tools\EventThrottler.cs" />
-    <Compile Include="Tools\EventThrottlerMultiThreaded.cs" />
-    <Compile Include="Tools\MathEx.cs" />
     <Compile Include="Tools\TimeoutCheck.cs" />
     <Compile Include="Tools\TryCatchRetry.cs" />
-    <Compile Include="Tools\TypeExtensions.cs" />
     <EmbeddedResource Include="Properties\WinRTXamlToolkit.rd.xml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\AnimatingContainer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\CascadingTextBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ColorPicker\ColorPicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\CountdownControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\CustomAppBar\CustomAppBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\DelayedLoadControl\DelayedLoadControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\InputDialog\InputDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\WebBrowser\WebBrowser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Async\Credits.txt" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

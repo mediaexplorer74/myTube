@@ -1,310 +1,427 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Imaging.ColorExtensions
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
+﻿//HSL and HSV conversions credits to Wikipedia contributors (http://en.wikipedia.org/wiki/HSL_and_HSV)
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Windows.UI;
-using Windows.UI.Xaml.Markup;
 
 namespace WinRTXamlToolkit.Imaging
 {
-  public static class ColorExtensions
-  {
-    public static int AsInt(this Color color)
+    /// <summary>
+    /// Extension and helper methods for converting color values
+    /// between different RGB data types and different color spaces.
+    /// </summary>
+    public static class ColorExtensions
     {
-      int num = (int) color.A + 1;
-      return (int) color.A << 24 | (int) (byte) ((int) color.R * num >> 8) << 16 | (int) (byte) ((int) color.G * num >> 8) << 8 | (int) (byte) ((int) color.B * num >> 8);
-    }
-
-    public static Color FromString(string c)
-    {
-      Color color;
-      ColorExtensions.FromString(c, true, out color);
-      return color;
-    }
-
-    public static bool TryFromString(string c, out Color color) => ColorExtensions.FromString(c, false, out color);
-
-    private static bool FromString(string c, bool throwOnFail, out Color color)
-    {
-      if (string.IsNullOrEmpty(c))
-      {
-        if (throwOnFail)
-          throw new ArgumentException("Invalid color string.", nameof (c));
-        return false;
-      }
-      if (c[0] == '#')
-      {
-        switch (c.Length)
+        #region AsInt()
+        /// <summary>
+        /// Returns the color value as a premultiplied Int32 - 4 byte ARGB structure.
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public static int AsInt(this Color color)
         {
-          case 4:
-            ushort uint16_1 = Convert.ToUInt16(c.Substring(1), 16);
-            byte num1 = (byte) ((int) uint16_1 >> 8 & 15);
-            byte num2 = (byte) ((int) uint16_1 >> 4 & 15);
-            byte num3 = (byte) ((uint) uint16_1 & 15U);
-            byte r1 = (byte) ((uint) num1 << 4 | (uint) num1);
-            byte g1 = (byte) ((uint) num2 << 4 | (uint) num2);
-            byte b1 = (byte) ((uint) num3 << 4 | (uint) num3);
-            color = Color.FromArgb(byte.MaxValue, r1, g1, b1);
-            return true;
-          case 5:
-            ushort uint16_2 = Convert.ToUInt16(c.Substring(1), 16);
-            byte num4 = (byte) ((uint) uint16_2 >> 12);
-            byte num5 = (byte) ((int) uint16_2 >> 8 & 15);
-            byte num6 = (byte) ((int) uint16_2 >> 4 & 15);
-            byte num7 = (byte) ((uint) uint16_2 & 15U);
-            byte a1 = (byte) ((uint) num4 << 4 | (uint) num4);
-            byte r2 = (byte) ((uint) num5 << 4 | (uint) num5);
-            byte g2 = (byte) ((uint) num6 << 4 | (uint) num6);
-            byte b2 = (byte) ((uint) num7 << 4 | (uint) num7);
-            color = Color.FromArgb(a1, r2, g2, b2);
-            return true;
-          case 7:
-            uint uint32_1 = Convert.ToUInt32(c.Substring(1), 16);
-            byte r3 = (byte) (uint32_1 >> 16 & (uint) byte.MaxValue);
-            byte g3 = (byte) (uint32_1 >> 8 & (uint) byte.MaxValue);
-            byte b3 = (byte) (uint32_1 & (uint) byte.MaxValue);
-            color = Color.FromArgb(byte.MaxValue, r3, g3, b3);
-            return true;
-          case 9:
-            uint uint32_2 = Convert.ToUInt32(c.Substring(1), 16);
-            byte a2 = (byte) (uint32_2 >> 24);
-            byte r4 = (byte) (uint32_2 >> 16 & (uint) byte.MaxValue);
-            byte g4 = (byte) (uint32_2 >> 8 & (uint) byte.MaxValue);
-            byte b4 = (byte) (uint32_2 & (uint) byte.MaxValue);
-            color = Color.FromArgb(a2, r4, g4, b4);
-            return true;
-          default:
-            if (throwOnFail)
-              throw new FormatException(string.Format("The {0} string passed in the c argument is not a recognized Color format.", (object) c));
-            return false;
-        }
-      }
-      else
-      {
-        if (c.Length > 3 && c[0] == 's' && c[1] == 'c' && c[2] == '#')
+            var a = color.A + 1;
+            var col = (color.A << 24)
+                      | ((byte)((color.R * a) >> 8) << 16)
+                      | ((byte)((color.G * a) >> 8) << 8)
+                      | ((byte)((color.B * a) >> 8));
+            return col;
+        } 
+        #endregion
+
+        #region FromRgb()
+        /// <summary>
+        /// Returns a Color based on 0..1 double RGB values.
+        /// </summary>
+        /// <param name="red">The red.</param>
+        /// <param name="green">The green.</param>
+        /// <param name="blue">The blue.</param>
+        /// <returns></returns>
+        public static Color FromRgb(double red, double green, double blue)
         {
-          string[] strArray = c.Split(',');
-          if (strArray.Length == 4)
-          {
-            double num8 = double.Parse(strArray[0].Substring(3));
-            double num9 = double.Parse(strArray[1]);
-            double num10 = double.Parse(strArray[2]);
-            double num11 = double.Parse(strArray[3]);
-            color = Color.FromArgb((byte) (num8 * (double) byte.MaxValue), (byte) (num9 * (double) byte.MaxValue), (byte) (num10 * (double) byte.MaxValue), (byte) (num11 * (double) byte.MaxValue));
-            return true;
-          }
-          if (strArray.Length == 3)
-          {
-            double num12 = double.Parse(strArray[0].Substring(3));
-            double num13 = double.Parse(strArray[1]);
-            double num14 = double.Parse(strArray[2]);
-            color = Color.FromArgb(byte.MaxValue, (byte) (num12 * (double) byte.MaxValue), (byte) (num13 * (double) byte.MaxValue), (byte) (num14 * (double) byte.MaxValue));
-            return true;
-          }
-          if (throwOnFail)
-            throw new FormatException(string.Format("The {0} string passed in the c argument is not a recognized Color format (sc#[scA,]scR,scG,scB).", (object) c));
-          return false;
-        }
-        PropertyInfo declaredProperty = ((Type) typeof (Colors)).GetTypeInfo().GetDeclaredProperty(c);
-        if ((object) declaredProperty != null)
+            return Color.FromArgb(
+                255,
+                (byte)(255.0 * red),
+                (byte)(255.0 * green),
+                (byte)(255.0 * blue));
+        } 
+        #endregion
+
+        #region FromHsl()
+        /// <summary>
+        /// Returns a Color struct based on HSL model.
+        /// </summary>
+        /// <param name="hue">0..360 range hue</param>
+        /// <param name="saturation">0..1 range saturation</param>
+        /// <param name="lightness">0..1 range lightness</param>
+        /// <param name="alpha">0..1 alpha</param>
+        /// <returns></returns>
+        public static Color FromHsl(double hue, double saturation, double lightness, double alpha = 1.0)
         {
-          color = (Color) declaredProperty.GetValue((object) null);
-          return true;
+            double chroma = (1 - Math.Abs(2 * lightness - 1)) * saturation;
+            double h1 = hue / 60;
+            double x = chroma * (1 - Math.Abs(h1 % 2 - 1));
+            double m = lightness - 0.5 * chroma;
+            double r1, g1, b1;
+
+            if (h1 < 1)
+            {
+                r1 = chroma;
+                g1 = x;
+                b1 = 0;
+            }
+            else if (h1 < 2)
+            {
+                r1 = x;
+                g1 = chroma;
+                b1 = 0;
+            }
+            else if (h1 < 3)
+            {
+                r1 = 0;
+                g1 = chroma;
+                b1 = x;
+            }
+            else if (h1 < 4)
+            {
+                r1 = 0;
+                g1 = x;
+                b1 = chroma;
+            }
+            else if (h1 < 5)
+            {
+                r1 = x;
+                g1 = 0;
+                b1 = chroma;
+            }
+            else //if (h1 < 6)
+            {
+                r1 = chroma;
+                g1 = 0;
+                b1 = x;
+            }
+
+            byte r = (byte)(255 * (r1 + m));
+            byte g = (byte)(255 * (g1 + m));
+            byte b = (byte)(255 * (b1 + m));
+            byte a = (byte)(255 * alpha);
+
+            return Color.FromArgb(a, r, g, b);
+        } 
+        #endregion
+
+        #region FromHsv()
+        /// <summary>
+        /// Returns a Color struct based on HSV model.
+        /// </summary>
+        /// <param name="hue">0..360 range hue</param>
+        /// <param name="saturation">0..1 range saturation</param>
+        /// <param name="value">0..1 range value</param>
+        /// <param name="alpha">0..1 alpha</param>
+        /// <returns></returns>
+        public static Color FromHsv(double hue, double saturation, double value, double alpha = 1.0)
+        {
+            double chroma = value * saturation;
+            double h1 = hue / 60;
+            double x = chroma * (1 - Math.Abs(h1 % 2 - 1));
+            double m = value - chroma;
+            double r1, g1, b1;
+
+            if (h1 < 1)
+            {
+                r1 = chroma;
+                g1 = x;
+                b1 = 0;
+            }
+            else if (h1 < 2)
+            {
+                r1 = x;
+                g1 = chroma;
+                b1 = 0;
+            }
+            else if (h1 < 3)
+            {
+                r1 = 0;
+                g1 = chroma;
+                b1 = x;
+            }
+            else if (h1 < 4)
+            {
+                r1 = 0;
+                g1 = x;
+                b1 = chroma;
+            }
+            else if (h1 < 5)
+            {
+                r1 = x;
+                g1 = 0;
+                b1 = chroma;
+            }
+            else //if (h1 < 6)
+            {
+                r1 = chroma;
+                g1 = 0;
+                b1 = x;
+            }
+
+            byte r = (byte)(255 * (r1 + m));
+            byte g = (byte)(255 * (g1 + m));
+            byte b = (byte)(255 * (b1 + m));
+            byte a = (byte)(255 * alpha);
+
+            return Color.FromArgb(a, r, g, b);
+        } 
+        #endregion
+
+        #region ToHsl()
+        /// <summary>
+        /// Converts an RGBA Color the HSL representation.
+        /// </summary>
+        /// <param name="rgba">The rgba.</param>
+        /// <returns></returns>
+        public static HslColor ToHsl(this Color rgba)
+        {
+            const double toDouble = 1.0 / 255;
+            var r = toDouble * rgba.R;
+            var g = toDouble * rgba.G;
+            var b = toDouble * rgba.B;
+            var max = Math.Max(Math.Max(r, g), b);
+            var min = Math.Min(Math.Min(r, g), b);
+            var chroma = max - min;
+            double h1;
+
+// ReSharper disable CompareOfFloatsByEqualityOperator
+            if (chroma == 0)
+            {
+                h1 = 0;
+            }
+            else if (max == r)
+            {
+                h1 = ((g - b) / chroma) % 6;
+            }
+            else if (max == g)
+            {
+                h1 = 2 + (b - r ) / chroma;
+            }
+            else //if (max == b)
+            {
+                h1 = 4 + (r - g ) / chroma;
+            }
+
+            double lightness = 0.5 * (max - min);
+            double saturation = chroma == 0 ? 0 : chroma / (1 - Math.Abs(2 * lightness - 1));
+            HslColor ret;
+            ret.H = 60 * h1;
+            ret.S = saturation;
+            ret.L = lightness;
+            ret.A = toDouble * rgba.A;
+            return ret;
+// ReSharper restore CompareOfFloatsByEqualityOperator
+        } 
+        #endregion
+
+        #region ToHsv()
+        /// <summary>
+        /// Converts an RGBA Color the HSV representation.
+        /// </summary>
+        /// <param name="rgba">The rgba.</param>
+        /// <returns></returns>
+        public static HsvColor ToHsv(this Color rgba)
+        {
+            const double toDouble = 1.0 / 255;
+            var r = toDouble * rgba.R;
+            var g = toDouble * rgba.G;
+            var b = toDouble * rgba.B;
+            var max = Math.Max(Math.Max(r, g), b);
+            var min = Math.Min(Math.Min(r, g), b);
+            var chroma = max - min;
+            double h1;
+
+// ReSharper disable CompareOfFloatsByEqualityOperator
+            if (chroma == 0)
+            {
+                h1 = 0;
+            }
+            else if (max == r)
+            {
+                h1 = ((g - b) / chroma) % 6;
+            }
+            else if (max == g)
+            {
+                h1 = 2 + (b - r) / chroma;
+            }
+            else //if (max == b)
+            {
+                h1 = 4 + (r - g) / chroma;
+            }
+
+            double lightness = 0.5 * (max - min);
+            double saturation = chroma == 0 ? 0 : chroma / (1 - Math.Abs(2 * lightness - 1));
+            HsvColor ret;
+            ret.H = 60 * h1;
+            ret.S = saturation;
+            ret.V = max;
+            ret.A = toDouble * rgba.A;
+            return ret;
+// ReSharper restore CompareOfFloatsByEqualityOperator
         }
-        if (throwOnFail)
-          throw new FormatException(string.Format("The {0} string passed in the c argument is not a recognized Color.", (object) c));
-        return false;
-      }
+        #endregion
+
+        #region IntColorFromBytes()
+        /// <summary>
+        /// Converts four bytes to an Int32 - 4 byte ARGB structure.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="r"></param>
+        /// <param name="g"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static int IntColorFromBytes(byte a, byte r, byte g, byte b)
+        {
+            var col =
+                a << 24
+                | r << 16
+                | g << 8
+                | b;
+            return col;
+        } 
+        #endregion
+
+        #region ToPixels()
+        /// <summary>
+        /// Converts a byte array/pixel buffer into an int array.
+        /// </summary>
+        /// <remarks>
+        /// It might be worth it to avoid the conversion altogether by working directly with bytes,
+        /// but the conversion improves cross-platform portability of the code.
+        /// </remarks>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static int[] ToPixels(this byte[] bytes)
+        {
+            var pixels = new int[bytes.Length >> 2];
+
+            var j = 0;
+            for (int i = 0; i < bytes.Length; i += 4)
+            {
+                pixels[j] =
+                    IntColorFromBytes(
+                        bytes[i + 3],
+                        bytes[i + 2],
+                        bytes[i + 1],
+                        bytes[i + 0]);
+                j++;
+            }
+
+            return pixels;
+        } 
+        #endregion
+
+        #region ToBytes()
+        /// <summary>
+        /// Converts an int array/pixel buffer into a new byte array.
+        /// </summary>
+        /// <param name="pixels"></param>
+        /// <returns></returns>
+        public static byte[] ToBytes(this int[] pixels)
+        {
+            var bytes = new byte[pixels.Length << 2];
+            return pixels.ToBytes(bytes);
+        } 
+
+        /// <summary>
+        /// Copies an int array/pixel buffer into an existing byte array.
+        /// </summary>
+        /// <param name="pixels">Source int pixel buffer</param>
+        /// <param name="bytes">Target byte array</param>
+        /// <returns></returns>
+        public static byte[] ToBytes(this int[] pixels, byte[] bytes)
+        {
+            var j = 0;
+
+            for (int i = 0; i < bytes.Length; i += 4)
+            {
+                bytes[i + 3] = (byte)((pixels[j] >> 24) & 0xff);
+                bytes[i + 2] = (byte)((pixels[j] >> 16) & 0xff);
+                bytes[i + 1] = (byte)((pixels[j] >> 8) & 0xff);
+                bytes[i + 0] = (byte)((pixels[j]) & 0xff);
+                j++;
+            }
+
+            return bytes;
+        } 
+        #endregion
+
+        #region MaxDiff()
+        /// <summary>
+        /// Returns the maximum difference of any of the RGBA byte components of the two int-encoded color values.
+        /// </summary>
+        /// <remarks>
+        /// This is useful in tolerance-enabled image processing algorithms.
+        /// </remarks>
+        /// <param name="pixel">Pixel color</param>
+        /// <param name="color">Color to compare with</param>
+        /// <returns>Maximum difference of any of the RGBA byte components of the two parameters.</returns>
+        public static byte MaxDiff(this int pixel, int color)
+        {
+            //TODO: The bitwise & operators in the first statement don't seem to be necessary
+            byte maxDiff = (byte)Math.Abs(
+                ((pixel >> 24) & 0xff) -
+                ((color >> 24) & 0xff));
+            maxDiff = Math.Max(maxDiff, (byte)Math.Abs(
+                ((pixel >> 16) & 0xff) -
+                ((color >> 16) & 0xff)));
+            maxDiff = Math.Max(maxDiff, (byte)Math.Abs(
+                ((pixel >> 8) & 0xff) -
+                ((color >> 8) & 0xff)));
+            return Math.Max(maxDiff, (byte)Math.Abs(
+                (pixel & 0xff) -
+                (color & 0xff)));
+        }
+        #endregion
     }
 
-    public static Color FromStringUsingXamlReader(string c) => (Color) XamlReader.Load(string.Format("<Color xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">{0}</Color>", (object) c));
-
-    public static Color FromRgb(double red, double green, double blue) => Color.FromArgb(byte.MaxValue, (byte) ((double) byte.MaxValue * red), (byte) ((double) byte.MaxValue * green), (byte) ((double) byte.MaxValue * blue));
-
-    public static Color FromHsl(double hue, double saturation, double lightness, double alpha = 1.0)
+    /// <summary>
+    /// Defines a color in Hue/Saturation/Lightness (HSL) space.
+    /// </summary>
+    public struct HslColor
     {
-      double num1 = (1.0 - Math.Abs(2.0 * lightness - 1.0)) * saturation;
-      double num2 = hue / 60.0;
-      double num3 = num1 * (1.0 - Math.Abs(num2 % 2.0 - 1.0));
-      double num4 = lightness - 0.5 * num1;
-      double num5;
-      double num6;
-      double num7;
-      if (num2 < 1.0)
-      {
-        num5 = num1;
-        num6 = num3;
-        num7 = 0.0;
-      }
-      else if (num2 < 2.0)
-      {
-        num5 = num3;
-        num6 = num1;
-        num7 = 0.0;
-      }
-      else if (num2 < 3.0)
-      {
-        num5 = 0.0;
-        num6 = num1;
-        num7 = num3;
-      }
-      else if (num2 < 4.0)
-      {
-        num5 = 0.0;
-        num6 = num3;
-        num7 = num1;
-      }
-      else if (num2 < 5.0)
-      {
-        num5 = num3;
-        num6 = 0.0;
-        num7 = num1;
-      }
-      else
-      {
-        num5 = num1;
-        num6 = 0.0;
-        num7 = num3;
-      }
-      byte r = (byte) ((double) byte.MaxValue * (num5 + num4));
-      byte g = (byte) ((double) byte.MaxValue * (num6 + num4));
-      byte b = (byte) ((double) byte.MaxValue * (num7 + num4));
-      return Color.FromArgb((byte) ((double) byte.MaxValue * alpha), r, g, b);
+        /// <summary>
+        /// The Hue in 0..360 range.
+        /// </summary>
+        public double H;
+        /// <summary>
+        /// The Saturation in 0..1 range.
+        /// </summary>
+        public double S;
+        /// <summary>
+        /// The Lightness in 0..1 range.
+        /// </summary>
+        public double L;
+        /// <summary>
+        /// The Alpha/opacity in 0..1 range.
+        /// </summary>
+        public double A;
     }
 
-    public static Color FromHsv(double hue, double saturation, double value, double alpha = 1.0)
+    /// <summary>
+    /// Defines a color in Hue/Saturation/Value (HSV) space.
+    /// </summary>
+    public struct HsvColor
     {
-      double num1 = value * saturation;
-      double num2 = hue / 60.0;
-      double num3 = num1 * (1.0 - Math.Abs(num2 % 2.0 - 1.0));
-      double num4 = value - num1;
-      double num5;
-      double num6;
-      double num7;
-      if (num2 < 1.0)
-      {
-        num5 = num1;
-        num6 = num3;
-        num7 = 0.0;
-      }
-      else if (num2 < 2.0)
-      {
-        num5 = num3;
-        num6 = num1;
-        num7 = 0.0;
-      }
-      else if (num2 < 3.0)
-      {
-        num5 = 0.0;
-        num6 = num1;
-        num7 = num3;
-      }
-      else if (num2 < 4.0)
-      {
-        num5 = 0.0;
-        num6 = num3;
-        num7 = num1;
-      }
-      else if (num2 < 5.0)
-      {
-        num5 = num3;
-        num6 = 0.0;
-        num7 = num1;
-      }
-      else
-      {
-        num5 = num1;
-        num6 = 0.0;
-        num7 = num3;
-      }
-      byte r = (byte) ((double) byte.MaxValue * (num5 + num4));
-      byte g = (byte) ((double) byte.MaxValue * (num6 + num4));
-      byte b = (byte) ((double) byte.MaxValue * (num7 + num4));
-      return Color.FromArgb((byte) ((double) byte.MaxValue * alpha), r, g, b);
+        /// <summary>
+        /// The Hue in 0..360 range.
+        /// </summary>
+        public double H;
+        /// <summary>
+        /// The Saturation in 0..1 range.
+        /// </summary>
+        public double S;
+        /// <summary>
+        /// The Value in 0..1 range.
+        /// </summary>
+        public double V;
+        /// <summary>
+        /// The Alpha/opacity in 0..1 range.
+        /// </summary>
+        public double A;
     }
-
-    public static HslColor ToHsl(this Color rgba)
-    {
-      double val1 = 1.0 / (double) byte.MaxValue * (double) rgba.R;
-      double val2_1 = 1.0 / (double) byte.MaxValue * (double) rgba.G;
-      double val2_2 = 1.0 / (double) byte.MaxValue * (double) rgba.B;
-      double num1 = Math.Max(Math.Max(val1, val2_1), val2_2);
-      double num2 = Math.Min(Math.Min(val1, val2_1), val2_2);
-      double num3 = num1 - num2;
-      double num4 = num3 != 0.0 ? (num1 != val1 ? (num1 != val2_1 ? 4.0 + (val1 - val2_1) / num3 : 2.0 + (val2_2 - val1) / num3) : (val2_1 - val2_2) / num3 % 6.0) : 0.0;
-      double num5 = 0.5 * (num1 - num2);
-      double num6 = num3 == 0.0 ? 0.0 : num3 / (1.0 - Math.Abs(2.0 * num5 - 1.0));
-      HslColor hsl;
-      hsl.H = 60.0 * num4;
-      hsl.S = num6;
-      hsl.L = num5;
-      hsl.A = 1.0 / (double) byte.MaxValue * (double) rgba.A;
-      return hsl;
-    }
-
-    public static HsvColor ToHsv(this Color rgba)
-    {
-      double val1 = 1.0 / (double) byte.MaxValue * (double) rgba.R;
-      double val2_1 = 1.0 / (double) byte.MaxValue * (double) rgba.G;
-      double val2_2 = 1.0 / (double) byte.MaxValue * (double) rgba.B;
-      double num1 = Math.Max(Math.Max(val1, val2_1), val2_2);
-      double num2 = Math.Min(Math.Min(val1, val2_1), val2_2);
-      double num3 = num1 - num2;
-      double num4 = num3 != 0.0 ? (num1 != val1 ? (num1 != val2_1 ? 4.0 + (val1 - val2_1) / num3 : 2.0 + (val2_2 - val1) / num3) : (val2_1 - val2_2) / num3 % 6.0) : 0.0;
-      double num5 = 0.5 * (num1 - num2);
-      double num6 = num3 == 0.0 ? 0.0 : num3 / (1.0 - Math.Abs(2.0 * num5 - 1.0));
-      HsvColor hsv;
-      hsv.H = 60.0 * num4;
-      hsv.S = num6;
-      hsv.V = num1;
-      hsv.A = 1.0 / (double) byte.MaxValue * (double) rgba.A;
-      return hsv;
-    }
-
-    public static int IntColorFromBytes(byte a, byte r, byte g, byte b) => (int) a << 24 | (int) r << 16 | (int) g << 8 | (int) b;
-
-    public static int[] ToPixels(this byte[] bytes)
-    {
-      int[] pixels = new int[bytes.Length >> 2];
-      int index1 = 0;
-      for (int index2 = 0; index2 < bytes.Length; index2 += 4)
-      {
-        pixels[index1] = ColorExtensions.IntColorFromBytes(bytes[index2 + 3], bytes[index2 + 2], bytes[index2 + 1], bytes[index2]);
-        ++index1;
-      }
-      return pixels;
-    }
-
-    public static byte[] ToBytes(this int[] pixels)
-    {
-      byte[] bytes = new byte[pixels.Length << 2];
-      return pixels.ToBytes(bytes);
-    }
-
-    public static byte[] ToBytes(this int[] pixels, byte[] bytes)
-    {
-      int index1 = 0;
-      for (int index2 = 0; index2 < bytes.Length; index2 += 4)
-      {
-        bytes[index2 + 3] = (byte) (pixels[index1] >> 24 & (int) byte.MaxValue);
-        bytes[index2 + 2] = (byte) (pixels[index1] >> 16 & (int) byte.MaxValue);
-        bytes[index2 + 1] = (byte) (pixels[index1] >> 8 & (int) byte.MaxValue);
-        bytes[index2] = (byte) (pixels[index1] & (int) byte.MaxValue);
-        ++index1;
-      }
-      return bytes;
-    }
-
-    public static byte MaxDiff(this int pixel, int color) => Math.Max(Math.Max(Math.Max((byte) Math.Abs((pixel >> 24 & (int) byte.MaxValue) - (color >> 24 & (int) byte.MaxValue)), (byte) Math.Abs((pixel >> 16 & (int) byte.MaxValue) - (color >> 16 & (int) byte.MaxValue))), (byte) Math.Abs((pixel >> 8 & (int) byte.MaxValue) - (color >> 8 & (int) byte.MaxValue))), (byte) Math.Abs((pixel & (int) byte.MaxValue) - (color & (int) byte.MaxValue)));
-
-    public static List<Color> GetNamedColors() => ((Type) typeof (Colors)).GetTypeInfo().DeclaredProperties.Select<PropertyInfo, Color>((Func<PropertyInfo, Color>) (pi => (Color) pi.GetValue((object) null))).ToList<Color>();
-
-    public static List<string> GetColorNames() => ((Type) typeof (Colors)).GetTypeInfo().DeclaredProperties.Select<PropertyInfo, string>((Func<PropertyInfo, string>) (pi => pi.Name)).ToList<string>();
-  }
 }

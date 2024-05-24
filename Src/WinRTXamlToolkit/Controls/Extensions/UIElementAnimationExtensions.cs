@@ -1,102 +1,195 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Controls.Extensions.UIElementAnimationExtensions
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Threading.Tasks;
+using WinRTXamlToolkit.AwaitableUI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Animation;
-using WinRTXamlToolkit.AwaitableUI;
 
 namespace WinRTXamlToolkit.Controls.Extensions
 {
-  public static class UIElementAnimationExtensions
-  {
-    public static readonly DependencyProperty AttachedFadeStoryboardProperty = DependencyProperty.RegisterAttached("AttachedFadeStoryboard", (Type) typeof (Storyboard), (Type) typeof (UIElementAnimationExtensions), new PropertyMetadata((object) null, new PropertyChangedCallback(UIElementAnimationExtensions.OnAttachedFadeStoryboardChanged)));
-
-    private static Storyboard GetAttachedFadeStoryboard(DependencyObject d) => (Storyboard) d.GetValue(UIElementAnimationExtensions.AttachedFadeStoryboardProperty);
-
-    private static void SetAttachedFadeStoryboard(DependencyObject d, Storyboard value) => d.SetValue(UIElementAnimationExtensions.AttachedFadeStoryboardProperty, (object) value);
-
-    private static void OnAttachedFadeStoryboardChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
+    /// <summary>
+    /// Extension methods and attached properties for UIElement class.
+    /// </summary>
+    public static class UIElementAnimationExtensions
     {
-      Storyboard oldValue = (Storyboard) e.OldValue;
-      Storyboard storyboard = (Storyboard) d.GetValue(UIElementAnimationExtensions.AttachedFadeStoryboardProperty);
-    }
+        #region AttachedFadeStoryboard
+        /// <summary>
+        /// AttachedFadeStoryboard Attached Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty AttachedFadeStoryboardProperty =
+            DependencyProperty.RegisterAttached(
+                "AttachedFadeStoryboard",
+                typeof(Storyboard),
+                typeof(UIElementAnimationExtensions),
+                new PropertyMetadata(null, OnAttachedFadeStoryboardChanged));
 
-    public static async Task FadeIn(this UIElement element, TimeSpan? duration = null)
-    {
-      element.put_Visibility((Visibility) 0);
-      Storyboard fadeInStoryboard = new Storyboard();
-      FadeInThemeAnimation fadeInAnimation = new FadeInThemeAnimation();
-      if (duration.HasValue)
-        ((Timeline) fadeInAnimation).put_Duration((Duration) (TimeSpan) duration.Value);
-      Storyboard.SetTarget((Timeline) fadeInAnimation, (DependencyObject) element);
-      ((ICollection<Timeline>) fadeInStoryboard.Children).Add((Timeline) fadeInAnimation);
-      await fadeInStoryboard.BeginAsync();
-    }
+        /// <summary>
+        /// Gets the AttachedFadeStoryboard property. This dependency property 
+        /// indicates the currently running custom fade in/out storyboard.
+        /// </summary>
+        private static Storyboard GetAttachedFadeStoryboard(DependencyObject d)
+        {
+            return (Storyboard)d.GetValue(AttachedFadeStoryboardProperty);
+        }
 
-    public static async Task FadeOut(this UIElement element, TimeSpan? duration = null)
-    {
-      Storyboard fadeOutStoryboard = new Storyboard();
-      FadeOutThemeAnimation fadeOutAnimation = new FadeOutThemeAnimation();
-      if (duration.HasValue)
-        ((Timeline) fadeOutAnimation).put_Duration((Duration) (TimeSpan) duration.Value);
-      Storyboard.SetTarget((Timeline) fadeOutAnimation, (DependencyObject) element);
-      ((ICollection<Timeline>) fadeOutStoryboard.Children).Add((Timeline) fadeOutAnimation);
-      await fadeOutStoryboard.BeginAsync();
-    }
+        /// <summary>
+        /// Sets the AttachedFadeStoryboard property. This dependency property 
+        /// indicates the currently running custom fade in/out storyboard.
+        /// </summary>
+        private static void SetAttachedFadeStoryboard(DependencyObject d, Storyboard value)
+        {
+            d.SetValue(AttachedFadeStoryboardProperty, value);
+        }
 
-    public static async Task FadeInCustom(
-      this UIElement element,
-      TimeSpan? duration = null,
-      EasingFunctionBase easingFunction = null,
-      double targetOpacity = 1.0)
-    {
-      element.CleanUpPreviousFadeStoryboard();
-      Storyboard fadeInStoryboard = new Storyboard();
-      DoubleAnimation fadeInAnimation = new DoubleAnimation();
-      if (!duration.HasValue)
-        duration = new TimeSpan?(TimeSpan.FromSeconds(0.4));
-      ((Timeline) fadeInAnimation).put_Duration((Duration) (TimeSpan) duration.Value);
-      fadeInAnimation.put_To((double?) new double?(targetOpacity));
-      fadeInAnimation.put_EasingFunction(easingFunction);
-      Storyboard.SetTarget((Timeline) fadeInAnimation, (DependencyObject) element);
-      Storyboard.SetTargetProperty((Timeline) fadeInAnimation, "Opacity");
-      ((ICollection<Timeline>) fadeInStoryboard.Children).Add((Timeline) fadeInAnimation);
-      UIElementAnimationExtensions.SetAttachedFadeStoryboard((DependencyObject) element, fadeInStoryboard);
-      await fadeInStoryboard.BeginAsync();
-      element.put_Opacity(targetOpacity);
-      fadeInStoryboard.Stop();
-    }
+        /// <summary>
+        /// Handles changes to the AttachedFadeStoryboard property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static void OnAttachedFadeStoryboardChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            Storyboard oldAttachedFadeStoryboard = (Storyboard)e.OldValue;
+            Storyboard newAttachedFadeStoryboard = (Storyboard)d.GetValue(AttachedFadeStoryboardProperty);
+        }
+        #endregion
 
-    public static async Task FadeOutCustom(
-      this UIElement element,
-      TimeSpan? duration = null,
-      EasingFunctionBase easingFunction = null)
-    {
-      element.CleanUpPreviousFadeStoryboard();
-      Storyboard fadeOutStoryboard = new Storyboard();
-      DoubleAnimation fadeOutAnimation = new DoubleAnimation();
-      if (!duration.HasValue)
-        duration = new TimeSpan?(TimeSpan.FromSeconds(0.4));
-      ((Timeline) fadeOutAnimation).put_Duration((Duration) (TimeSpan) duration.Value);
-      fadeOutAnimation.put_To((double?) new double?(0.0));
-      fadeOutAnimation.put_EasingFunction(easingFunction);
-      Storyboard.SetTarget((Timeline) fadeOutAnimation, (DependencyObject) element);
-      Storyboard.SetTargetProperty((Timeline) fadeOutAnimation, "Opacity");
-      ((ICollection<Timeline>) fadeOutStoryboard.Children).Add((Timeline) fadeOutAnimation);
-      UIElementAnimationExtensions.SetAttachedFadeStoryboard((DependencyObject) element, fadeOutStoryboard);
-      await fadeOutStoryboard.BeginAsync();
-      element.put_Opacity(0.0);
-      fadeOutStoryboard.Stop();
-    }
+        #region FadeIn()
+        /// <summary>
+        /// Fades the element in using the FadeInThemeAnimation.
+        /// </summary>
+        /// <remarks>
+        /// Opacity property of the element is not affected.<br/>
+        /// The duration of the visible animation itself is not affected by the duration parameter. It merely indicates how long the Storyboard will run.<br/>
+        /// If FadeOutThemeAnimation was not used on the element before - nothing will happen.<br/>
+        /// </remarks>
+        /// <param name="element"></param>
+        /// <param name="duration"></param>
+        /// <returns></returns>
+        public static async Task FadeIn(this UIElement element, TimeSpan? duration = null)
+        {
+            ((FrameworkElement)element).Visibility = Visibility.Visible;
+            var fadeInStoryboard = new Storyboard();
+            var fadeInAnimation = new FadeInThemeAnimation();
 
-    public static void CleanUpPreviousFadeStoryboard(this UIElement element) => UIElementAnimationExtensions.GetAttachedFadeStoryboard((DependencyObject) element)?.Stop();
-  }
+            if (duration != null)
+            {
+                fadeInAnimation.Duration = duration.Value;
+            }
+
+            Storyboard.SetTarget(fadeInAnimation, element);
+            fadeInStoryboard.Children.Add(fadeInAnimation);
+            await fadeInStoryboard.BeginAsync();
+        } 
+        #endregion
+
+        #region FadeOut()
+        /// <summary>
+        /// Fades the element out using the FadeOutThemeAnimation.
+        /// </summary>
+        /// <remarks>
+        /// Opacity property of the element is not affected.<br/>
+        /// The duration of the visible animation itself is not affected by the duration parameter. It merely indicates how long the Storyboard will run.<br/>
+        /// If FadeOutThemeAnimation was already run before and FadeInThemeAnimation was not run after that - nothing will happen.<br/>
+        /// </remarks>
+        /// <param name="element"></param>
+        /// <param name="duration"></param>
+        /// <returns></returns>
+        public static async Task FadeOut(this UIElement element, TimeSpan? duration = null)
+        {
+            var fadeOutStoryboard = new Storyboard();
+            var fadeOutAnimation = new FadeOutThemeAnimation();
+
+            if (duration != null)
+            {
+                fadeOutAnimation.Duration = duration.Value;
+            }
+
+            Storyboard.SetTarget(fadeOutAnimation, element);
+            fadeOutStoryboard.Children.Add(fadeOutAnimation);
+            await fadeOutStoryboard.BeginAsync();
+        } 
+        #endregion
+
+        #region FadeInCustom()
+        /// <summary>
+        /// Fades the element in using a custom DoubleAnimation of the Opacity property.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="duration"></param>
+        /// <param name="easingFunction"> </param>
+        /// <returns></returns>
+        public static async Task FadeInCustom(this UIElement element, TimeSpan? duration = null, EasingFunctionBase easingFunction = null, double targetOpacity = 1.0)
+        {
+            CleanUpPreviousFadeStoryboard(element);
+
+            var fadeInStoryboard = new Storyboard();
+            var fadeInAnimation = new DoubleAnimation();
+
+            if (duration == null)
+                duration = TimeSpan.FromSeconds(0.4);
+
+            fadeInAnimation.Duration = duration.Value;
+            fadeInAnimation.To = targetOpacity;
+            fadeInAnimation.EasingFunction = easingFunction;
+
+            Storyboard.SetTarget(fadeInAnimation, element);
+            Storyboard.SetTargetProperty(fadeInAnimation, "Opacity");
+            fadeInStoryboard.Children.Add(fadeInAnimation);
+            SetAttachedFadeStoryboard(element, fadeInStoryboard);
+            await fadeInStoryboard.BeginAsync();
+            element.Opacity = targetOpacity;
+            fadeInStoryboard.Stop();
+        }
+        #endregion
+
+        #region FadeOutCustom()
+        /// <summary>
+        /// Fades the element out using a custom DoubleAnimation of the Opacity property.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="duration"></param>
+        /// <param name="easingFunction"> </param>
+        /// <returns></returns>
+        public static async Task FadeOutCustom(this UIElement element, TimeSpan? duration = null, EasingFunctionBase easingFunction = null)
+        {
+            CleanUpPreviousFadeStoryboard(element); 
+            
+            var fadeOutStoryboard = new Storyboard();
+            var fadeOutAnimation = new DoubleAnimation();
+
+            if (duration == null)
+                duration = TimeSpan.FromSeconds(0.4);
+
+            fadeOutAnimation.Duration = duration.Value;
+            fadeOutAnimation.To = 0.0;
+            fadeOutAnimation.EasingFunction = easingFunction;
+
+            Storyboard.SetTarget(fadeOutAnimation, element);
+            Storyboard.SetTargetProperty(fadeOutAnimation, "Opacity");
+            fadeOutStoryboard.Children.Add(fadeOutAnimation);
+            SetAttachedFadeStoryboard(element, fadeOutStoryboard);
+            await fadeOutStoryboard.BeginAsync();
+            element.Opacity = 0.0;
+            fadeOutStoryboard.Stop();
+        } 
+        #endregion
+
+        #region CleanUpPreviousFadeStoryboard()
+        public static void CleanUpPreviousFadeStoryboard(this UIElement element)
+        {
+            var attachedFadeStoryboard = GetAttachedFadeStoryboard(element);
+
+            if (attachedFadeStoryboard != null)
+            {
+                attachedFadeStoryboard.Stop();
+            }
+        }
+        #endregion
+    }
 }

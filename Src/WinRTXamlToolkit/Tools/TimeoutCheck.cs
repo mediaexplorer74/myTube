@@ -1,96 +1,180 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Tools.TimeoutCheck
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
+﻿using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 
 namespace WinRTXamlToolkit.Tools
 {
-  public class TimeoutCheck : IDisposable
-  {
-    private readonly DispatcherTimer _timeoutTimer;
-    private CoreDispatcher _dispatcher;
-
-    public bool ThrowOnTimeout { get; set; }
-
-    public bool BreakOnTimeout { get; set; }
-
-    public bool AttachOnTimeout { get; set; }
-
-    public bool DebugOnly { get; set; }
-
-    public object Subject { get; set; }
-
-    public event EventHandler<object> Timeout;
-
-    public TimeSpan Interval
+    /// <summary>
+    /// Allows to mark a specific async block as one that can time out.
+    /// </summary>
+    public class TimeoutCheck : IDisposable
     {
-      get => (TimeSpan) this._timeoutTimer.Interval;
-      set => this._timeoutTimer.put_Interval((TimeSpan) value);
+        private readonly DispatcherTimer _timeoutTimer;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether a TimeoutException
+        /// should be thrown when timeout occurs.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if TimeoutException should be thrown on timeout; otherwise, <c>false</c>.
+        /// </value>
+        public bool ThrowOnTimeout { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether execution should break when timeout occurs.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if debugger should break on timeout; otherwise, <c>false</c>.
+        /// </value>
+        public bool BreakOnTimeout { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether debugger should get attached and break when timeout occurs.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if debugger should get atteched on timeout; otherwise, <c>false</c>.
+        /// </value>
+        public bool AttachOnTimeout { get; set; }
+
+        /// <summary>
+        /// If true - in release build configuration only the Timeout event will be raised when timeout occurs.
+        /// </summary>
+        public bool DebugOnly { get; set; }
+
+        /// <summary>
+        /// Gets or sets the subject of the timeout to use in reporting the timeout itself.
+        /// </summary>
+        /// <value>
+        /// The subject.
+        /// </value>
+        public object Subject { get; set; }
+
+        /// <summary>
+        /// Occurs when timeout occurs.
+        /// </summary>
+        public event EventHandler<object> Timeout;
+
+        /// <summary>
+        /// Gets or sets timeout interval.
+        /// </summary>
+        /// <value>
+        /// The timeout interval.
+        /// </value>
+        public TimeSpan Interval
+        {
+            get
+            {
+                return _timeoutTimer.Interval;
+            }
+            set
+            {
+                _timeoutTimer.Interval = value;
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TimeoutCheck" /> class.
+        /// </summary>
+        /// <param name="subject">The subject.</param>
+        /// <param name="timeoutInMilliseconds">The timeout in milliseconds.</param>
+        /// <param name="autoStart">if set to <c>true</c> - timeout check will start automatically.</param>
+        public TimeoutCheck(object subject, int timeoutInMilliseconds = 1000, bool autoStart = true)
+        {
+            Debug.Assert(subject != null);
+
+            this.DebugOnly = true;
+            this.BreakOnTimeout = true;
+#if DEBUG
+            this.AttachOnTimeout = true;
+#endif
+            this.Subject = subject;
+            _timeoutTimer = new DispatcherTimer();
+            _timeoutTimer.Tick += OnTimeout;
+            this.Interval = TimeSpan.FromMilliseconds(timeoutInMilliseconds);
+
+            if (autoStart)
+            {
+                Start();
+            }
+        }
+
+        private void OnTimeout(object sender, object o)
+        {
+            var timeoutHandler = Timeout;
+
+            if (timeoutHandler != null)
+            {
+                timeoutHandler(this, this.Subject);
+            }
+
+            if (!this.DebugOnly
+#if DEBUG
+                || true
+#endif
+                )
+            {
+                if (this.BreakOnTimeout && Debugger.IsAttached)
+                {
+                    Debugger.Break();
+                }
+                else if (this.AttachOnTimeout)
+                {
+                    Debugger.Launch();
+                }
+                else if (this.ThrowOnTimeout)
+                {
+                    throw new TimeoutException("Timeout occured for " + this.Subject);
+                }
+            }
+        }
+
+        private CoreDispatcher _dispatcher;
+
+        /// <summary>
+        /// Starts a timeout check.
+        /// </summary>
+        public void Start()
+        {
+            _dispatcher = Window.Current.Dispatcher;
+            _timeoutTimer.Start();
+        }
+
+        /// <summary>
+        /// Stops the timeout check.
+        /// </summary>
+        /// <remarks>
+        /// Typically called when an awaited operation completes before the timeout.
+        /// </remarks>
+        public void Stop()
+        {
+            if (_dispatcher.HasThreadAccess)
+            {
+                _timeoutTimer.Stop();
+            }
+            else
+            {
+                _dispatcher.RunAsync(CoreDispatcherPriority.High, Stop);
+            }
+        }
+
+        ~TimeoutCheck()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(Boolean disposing)
+        {
+            Stop();
+        }
     }
-
-    public TimeoutCheck(object subject, int timeoutInMilliseconds = 1000, bool autoStart = true)
-    {
-      this.DebugOnly = true;
-      this.BreakOnTimeout = true;
-      this.Subject = subject;
-      this._timeoutTimer = new DispatcherTimer();
-      DispatcherTimer timeoutTimer = this._timeoutTimer;
-      WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>((Func<EventHandler<object>, EventRegistrationToken>) new Func<EventHandler<object>, EventRegistrationToken>(timeoutTimer.add_Tick), (Action<EventRegistrationToken>) new Action<EventRegistrationToken>(timeoutTimer.remove_Tick), new EventHandler<object>(this.OnTimeout));
-      this.Interval = TimeSpan.FromMilliseconds((double) timeoutInMilliseconds);
-      if (!autoStart)
-        return;
-      this.Start();
-    }
-
-    private void OnTimeout(object sender, object o)
-    {
-      EventHandler<object> timeout = this.Timeout;
-      if (timeout != null)
-        timeout((object) this, this.Subject);
-      if (this.DebugOnly)
-        return;
-      if (this.BreakOnTimeout && Debugger.IsAttached)
-        Debugger.Break();
-      else if (this.AttachOnTimeout)
-        Debugger.Launch();
-      else if (this.ThrowOnTimeout)
-        throw new TimeoutException("Timeout occured for " + this.Subject);
-    }
-
-    public void Start()
-    {
-      this._dispatcher = Window.Current.Dispatcher;
-      this._timeoutTimer.Start();
-    }
-
-    public void Stop()
-    {
-      if (this._dispatcher.HasThreadAccess)
-      {
-        this._timeoutTimer.Stop();
-      }
-      else
-      {
-        // ISSUE: method pointer
-        this._dispatcher.RunAsync((CoreDispatcherPriority) 1, new DispatchedHandler((object) this, __methodptr(Stop)));
-      }
-    }
-
-    ~TimeoutCheck() => this.Dispose(false);
-
-    public void Dispose()
-    {
-      this.Dispose(true);
-      GC.SuppressFinalize((object) this);
-    }
-
-    protected void Dispose(bool disposing) => this.Stop();
-  }
 }

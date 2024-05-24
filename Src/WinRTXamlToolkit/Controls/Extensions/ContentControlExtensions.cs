@@ -1,74 +1,116 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WinRTXamlToolkit.Controls.Extensions.ContentControlExtensions
-// Assembly: WinRTXamlToolkit, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 6647FB17-44D2-42F4-B473-555AE27B4E34
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\WinRTXamlToolkit.dll
-
-using System;
+﻿using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace WinRTXamlToolkit.Controls.Extensions
 {
-  public static class ContentControlExtensions
-  {
-    public static readonly DependencyProperty FadeTransitioningContentTemplateProperty = DependencyProperty.RegisterAttached("FadeTransitioningContentTemplate", (Type) typeof (DataTemplate), (Type) typeof (ContentControlExtensions), new PropertyMetadata((object) null, new PropertyChangedCallback(ContentControlExtensions.OnFadeTransitioningContentTemplateChanged)));
-    public static readonly DependencyProperty FadeInTransitioningContentTemplateProperty = DependencyProperty.RegisterAttached("FadeInTransitioningContentTemplate", (Type) typeof (DataTemplate), (Type) typeof (ContentControlExtensions), new PropertyMetadata((object) null, new PropertyChangedCallback(ContentControlExtensions.OnFadeInTransitioningContentTemplateChanged)));
-
-    public static DataTemplate GetFadeTransitioningContentTemplate(DependencyObject d) => (DataTemplate) d.GetValue(ContentControlExtensions.FadeTransitioningContentTemplateProperty);
-
-    public static void SetFadeTransitioningContentTemplate(DependencyObject d, DataTemplate value) => d.SetValue(ContentControlExtensions.FadeTransitioningContentTemplateProperty, (object) value);
-
-    private static async void OnFadeTransitioningContentTemplateChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
+    /// <summary>
+    /// Extensions/attached properties for a ContentControl
+    /// </summary>
+    public static class ContentControlExtensions
     {
-      DataTemplate oldValue = (DataTemplate) e.OldValue;
-      DataTemplate newFadeTransitioningContentTemplate = (DataTemplate) d.GetValue(ContentControlExtensions.FadeTransitioningContentTemplateProperty);
-      ContentControl control = (ContentControl) d;
-      await ((UIElement) control).FadeOut();
-      control.put_ContentTemplate(newFadeTransitioningContentTemplate);
-      await ((UIElement) control).FadeIn();
+        #region FadeTransitioningContentTemplate
+        /// <summary>
+        /// FadeTransitioningContentTemplate Attached Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty FadeTransitioningContentTemplateProperty =
+            DependencyProperty.RegisterAttached(
+                "FadeTransitioningContentTemplate",
+                typeof(DataTemplate),
+                typeof(ContentControlExtensions),
+                new PropertyMetadata(null, OnFadeTransitioningContentTemplateChanged));
+
+        /// <summary>
+        /// Gets the FadeTransitioningContentTemplate property. This dependency property 
+        /// indicates the value to set the ContentTemplate to between fade out/fade in transitions.
+        /// </summary>
+        public static DataTemplate GetFadeTransitioningContentTemplate(DependencyObject d)
+        {
+            return (DataTemplate)d.GetValue(FadeTransitioningContentTemplateProperty);
+        }
+
+        /// <summary>
+        /// Sets the FadeTransitioningContentTemplate property. This dependency property 
+        /// indicates the value to set the ContentTemplate to between fade out/fade in transitions.
+        /// </summary>
+        public static void SetFadeTransitioningContentTemplate(DependencyObject d, DataTemplate value)
+        {
+            d.SetValue(FadeTransitioningContentTemplateProperty, value);
+        }
+
+        /// <summary>
+        /// Handles changes to the FadeTransitioningContentTemplate property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static async void OnFadeTransitioningContentTemplateChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            DataTemplate oldFadeTransitioningContentTemplate = (DataTemplate)e.OldValue;
+            DataTemplate newFadeTransitioningContentTemplate = (DataTemplate)d.GetValue(FadeTransitioningContentTemplateProperty);
+            var control = (ContentControl)d;
+            await control.FadeOut();
+            control.ContentTemplate = newFadeTransitioningContentTemplate;
+            await control.FadeIn();
+        }
+        #endregion
+
+        #region FadeInTransitioningContentTemplate
+        /// <summary>
+        /// FadeInTransitioningContentTemplate Attached Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty FadeInTransitioningContentTemplateProperty =
+            DependencyProperty.RegisterAttached(
+                "FadeInTransitioningContentTemplate",
+                typeof(DataTemplate),
+                typeof(ContentControlExtensions),
+                new PropertyMetadata(null, OnFadeInTransitioningContentTemplateChanged));
+
+        /// <summary>
+        /// Gets the FadeInTransitioningContentTemplate property. This dependency property 
+        /// indicates the value to set the ContentTemplate to between fade out/fade in transitions.
+        /// </summary>
+        public static DataTemplate GetFadeInTransitioningContentTemplate(DependencyObject d)
+        {
+            return (DataTemplate)d.GetValue(FadeInTransitioningContentTemplateProperty);
+        }
+
+        /// <summary>
+        /// Sets the FadeInTransitioningContentTemplate property. This dependency property 
+        /// indicates the value to set the ContentTemplate to between fade out/fade in transitions.
+        /// </summary>
+        public static void SetFadeInTransitioningContentTemplate(DependencyObject d, DataTemplate value)
+        {
+            d.SetValue(FadeInTransitioningContentTemplateProperty, value);
+        }
+
+        /// <summary>
+        /// Handles changes to the FadeInTransitioningContentTemplate property.
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> on which
+        /// the property has changed value.
+        /// </param>
+        /// <param name="e">
+        /// Event data that is issued by any event that
+        /// tracks changes to the effective value of this property.
+        /// </param>
+        private static async void OnFadeInTransitioningContentTemplateChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            DataTemplate oldFadeInTransitioningContentTemplate = (DataTemplate)e.OldValue;
+            DataTemplate newFadeInTransitioningContentTemplate = (DataTemplate)d.GetValue(FadeTransitioningContentTemplateProperty);
+            var control = (ContentControl)d;
+            await control.FadeOut(TimeSpan.FromSeconds(0));
+            control.ContentTemplate = newFadeInTransitioningContentTemplate;
+            await control.FadeIn();
+        }
+        #endregion
     }
-
-    public static DataTemplate GetFadeInTransitioningContentTemplate(DependencyObject d) => (DataTemplate) d.GetValue(ContentControlExtensions.FadeInTransitioningContentTemplateProperty);
-
-    public static void SetFadeInTransitioningContentTemplate(DependencyObject d, DataTemplate value) => d.SetValue(ContentControlExtensions.FadeInTransitioningContentTemplateProperty, (object) value);
-
-    private static async void OnFadeInTransitioningContentTemplateChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      DataTemplate oldValue = (DataTemplate) e.OldValue;
-      DataTemplate newFadeInTransitioningContentTemplate = (DataTemplate) d.GetValue(ContentControlExtensions.FadeTransitioningContentTemplateProperty);
-      ContentControl control = (ContentControl) d;
-      await ((UIElement) control).FadeOut(new TimeSpan?(TimeSpan.FromSeconds(0.0)));
-      control.put_ContentTemplate(newFadeInTransitioningContentTemplate);
-      await ((UIElement) control).FadeIn();
-    }
-
-    public static void PrepareContentControl(
-      this ContentControl @this,
-      object item,
-      DataTemplate itemTemplate,
-      DataTemplateSelector itemTemplateSelector)
-    {
-      if (item == @this)
-        return;
-      if (!((DependencyObject) @this).HasNonDefaultValue(ContentControl.ContentProperty))
-        @this.put_Content(item);
-      if (itemTemplate != null)
-        ((DependencyObject) @this).SetValue(ContentControl.ContentTemplateProperty, (object) itemTemplate);
-      if (itemTemplateSelector == null)
-        return;
-      ((DependencyObject) @this).SetValue(ContentControl.ContentTemplateSelectorProperty, (object) itemTemplateSelector);
-    }
-
-    public static void ClearContentControl(this ContentControl @this, object item)
-    {
-      if (item == @this)
-        return;
-      ((DependencyObject) @this).ClearValue(ContentControl.ContentProperty);
-    }
-  }
 }
