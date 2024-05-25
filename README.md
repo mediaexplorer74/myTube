@@ -1,8 +1,9 @@
 # myTube
-Old myTube for WP8.1 R.E.
+myTube 2.x for WP8.1 RnD
 
-## Screenshot (the original appx used)
+## Design&Screenshots
 ![](Images/shot01.png)
+![](Images/shot02.png)
 
 ## About the original
 MyTube is the (a) famous Toutube UWP client / application that using Youtube API from google. 
@@ -13,17 +14,32 @@ Sadly, its W10M developing stopped... and some bugs are critial :(
 - Fast code/architecture research
 - WP8 -> W10M code "rebase" ("refactor.") - 15 % only  
 
-## Result
-- Draft / Damaged
-- Idk how to finish this work... Experienced developer help needed
+## Architecture
+- myTube
+- myTubeAppLibrary
+- RykenTubeWinRT
+- WinRTXamlToolkit
+- XMLHelper
+- CloudClasses
+- Windows10TileTask (R.E. of some myTube 3.x)
+- WatsonRegistrationUtility (R.E. of some myTube 3.x)
+- ToastActionBackgroundTask (R.E. of some myTube 3.x)
+- ChannelNotificationsTask (R.E. of some myTube 3.x)
+- BackgroundAudio (R.E. of some myTube 3.x)
+- TestFramework
 
-## Credits / License
-- https://github.com/Ryken100 Ryken Studio 
-- https://github.com/Ryken100/mytube myTube repo without any src codes
-- MIT
+## Progress
+- Draft / Damaged
+- Idk how to finish this work... More experienced developer's help needed!
+
+## License / Credits
+- MIT  
+- https://github.com/Ryken100 Christopher Blackman aka Ryken (Ryken Studio) 
+- https://github.com/Ryken100/mytube empty repo (in memorry of myTube?...)
+
 
 ## ..
 As is. No support. RnD only. DIY
 
 ## .
-[m][e] 2023
+[m][e] 2024

@@ -1,0 +1,365 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4F5FCA6D-3EF7-400A-9F9C-610D3AC0098D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WinRTXamlToolkit</RootNamespace>
+    <AssemblyName>WinRTXamlToolkit</AssemblyName>
+    <DefaultLanguage>ru-RU</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <OutputPath>bin\ARM64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Async\AsyncAutoResetEvent.cs" />
+    <Compile Include="Async\AsyncBarrier.cs" />
+    <Compile Include="Async\AsyncCountdownEvent.cs" />
+    <Compile Include="Async\AsyncLock.cs" />
+    <Compile Include="Async\AsyncManualResetEvent.cs" />
+    <Compile Include="Async\AsyncReaderWriterLock.cs" />
+    <Compile Include="Async\AsyncSemaphore.cs" />
+    <Compile Include="AwaitableUI\BitmapImageExtensions.cs" />
+    <Compile Include="AwaitableUI\ButtonExtensions.cs" />
+    <Compile Include="AwaitableUI\ControlExtensions.cs" />
+    <Compile Include="AwaitableUI\EventAsync.cs" />
+    <Compile Include="AwaitableUI\FrameworkElementExtensions.cs" />
+    <Compile Include="AwaitableUI\MediaElementExtensions.cs" />
+    <Compile Include="AwaitableUI\ScrollViewerExtensions.cs" />
+    <Compile Include="AwaitableUI\SelectorExtensions.cs" />
+    <Compile Include="AwaitableUI\StoryboardExtensions.cs" />
+    <Compile Include="AwaitableUI\UIElementExtensions.cs" />
+    <Compile Include="AwaitableUI\WebViewExtensions.cs" />
+    <Compile Include="AwaitableUI\WriteableBitmapExtensions.cs" />
+    <Compile Include="Common\ImplicitDataTemplateSelector.cs" />
+    <Compile Include="Common\ImplicitStyleSelector.cs" />
+    <Compile Include="Common\WeakEventListener`3.cs" />
+    <Compile Include="Controls\AlternativeFrame.cs" />
+    <Compile Include="Controls\AlternativeNavigatingCancelEventArgs.cs" />
+    <Compile Include="Controls\AlternativeNavigatingCancelEventHandler.cs" />
+    <Compile Include="Controls\AlternativeNavigationEventArgs.cs" />
+    <Compile Include="Controls\AlternativeNavigationEventHandler.cs" />
+    <Compile Include="Controls\AlternativePage.cs" />
+    <Compile Include="Controls\AnimatingContainer.cs" />
+    <Compile Include="Controls\AnimationMode.cs" />
+    <Compile Include="Controls\AutoCompleteTextBox.cs" />
+    <Compile Include="Controls\AxisOfFlip.cs" />
+    <Compile Include="Controls\Behaviors\FlickBehavior.cs" />
+    <Compile Include="Controls\Behaviors\HighlightBehavior.cs" />
+    <Compile Include="Controls\Behaviors\ParallaxBackgroundBehavior.cs" />
+    <Compile Include="Controls\CameraCaptureControl.cs" />
+    <Compile Include="Controls\CameraInitializationResult.cs" />
+    <Compile Include="Controls\CancelEventHandler.cs" />
+    <Compile Include="Controls\CascadeDirection.cs" />
+    <Compile Include="Controls\CascadeSequence.cs" />
+    <Compile Include="Controls\CascadingImageControl.cs" />
+    <Compile Include="Controls\CascadingTextBlock.cs" />
+    <Compile Include="Controls\ColorPicker.cs" />
+    <Compile Include="Controls\Common\PropertyChangeEventSource`1.cs" />
+    <Compile Include="Controls\CountdownControl.cs" />
+    <Compile Include="Controls\CustomGridSplitter.cs" />
+    <Compile Include="Controls\CutTransition.cs" />
+    <Compile Include="Controls\Data\DataTemplateExtensions.cs" />
+    <Compile Include="Controls\Data\HierarchicalDataTemplate.cs" />
+    <Compile Include="Controls\DelayedLoadControl.cs" />
+    <Compile Include="Controls\DirectionOfMotion.cs" />
+    <Compile Include="Controls\DissolveTransition.cs" />
+    <Compile Include="Controls\Dock.cs" />
+    <Compile Include="Controls\DockPanel.cs" />
+    <Compile Include="Controls\DoublePoint.cs" />
+    <Compile Include="Controls\Extensions\AnimationHelper.cs" />
+    <Compile Include="Controls\Extensions\AutoSelectOnFocusHandler.cs" />
+    <Compile Include="Controls\Extensions\AutoTabOnMaxLengthHandler.cs" />
+    <Compile Include="Controls\Extensions\ButtonBaseExtensions.cs" />
+    <Compile Include="Controls\Extensions\ButtonStateEventBehavior.cs" />
+    <Compile Include="Controls\Extensions\ClipToBoundsHandler.cs" />
+    <Compile Include="Controls\Extensions\ContentControlExtensions.cs" />
+    <Compile Include="Controls\Extensions\ControlExtensions.cs" />
+    <Compile Include="Controls\Extensions\CursorDisplayHandler.cs" />
+    <Compile Include="Controls\Extensions\FadeInOnLoadedHandler.cs" />
+    <Compile Include="Controls\Extensions\FieldValidationExtensions.cs" />
+    <Compile Include="Controls\Extensions\FieldValidationHandler`1.cs" />
+    <Compile Include="Controls\Extensions\Forms\FocusTracker.cs" />
+    <Compile Include="Controls\Extensions\FrameworkElementExtensions.cs" />
+    <Compile Include="Controls\Extensions\GridViewBindableSelectionHandler.cs" />
+    <Compile Include="Controls\Extensions\GridViewExtensions.cs" />
+    <Compile Include="Controls\Extensions\GridViewItemExtensions.cs" />
+    <Compile Include="Controls\Extensions\ImageExtensions.cs" />
+    <Compile Include="Controls\Extensions\ImageLoadedTransitionTypes.cs" />
+    <Compile Include="Controls\Extensions\ItemsControlExtensions.cs" />
+    <Compile Include="Controls\Extensions\ListBoxBindableSelectionHandler.cs" />
+    <Compile Include="Controls\Extensions\ListBoxExtensions.cs" />
+    <Compile Include="Controls\Extensions\ListBoxItemExtensions.cs" />
+    <Compile Include="Controls\Extensions\ListViewBindableSelectionHandler.cs" />
+    <Compile Include="Controls\Extensions\ListViewExtensions.cs" />
+    <Compile Include="Controls\Extensions\ListViewItemExtensions.cs" />
+    <Compile Include="Controls\Extensions\ManipulationInertiaStartingRoutedEventArgsExtensio.cs" />
+    <Compile Include="Controls\Extensions\MessageDialogExtensions.cs" />
+    <Compile Include="Controls\Extensions\PageExtensions.cs" />
+    <Compile Include="Controls\Extensions\PasswordAutoSelectOnFocusHandler.cs" />
+    <Compile Include="Controls\Extensions\PasswordAutoTabOnMaxLengthHandler.cs" />
+    <Compile Include="Controls\Extensions\PasswordBoxFocusExtensions.cs" />
+    <Compile Include="Controls\Extensions\PasswordBoxFormatValidationHandler.cs" />
+    <Compile Include="Controls\Extensions\RichTextBlockExtensions.cs" />
+    <Compile Include="Controls\Extensions\ScrollViewerAnimatedScrollHandler.cs" />
+    <Compile Include="Controls\Extensions\ScrollViewerExtensions.cs" />
+    <Compile Include="Controls\Extensions\StyleExtensions.cs" />
+    <Compile Include="Controls\Extensions\TextBlockExtensions.cs" />
+    <Compile Include="Controls\Extensions\TextBoxFocusExtensions.cs" />
+    <Compile Include="Controls\Extensions\TextBoxFormatValidationHandler.cs" />
+    <Compile Include="Controls\Extensions\UIElementAnimationExtensions.cs" />
+    <Compile Include="Controls\Extensions\ValidationChecks.cs" />
+    <Compile Include="Controls\Extensions\ViewboxExtensions.cs" />
+    <Compile Include="Controls\Extensions\VisualStateExtensions.cs" />
+    <Compile Include="Controls\Extensions\VisualTreeHelperExtensions.cs" />
+    <Compile Include="Controls\Extensions\WebViewExtensions.cs" />
+    <Compile Include="Controls\FadeAnimation.cs" />
+    <Compile Include="Controls\FlipAnimation.cs" />
+    <Compile Include="Controls\FlipTransition.cs" />
+    <Compile Include="Controls\FocusVisualizer.cs" />
+    <Compile Include="Controls\FrameCache.cs" />
+    <Compile Include="Controls\FxContentControl.cs" />
+    <Compile Include="Controls\Fx\AlphaExpandShaderEffect.cs" />
+    <Compile Include="Controls\Fx\BlurShaderEffect.cs" />
+    <Compile Include="Controls\Fx\CpuShaderEffect.cs" />
+    <Compile Include="Controls\GridResizeBehavior.cs" />
+    <Compile Include="Controls\GridResizeDirection.cs" />
+    <Compile Include="Controls\GridSplitterPreviewControl.cs" />
+    <Compile Include="Controls\HeaderedItemsControl.cs" />
+    <Compile Include="Controls\HueRingPicker.cs" />
+    <Compile Include="Controls\ImageButton.cs" />
+    <Compile Include="Controls\ImageToggleButton.cs" />
+    <Compile Include="Controls\InputDialog.cs" />
+    <Compile Include="Controls\InteractionHelper.cs" />
+    <Compile Include="Controls\ItemsControlHelper.cs" />
+    <Compile Include="Controls\IToolStripElement.cs" />
+    <Compile Include="Controls\IUpdateVisualState.cs" />
+    <Compile Include="Controls\JournalEntry.cs" />
+    <Compile Include="Controls\LayoutTransformControl.cs" />
+    <Compile Include="Controls\ListItemButton.cs" />
+    <Compile Include="Controls\NavigationCacheMode.cs" />
+    <Compile Include="Controls\NavigationState.cs" />
+    <Compile Include="Controls\NumericExtensions.cs" />
+    <Compile Include="Controls\NumericUpDown.cs" />
+    <Compile Include="Controls\NumericUpDownValueBarVisibility.cs" />
+    <Compile Include="Controls\OrientedSize.cs" />
+    <Compile Include="Controls\PageTransition.cs" />
+    <Compile Include="Controls\PageTransitionAnimation.cs" />
+    <Compile Include="Controls\PageTransitionMode.cs" />
+    <Compile Include="Controls\PieSlice.cs" />
+    <Compile Include="Controls\PushTransition.cs" />
+    <Compile Include="Controls\RingSlice.cs" />
+    <Compile Include="Controls\RoutedPropertyChangedEventArgs`1.cs" />
+    <Compile Include="Controls\RoutedPropertyChangedEventHandler`1.cs" />
+    <Compile Include="Controls\ScrollExtensions.cs" />
+    <Compile Include="Controls\SimpleThemingListBox.cs" />
+    <Compile Include="Controls\SimpleThemingListBoxItem.cs" />
+    <Compile Include="Controls\SlideAnimation.cs" />
+    <Compile Include="Controls\SquareGrid.cs" />
+    <Compile Include="Controls\ToolBarButton.cs" />
+    <Compile Include="Controls\ToolBarToggleButton.cs" />
+    <Compile Include="Controls\ToolStrip.cs" />
+    <Compile Include="Controls\ToolWindow.cs" />
+    <Compile Include="Controls\TreeView.cs" />
+    <Compile Include="Controls\TreeViewItem.cs" />
+    <Compile Include="Controls\TrianglePicker.cs" />
+    <Compile Include="Controls\UniformGrid.cs" />
+    <Compile Include="Controls\UpDownTextBox.cs" />
+    <Compile Include="Controls\VisualStates.cs" />
+    <Compile Include="Controls\WatermarkPasswordBox.cs" />
+    <Compile Include="Controls\WatermarkTextBox.cs" />
+    <Compile Include="Controls\WindowEdgeSnapBehavior.cs" />
+    <Compile Include="Controls\WindowMovableArea.cs" />
+    <Compile Include="Controls\WindowStartupLocation.cs" />
+    <Compile Include="Controls\WindowStates.cs" />
+    <Compile Include="Controls\WipeAnimation.cs" />
+    <Compile Include="Controls\WipeTransition.cs" />
+    <Compile Include="Controls\WrapPanel.cs" />
+    <Compile Include="Converters\BooleanToDataTemplateConverter.cs" />
+    <Compile Include="Converters\BooleanToDoubleConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\ColorToBrushConverter.cs" />
+    <Compile Include="Converters\DoubleToIntConverter.cs" />
+    <Compile Include="Converters\MultiplyConverter.cs" />
+    <Compile Include="Converters\NullableBoolToBoolConverter.cs" />
+    <Compile Include="Converters\NullableBoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\PolynomialConverter.cs" />
+    <Compile Include="Converters\SecondsToTimeSpanStringConverter.cs" />
+    <Compile Include="Imaging\BitmapImageLoadExtensions.cs" />
+    <Compile Include="Imaging\ColorExtensions.cs" />
+    <Compile Include="Imaging\HslColor.cs" />
+    <Compile Include="Imaging\HsvColor.cs" />
+    <Compile Include="Imaging\IBufferExtensions.cs" />
+    <Compile Include="Imaging\PixelMath.cs" />
+    <Compile Include="Imaging\RenderTargetBitmapSaveExtensions.cs" />
+    <Compile Include="Imaging\WriteableBitmapBlitBlockExtensions.cs" />
+    <Compile Include="Imaging\WriteableBitmapColorPickerExtensions.cs" />
+    <Compile Include="Imaging\WriteableBitmapCopyExtensions.cs" />
+    <Compile Include="Imaging\WriteableBitmapCropExtensions.cs" />
+    <Compile Include="Imaging\WriteableBitmapDarkenExtension.cs" />
+    <Compile Include="Imaging\WriteableBitmapFloodFillExtensions.cs" />
+    <Compile Include="Imaging\WriteableBitmapFromBitmapImageExtension.cs" />
+    <Compile Include="Imaging\WriteableBitmapGrayscaleExtension.cs" />
+    <Compile Include="Imaging\WriteableBitmapLightenExtension.cs" />
+    <Compile Include="Imaging\WriteableBitmapLoadExtensions.cs" />
+    <Compile Include="Imaging\WriteableBitmapSaveExtensions.cs" />
+    <Compile Include="Input\Key.cs" />
+    <Compile Include="Input\KeyCombination.cs" />
+    <Compile Include="Input\KeyCommand.cs" />
+    <Compile Include="Input\KeyCommandCollection.cs" />
+    <Compile Include="Input\KeyGesture.cs" />
+    <Compile Include="Input\KeyGestureRecognizer.cs" />
+    <Compile Include="Input\VirtualKeyExtensions.cs" />
+    <Compile Include="Interactivity\Behavior.cs" />
+    <Compile Include="Interactivity\BehaviorCollection.cs" />
+    <Compile Include="Interactivity\Behavior`1.cs" />
+    <Compile Include="Interactivity\Interaction.cs" />
+    <Compile Include="IO\Extensions\FileNameMimeContentConversion.cs" />
+    <Compile Include="IO\Extensions\StorageFolderExtensions.cs" />
+    <Compile Include="IO\Extensions\StorageItemExtensions.cs" />
+    <Compile Include="IO\Extensions\StringIOExtensions.cs" />
+    <Compile Include="IO\ScaledImageFile.cs" />
+    <Compile Include="IO\Serialization\JsonSerialization.cs" />
+    <Compile Include="IO\Serialization\XmlSerialization.cs" />
+    <Compile Include="Net\WebFile.cs" />
+    <Compile Include="Net\WebHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="System\Windows\Automation\Peers\TreeViewAutomationPeer.cs" />
+    <Compile Include="System\Windows\Automation\Peers\TreeViewItemAutomationPeer.cs" />
+    <Compile Include="Tools\BackgroundTimer.cs" />
+    <Compile Include="Tools\Calculator.cs" />
+    <Compile Include="Tools\EnumerableExtensions.cs" />
+    <Compile Include="Tools\EnumExtensions.cs" />
+    <Compile Include="Tools\EventThrottler.cs" />
+    <Compile Include="Tools\EventThrottlerMultiThreaded.cs" />
+    <Compile Include="Tools\MathEx.cs" />
+    <Compile Include="Tools\TimeoutCheck.cs" />
+    <Compile Include="Tools\TryCatchRetry.cs" />
+    <Compile Include="Tools\TypeExtensions.cs" />
+    <EmbeddedResource Include="Properties\WinRTXamlToolkit.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.2.14</Version>
+    </PackageReference>
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
