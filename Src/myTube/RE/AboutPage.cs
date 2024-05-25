@@ -63,7 +63,11 @@ namespace myTube
     public AboutPage()
     {
       this.InitializeComponent();
-      WindowsRuntimeMarshal.AddEventHandler<SizeChangedEventHandler>(new Func<SizeChangedEventHandler, EventRegistrationToken>(((FrameworkElement) this).add_SizeChanged), new Action<EventRegistrationToken>(((FrameworkElement) this).remove_SizeChanged), new SizeChangedEventHandler(this.AboutPage_SizeChanged));
+      WindowsRuntimeMarshal.AddEventHandler<SizeChangedEventHandler>(
+          new Func<SizeChangedEventHandler, EventRegistrationToken>(((FrameworkElement) this).add_SizeChanged), 
+          new Action<EventRegistrationToken>(((FrameworkElement) this).remove_SizeChanged), 
+          new SizeChangedEventHandler(this.AboutPage_SizeChanged));
+
       this.put_NavigationCacheMode((NavigationCacheMode) 2);
       if (Settings.UserMode < UserMode.Owner)
       {
@@ -78,13 +82,20 @@ namespace myTube
         ((UIElement) this.tiles).put_Visibility((Visibility) 1);
         ((UIElement) this.exceptions).put_Visibility((Visibility) 1);
       }
-      if ((App.PlatformType != PlatformType.WindowsPhone || !App.IsTrial && Settings.ProductKey == null || App.PlatformType != PlatformType.Windows || Settings.ProductKey == null) && Settings.UserMode < UserMode.Owner)
+      if ((App.PlatformType != PlatformType.WindowsPhone || !App.IsTrial 
+                && Settings.ProductKey == null || App.PlatformType != PlatformType.Windows 
+                || Settings.ProductKey == null) && Settings.UserMode < UserMode.Owner)
         ((UIElement) this.productKey).put_Visibility((Visibility) 1);
-      if (App.IsTrial && App.PlatformType == PlatformType.WindowsPhone || Settings.ProductKey != null || Settings.ProductKeyRequestId != null || Settings.UserMode >= UserMode.Owner)
+      if (App.IsTrial && App.PlatformType == PlatformType.WindowsPhone || Settings.ProductKey != null 
+                || Settings.ProductKeyRequestId != null || Settings.UserMode >= UserMode.Owner)
         ((UIElement) this.productKey).put_Visibility((Visibility) 0);
+
       if (Settings.UserMode == UserMode.Beta)
         ((UIElement) this.joinBeta).put_Visibility((Visibility) 1);
-      WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(((FrameworkElement) this).add_Loaded), new Action<EventRegistrationToken>(((FrameworkElement) this).remove_Loaded), new RoutedEventHandler(this.AboutPage_Loaded));
+      WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(
+          new Func<RoutedEventHandler, EventRegistrationToken>(((FrameworkElement) this).add_Loaded), 
+          new Action<EventRegistrationToken>(((FrameworkElement) this).remove_Loaded), 
+          new RoutedEventHandler(this.AboutPage_Loaded));
     }
 
     private void AboutPage_Loaded(object sender, RoutedEventArgs e)
@@ -94,7 +105,8 @@ namespace myTube
         if (child is ContentControl contentControl)
           ((Control) contentControl).put_FontFamily(new FontFamily("Segoe WP"));
       }
-      WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>(new Action<EventRegistrationToken>(((FrameworkElement) this).remove_Loaded), new RoutedEventHandler(this.AboutPage_Loaded));
+      WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>(new Action<EventRegistrationToken>(
+          ((FrameworkElement) this).remove_Loaded), new RoutedEventHandler(this.AboutPage_Loaded));
     }
 
     private void AboutPage_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -104,11 +116,14 @@ namespace myTube
 
     protected virtual async void OnNavigatedTo(NavigationEventArgs e) => base.OnNavigatedTo(e);
 
-    private void addNewMessage_Tapped(object sender, TappedRoutedEventArgs e) => App.Instance.RootFrame.Navigate(typeof (NewMessage));
+    private void addNewMessage_Tapped(object sender, TappedRoutedEventArgs e) 
+            => App.Instance.RootFrame.Navigate(typeof (NewMessage));
 
-    private void viewRecentMessages_Tapped(object sender, TappedRoutedEventArgs e) => App.Instance.RootFrame.Navigate(typeof (RecentMessages));
+    private void viewRecentMessages_Tapped(object sender, TappedRoutedEventArgs e) 
+            => App.Instance.RootFrame.Navigate(typeof (RecentMessages));
 
-    private void translationFormat_Tapped(object sender, TappedRoutedEventArgs e) => App.Instance.RootFrame.Navigate(typeof (StringFormatPage), (object) StringFormatCollection.GlobalCollection);
+    private void translationFormat_Tapped(object sender, TappedRoutedEventArgs e) 
+            => App.Instance.RootFrame.Navigate(typeof (StringFormatPage), (object) StringFormatCollection.GlobalCollection);
 
     private void translate_Tapped(object sender, TappedRoutedEventArgs e) => App.Instance.RootFrame.Navigate(typeof (TranslationPage), (object) StringFormatCollection.GlobalCollection);
 

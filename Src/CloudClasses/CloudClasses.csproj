@@ -124,6 +124,7 @@
     <Compile Include="Cloud\AppSettingsType.cs" />
     <Compile Include="Cloud\AppSettingsValue.cs" />
     <Compile Include="Cloud\BetaApp.cs" />
+    <Compile Include="Cloud\Clients\RykenUser.cs" />
     <Compile Include="Cloud\CloudMath.cs" />
     <Compile Include="Cloud\Comment.cs" />
     <Compile Include="Cloud\Data\CustomResolver.cs" />

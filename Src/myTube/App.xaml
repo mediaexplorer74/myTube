@@ -1,7 +1,285 @@
-﻿<Application
-    x:Class="myTube.App"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:myTube">
+﻿<Application 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:local="using:myTube" 
+    xmlns:cloud="using:myTube.Cloud" 
+    xmlns:ryken="using:RykenTube" 
+    xmlns:global="using:myTube.GlobalAppObjects" 
+    xmlns:local1="using:Microsoft.VisualBasic"
+    x:Class="myTube.App" RequestedTheme="Dark">
 
+    <Application.Resources>
+    <ResourceDictionary>
+            <!--Not supported in UWP! -->
+              <!--ThemeDictionaries>
+                <ResourceDictionary>
+                    <ResourceDictionary x:Key="Dark">
+                        <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="16777215" />
+                        <SolidColorBrush x:Key="ListBoxFocusBackgroundThemeBrush" Color="16777215" />
+                        <SolidColorBrush x:Key="ListBoxItemSelectedBackgroundThemeBrush" Color="4292629588" />
+                        <SolidColorBrush x:Key="ListBoxItemSelectedForegroundThemeBrush" Color="4294967295" />
+                        <SolidColorBrush x:Key="ListBoxItemPressedBackgroundThemeBrush" Color="16777215" />
+                        <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="4279571733" />
+                        <SolidColorBrush x:Key="ApplicationForegroundThemeBrush" Color="4293717228" />
+                        <SolidColorBrush x:Key="AccentBrush" Color="4294532959" />
+                        <SolidColorBrush x:Key="MenuForegroundBrush" Color="4294532959" />
+                        <SolidColorBrush x:Key="MenuBackground" Color="4280361249" Opacity="0,85" />
+                        <SolidColorBrush x:Key="TitleBarBackgroundBrush" Color="4280361249" Opacity="0,85" />
+                        <SolidColorBrush x:Key="TitleBarForegroundBrush" Color="4294532959" />
+                        <SolidColorBrush x:Key="SubMenuBackground" Color="4278848010" Opacity="1" />
+                        <SolidColorBrush x:Key="SubtleBrush" Color="4286940549" />
+                        <SolidColorBrush x:Key="ThumbBackgroundThemeBrush" Color="4278190080" />
+                        <SolidColorBrush x:Key="ThumbForegroundThemeBrush" Color="4294967295" />
+                        <SolidColorBrush x:Key="CardBackground" Color="4281019179" Opacity="0,85" />
+                        <SolidColorBrush x:Key="SecondaryCardBackground" Color="4280427042" Opacity="0,85" />
+                        <SolidColorBrush x:Key="FullForeground" Color="4294967295" />
+                        <SolidColorBrush x:Key="PopupBackground" Color="4280887593" />
+                        <SolidColorBrush x:Key="TextBoxBackground" Color="4286677377" Opacity="0,75" />
+                    </ResourceDictionary>
+                    <ResourceDictionary x:Key="Light">
+                        <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="16777215" />
+                        <SolidColorBrush x:Key="ListBorderThemeBrush" Color="16777215" />
+                        <SolidColorBrush x:Key="ListBoxFocusBackgroundThemeBrush" Color="16777215" />
+                        <SolidColorBrush x:Key="ListBoxItemSelectedBackgroundThemeBrush" Color="4292224807" />
+                        <SolidColorBrush x:Key="ListBoxItemSelectedForegroundThemeBrush" Color="4294967295" />
+                        <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="4293585642" />
+                        <SolidColorBrush x:Key="ApplicationForegroundThemeBrush" Color="4281874488" />
+                        <SolidColorBrush x:Key="AccentBrush" Color="4292224807" />
+                        <SolidColorBrush x:Key="MenuForegroundBrush" Color="4292224807" />
+                        <SolidColorBrush x:Key="MenuBackground" Color="4294967295" Opacity="0,85" />
+                        <SolidColorBrush x:Key="TitleBarForegroundBrush" Color="4292224807" />
+                        <SolidColorBrush x:Key="TitleBarBackgroundBrush" Color="4294967295" Opacity="0,85" />
+                        <SolidColorBrush x:Key="SubMenuBackground" Color="4292927712" Opacity="1" />
+                        <SolidColorBrush x:Key="SubtleBrush" Color="4286677377" />
+                        <SolidColorBrush x:Key="ThumbBackgroundThemeBrush" Color="4278190080" />
+                        <SolidColorBrush x:Key="ThumbForegroundThemeBrush" Color="4294967295" />
+                        <SolidColorBrush x:Key="CardBackground" Color="4294967295" Opacity="0,9" />
+                        <SolidColorBrush x:Key="SecondaryCardBackground" Color="4294638330" Opacity="0,9" />
+                        <SolidColorBrush x:Key="FullForeground" Color="4278190080" />
+                        <SolidColorBrush x:Key="PopupBackground" Color="4292532954" />
+                        <SolidColorBrush x:Key="TextBoxBackground" Color="4286677377" Opacity="0,75" />
+                    </ResourceDictionary>
+                </ResourceDictionary>
+            </ThemeDictionaries-->
+
+            <!--MergedDictionaries>
+                <ResourceDictionaryCollection>
+                    <ResourceDictionary Source="XamlFiles/ScrollBar.xaml" />
+                    <ResourceDictionary Source="XamlFiles/Styles.xaml" />
+                    <ResourceDictionary Source="XamlFiles/ToggleSwitchStyles.xaml" />
+                    <ResourceDictionary Source="VisualStateHelpers/ControlTemplates.xaml" />
+                    <ResourceDictionary Source="UniversalXAML/ListViewStyles.xaml" />
+                    <ResourceDictionary Source="UniversalXAML/ListBoxStyles.xaml" />
+                    <ResourceDictionary Source="UniversalXAML/UniversalThemes.xaml" />
+                    <ResourceDictionary Source="UniversalXAML/TextBoxStyle.xaml" />
+                    <ResourceDictionary Source="XamlFiles/ExtraThemes.xaml" />
+                </ResourceDictionaryCollection>
+            </MergedDictionaries-->
+        
+            <local:Strings x:Key="Strings" />
+            <local:BoolToVisibility x:Key="BoolToVisibility" />
+            <local:ToAgoString x:Key="ToAgoString" />
+            <local:LowerStringFomatConverter x:Key="LowerConverter" />
+            <local:UpperStringFomatConverter x:Key="UpperConverter" />
+            <local:DateToDotString x:Key="DateToDotString" />
+            <local:NumberWithNewLinesConverter x:Key="NumberWithNewLinesConverter" />
+            <local:TimeShortener x:Key="TimeShortener" />
+            <SolidColorBrush x:Key="ProgressBarIndeterminateForegroundThemeBrush" Color="4294967295" />
+            <DataTemplate x:Key="VideoThumbs">
+                <Template>
+                    <Border>
+                        <Padding>
+                            <Binding Path="ThumbPadding" ElementName="userControl" />
+                        </Padding>
+                        <Child>
+                            <local:VideoThumb />
+                        </Child>
+                    </Border>
+                </Template>
+            </DataTemplate>
+        
+            <DataTemplate x:Key="VideoThumbs2">
+                <Template>
+                    <local:VideoThumb2>
+                        <Padding>
+                            <Binding Path="ThumbPadding" ElementName="userControl" />
+                        </Padding>
+                    </local:VideoThumb2>
+                </Template>
+            </DataTemplate>
+        
+            <global:GlobalObjects x:Key="GlobalAppObjects">
+                <global:VideoThumbTemplate>
+                    <StaticResource ResourceKey="VideoThumbs2" />
+                </global:VideoThumbTemplate>
+            </global:GlobalObjects>
+        
+            <ryken:YouTubeEntry x:Key="TestYouTubeEntry" Dislikes="100" Likes="543" 
+                                Title="Man Finds a Cow on a Field Somewhere, Residents Leave in a Panic" 
+                                Description="Once upon a time, in a land far, far away, some fake video info was used for testing." Author="cEfwex2cfDSFX32RX" AuthorDisplayName="The People" ThumbnailString="https://i.ytimg.com/vi/GWpVTGnr_hA/mqdefault.jpg" />
+            <ryken:UserInfo x:Key="TestUserInfo" 
+                            Description="This is a test channel, made by the test gods for the sake of testing. All hail the test gods, glory be unto them." ThumbLink="https://yt3.ggpht.com/-5fpwLDW_V00/AAAAAAAAAAI/AAAAAAAAAAA/MX8zl6ojb54/s100-c-k-no/photo.jpg" Title="The One Test Channel" UserDisplayName="Test Channel" UserName="TestChannel" Uploads="1232255" Subscribers="4145" />
+            <ryken:PlaylistEntry x:Key="TestPlaylistEntry" 
+                                 Title="Some videos" Author="Somebody" 
+                                 Description="A description or something" />
+            <ryken:Comment x:Key="TestComment" Author="Somebody" Likes="17" 
+                           ThumbLink="https://yt3.ggpht.com/-tqPOhKrpcKk/AAAAAAAAAAI/AAAAAAAAAAA/nx238tczIxU/s100-c-k-no/photo.jpg">
+                <ryken:Replies>
+                    <List1RykenTubeComment xmlns="using:System.Collections.Generic">
+                        <ryken:Comment Likes="17" />
+                    </List1RykenTubeComment>
+                </ryken:Replies>
+            </ryken:Comment>
+            <local:IconButtonInfo x:Key="TestIconButtonInfo" Text="testing" />
+        
+            <Style x:Key="Win8ListStyle" TargetType="ListViewItem">
+                <Setters>
+                    <SetterBaseCollection>
+                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Margin" Value="-3.5,-11,-7,0" />
+                    </SetterBaseCollection>
+                </Setters>
+            </Style>
+            <Style x:Key="WP8ListStyle" TargetType="ListViewItem" />
+            <Style TargetType="local:OverCanvas">
+                <Setters>
+                    <SetterBaseCollection>
+                        <Setter Property="TitleForegroundBrush">
+                            <Value>
+                                <ThemeResource ResourceKey="MenuForegroundBrush" />
+                            </Value>
+                        </Setter>
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Top" />
+                    </SetterBaseCollection>
+                </Setters>
+            </Style>
+        
+            <Style x:Key="PopupTitleStyle" TargetType="TextBlock">
+                <Setters>
+                    <SetterBaseCollection>
+                        <Setter Property="FontSize">
+                            <Value>
+                                <StaticResource ResourceKey="ImportantFontSize" />
+                            </Value>
+                        </Setter>
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                        <Setter Property="Foreground">
+                            <Value>
+                                <ThemeResource ResourceKey="AccentBrush" />
+                            </Value>
+                        </Setter>
+                    </SetterBaseCollection>
+                </Setters>
+            </Style>
+        
+            <Style x:Key="ActivityTitleStyle" TargetType="TextBlock">
+                <Setters>
+                    <SetterBaseCollection>
+                        <Setter Property="FontSize">
+                            <Value>
+                                <StaticResource ResourceKey="ImportantFontSize" />
+                            </Value>
+                        </Setter>
+                        <Setter Property="FontWeight" Value="SemiLight" />
+                        <Setter Property="Margin" Value="0, 0, 0, 4.75" />
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                    </SetterBaseCollection>
+                </Setters>
+            </Style>
+        
+            <Style TargetType="CommandBar">
+                <Setters>
+                    <SetterBaseCollection>
+                        <Setter Property="Foreground">
+                            <Value>
+                                <ThemeResource ResourceKey="AccentBrush" />
+                            </Value>
+                        </Setter>
+                        <Setter Property="Transitions">
+                            <Value>
+                                <TransitionCollection>
+                                    <EntranceThemeTransition FromHorizontalOffset="0" FromVerticalOffset="27" />
+                                </TransitionCollection>
+                            </Value>
+                        </Setter>
+                    </SetterBaseCollection>
+                </Setters>
+            </Style>
+        
+            <Style x:Key="OverCanvasScrollViewer" TargetType="ScrollViewer">
+                <Setters>
+                    <SetterBaseCollection>
+                        <Setter Property="HorizontalScrollMode" Value="Enabled" />
+                        <Setter Property="HorizontalScrollBarVisibility" Value="Hidden" />
+                        <Setter Property="VerticalScrollMode" Value="Disabled" />
+                        <Setter Property="VerticalScrollBarVisibility" Value="Disabled" />
+                        <Setter Property="HorizontalSnapPointsAlignment" Value="Near" />
+                        <Setter Property="HorizontalSnapPointsType" Value="MandatorySingle" />
+                        <Setter Property="ZoomMode" Value="Disabled" />
+                    </SetterBaseCollection>
+                </Setters>
+            </Style>
+        
+            <Style TargetType="AppBarButton">
+                <Setters>
+                    <SetterBaseCollection>
+                        <Setter Property="Foreground">
+                            <Value>
+                                <ThemeResource ResourceKey="AccentBrush" />
+                            </Value>
+                        </Setter>
+                        <Setter Property="Transitions">
+                            <Value>
+                                <TransitionCollection>
+                                    <EntranceThemeTransition IsStaggeringEnabled="False" FromHorizontalOffset="0" FromVerticalOffset="27" />
+                                </TransitionCollection>
+                            </Value>
+                        </Setter>
+                    </SetterBaseCollection>
+                </Setters>
+            </Style>
+        
+            <cloud:PollData x:Key="TestPoll">
+                <cloud:PollVotesList>
+                    <ObservableCollection1Int32 xmlns="using:System.Collections.ObjectModel">
+                        <x:Int32>17</x:Int32>
+                        <x:Int32>48</x:Int32>
+                        <x:Int32>3</x:Int32>
+                        <x:Int32>9</x:Int32>
+                    </ObservableCollection1Int32>
+                </cloud:PollVotesList>
+                
+                <cloud:PollChoicesList>
+                    <ObservableCollection1String xmlns="using:System.Collections.ObjectModel">
+                        <x:String>Choice 1</x:String>
+                        <x:String>Choice 2</x:String>
+                        <x:String>Choice 3</x:String>
+                        <x:String>Choice 4</x:String>
+                    </ObservableCollection1String>
+                </cloud:PollChoicesList>
+            </cloud:PollData>
+        
+            <cloud:Message x:Key="TestMessage" Title="Hello everyone! I am the one message." 
+                           Body="Isn't this just awesome! Azure is a pain in the butt, but it's kind of nice I guess. Let's see how far I'll be able to get with this.">
+                <cloud:Actions>
+                    <List1myTubeCloudMessageAction xmlns="using:System.Collections.Generic">
+                        <cloud:MessageAction Type="URL" Title="Get the beta" />
+                        <cloud:MessageAction Type="Video" Title="Check the video out" />
+                    </List1myTubeCloudMessageAction>
+                </cloud:Actions>
+            </cloud:Message>
+        
+            <cloud:Comment x:Key="TestMessageComment" UserName="Wee McGee" MessageID="4"
+                           UserID="" Content="I like this change! I like all the changes! Woot! Comments!" />
+            <ryken:AnnotationInfo x:Key="testAnnotation" />
+            <local:ObjectCollection x:Key="TestMessageCollection">
+                <cloud:Message Title="Developer messages are no longer fullscreen" />
+                <cloud:Message Title="How many channels would you like to receive notifications from?" />
+                <cloud:Message Title="What brand of TV do you have?" />
+            </local:ObjectCollection>        
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>
+

@@ -119,9 +119,13 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CCheckRykenUser.cs" />
+    <Compile Include="ExceptionClient.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MessageClient.cs" />
+    <Compile Include="ProductKeyClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RE\AboutPage.cs" />
     <Compile Include="RE\AccountManagementControl.cs" />
@@ -136,7 +140,6 @@
     <Compile Include="RE\Ani.cs" />
     <Compile Include="RE\AnnotationControl.cs" />
     <Compile Include="RE\AnnotationsPanel.cs" />
-    <Compile Include="RE\App.cs" />
     <Compile Include="RE\ArrangeStyle.cs" />
     <Compile Include="RE\BetaPages\NewMessage.cs" />
     <Compile Include="RE\BetaPages\StringFormatPage.cs" />
@@ -291,6 +294,7 @@
     <Compile Include="RE\WatchLaterPage.cs" />
     <Compile Include="RE\WrapPanel.cs" />
     <Compile Include="RE\YouTubeEntryCollection.cs" />
+    <Compile Include="RykenUserClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -326,6 +330,26 @@
     <ProjectReference Include="..\CloudClasses\CloudClasses.csproj">
       <Project>{6CD12432-B28E-4AF5-99AC-B270E39C4523}</Project>
       <Name>CloudClasses</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\myTubeAppLibrary\myTubeAppLibrary.csproj">
+      <Project>{7d5c5c35-c65f-463b-b1f8-3d577aa77542}</Project>
+      <Name>myTubeAppLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RykenTubeWinRT\RykenTubeWinRT.csproj">
+      <Project>{b2b18d9d-a2bc-424c-9512-e1a0d0b91573}</Project>
+      <Name>RykenTubeWinRT</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestFramework\TestFramework.csproj">
+      <Project>{7ae8c2af-b684-4189-a3f0-f4192c9dbf0c}</Project>
+      <Name>TestFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WinRTXamlToolkit\WinRTXamlToolkit.csproj">
+      <Project>{4f5fca6d-3ef7-400a-9f9c-610d3ac0098d}</Project>
+      <Name>WinRTXamlToolkit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XMLHelper\XMLHelper.csproj">
+      <Project>{44840bb7-0348-48dd-9fa9-431c9bce39bc}</Project>
+      <Name>XMLHelper</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
