@@ -1,8 +1,5 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: myTube.OverCanvas
-// Assembly: myTube.WindowsPhone, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: B5B96F9E-0572-4971-BFB4-9D68A15DDB38
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\myTube.WindowsPhone.exe
+﻿// myTube.OverCanvas
+
 
 using System;
 using System.Collections.Generic;
@@ -19,7 +16,7 @@ using WinRTXamlToolkit.AwaitableUI;
 
 namespace myTube
 {
-  public class OverCanvas : Panel, IScrollSnapPointsInfo
+  public partial class OverCanvas : Panel, IScrollSnapPointsInfo
   {
     public static readonly DependencyProperty ArrangeStyleProperty = DependencyProperty.Register(nameof (ArrangeStyle), typeof (ArrangeStyle), typeof (OverCanvas), new PropertyMetadata((object) ArrangeStyle.Panorama, new PropertyChangedCallback(OverCanvas.OnArrangeStyeChanged)));
     public static readonly DependencyProperty FlipStyleProperty = DependencyProperty.Register(nameof (FlipStyle), typeof (FlipStyle), typeof (OverCanvas), new PropertyMetadata((object) FlipStyle.Classic, new PropertyChangedCallback(OverCanvas.OnFlipStyleChanged)));
@@ -103,12 +100,12 @@ namespace myTube
       if (!(bool) e.NewValue)
       {
         Ani.Begin((DependencyObject) Element, "Opacity", 0.0, 0.25);
-        Element.put_IsHitTestVisible(false);
+        Element.IsHitTestVisible = false;
       }
       else
       {
         Ani.Begin((DependencyObject) Element, "Opacity", 1.0, 0.25);
-        Element.put_IsHitTestVisible(true);
+        Element.IsHitTestVisible = true;
       }
     }
 
@@ -125,7 +122,7 @@ namespace myTube
       OverCanvas overCanvas = d as OverCanvas;
       if (overCanvas.TitleBackgroundBrush == null)
         return;
-      overCanvas.TitleBackgroundBrush.put_Opacity((double) e.NewValue);
+      overCanvas.TitleBackgroundBrush.Opacity = (double) e.NewValue;
     }
 
     private static void OnHorizontalOffsetHelperPropertyChanged(
@@ -218,9 +215,16 @@ namespace myTube
       {
         ScrollViewer oldValue = e.OldValue as ScrollViewer;
         // ISSUE: virtual method pointer
-        WindowsRuntimeMarshal.RemoveEventHandler<EventHandler<ScrollViewerViewChangedEventArgs>>(new Action<EventRegistrationToken>((object) oldValue, __vmethodptr(oldValue, remove_ViewChanged)), new EventHandler<ScrollViewerViewChangedEventArgs>(oc.newScroll_ViewChanged));
+        WindowsRuntimeMarshal.RemoveEventHandler<EventHandler<ScrollViewerViewChangedEventArgs>>(
+            new Action<EventRegistrationToken>((object) oldValue, __vmethodptr(oldValue, 
+            remove_ViewChanged)), new EventHandler<ScrollViewerViewChangedEventArgs>(
+                oc.newScroll_ViewChanged));
+
         // ISSUE: virtual method pointer
-        WindowsRuntimeMarshal.RemoveEventHandler<SizeChangedEventHandler>(new Action<EventRegistrationToken>((object) oldValue, __vmethodptr(oldValue, remove_SizeChanged)), new SizeChangedEventHandler(oc.newScroll_SizeChanged));
+        WindowsRuntimeMarshal.RemoveEventHandler<SizeChangedEventHandler>(
+            new Action<EventRegistrationToken>((object) oldValue, __vmethodptr(oldValue, 
+            remove_SizeChanged)), new SizeChangedEventHandler(oc.newScroll_SizeChanged));
+
         Helper.Write((object) "Removed old ScrollViewer events on OverCanvas");
       }
       if (oc.waitForScrollLayoutUpdate)
@@ -232,25 +236,32 @@ namespace myTube
       WindowsRuntimeMarshal.AddEventHandler<SizeChangedEventHandler>(new Func<SizeChangedEventHandler, EventRegistrationToken>(((FrameworkElement) scrollViewer2).add_SizeChanged), new Action<EventRegistrationToken>(((FrameworkElement) scrollViewer2).remove_SizeChanged), new SizeChangedEventHandler(oc.newScroll_SizeChanged));
       ScrollViewer scrollViewer3 = newValue;
       WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(((UIElement) scrollViewer3).add_GotFocus), new Action<EventRegistrationToken>(((UIElement) scrollViewer3).remove_GotFocus), new RoutedEventHandler(oc.newScroll_GotFocus));
-      newValue.put_HorizontalSnapPointsType((SnapPointsType) 4);
-      newValue.put_VerticalScrollMode((ScrollMode) 0);
-      newValue.put_HorizontalScrollMode((ScrollMode) 1);
-      newValue.put_HorizontalScrollBarVisibility((ScrollBarVisibility) 2);
-      newValue.put_VerticalScrollBarVisibility((ScrollBarVisibility) 0);
-      newValue.put_ZoomMode((ZoomMode) 0);
+      newValue.HorizontalSnapPointsType = ((SnapPointsType) 4);
+      newValue.VerticalScrollMode = ((ScrollMode) 0);
+      newValue.HorizontalScrollMode = ((ScrollMode) 1);
+      newValue.HorizontalScrollBarVisibility = ((ScrollBarVisibility) 2);
+      newValue.VerticalScrollBarVisibility = ((ScrollBarVisibility) 0);
+      newValue.ZoomMode = ((ZoomMode) 0);
       int currentIteration = 0;
       Border child = Helper.FindChild<Border>((DependencyObject) newValue, 100, ref currentIteration);
       if (child != null)
       {
-        VisualStateGroup visualStateGroup1 = Enumerable.FirstOrDefault<VisualStateGroup>((IEnumerable<VisualStateGroup>) VisualStateManager.GetVisualStateGroups((FrameworkElement) child));
+        VisualStateGroup visualStateGroup1 = Enumerable.FirstOrDefault<VisualStateGroup>(
+            (IEnumerable<VisualStateGroup>) VisualStateManager.GetVisualStateGroups(
+                (FrameworkElement) child));
         if (visualStateGroup1 != null)
         {
           VisualStateGroup visualStateGroup2 = visualStateGroup1;
-          WindowsRuntimeMarshal.AddEventHandler<VisualStateChangedEventHandler>(new Func<VisualStateChangedEventHandler, EventRegistrationToken>(visualStateGroup2.add_CurrentStateChanged), new Action<EventRegistrationToken>(visualStateGroup2.remove_CurrentStateChanged), new VisualStateChangedEventHandler(oc.groups_CurrentStateChanged));
+          WindowsRuntimeMarshal.AddEventHandler<VisualStateChangedEventHandler>(
+              new Func<VisualStateChangedEventHandler, EventRegistrationToken>(
+                  visualStateGroup2.add_CurrentStateChanged), 
+              new Action<EventRegistrationToken>(visualStateGroup2.remove_CurrentStateChanged),
+              new VisualStateChangedEventHandler(oc.groups_CurrentStateChanged));
         }
       }
       oc.invalidateAfterArrange = true;
-      Helper.Write((object) nameof (OverCanvas), (object) "Added new ScrollViewer events to OverCanvas");
+      Helper.Write((object) nameof (OverCanvas), 
+          (object) "Added new ScrollViewer events to OverCanvas");
     }
 
     private void newScroll_GotFocus(object sender, RoutedEventArgs e)
@@ -284,9 +295,9 @@ namespace myTube
     {
       // ISSUE: object of a compiler-generated type is created
       // ISSUE: variable of a compiler-generated type
-      OverCanvas.\u003C\u003Ec__DisplayClass49_0 cDisplayClass490 = new OverCanvas.\u003C\u003Ec__DisplayClass49_0();
+      var cDisplayClass490 = new OverCanvas.DisplayClass49_0();
       // ISSUE: reference to a compiler-generated field
-      cDisplayClass490.\u003C\u003E4__this = this;
+      cDisplayClass490.u003E4 = this;
       // ISSUE: reference to a compiler-generated field
       cDisplayClass490.s = sender as ScrollViewer;
       // ISSUE: reference to a compiler-generated field
@@ -1110,5 +1121,15 @@ namespace myTube
       add => EventRegistrationTokenTable<EventHandler<object>>.GetOrCreateEventRegistrationTokenTable(ref this.VerticalSnapPointsChanged).AddEventHandler(value);
       remove => EventRegistrationTokenTable<EventHandler<object>>.GetOrCreateEventRegistrationTokenTable(ref this.VerticalSnapPointsChanged).RemoveEventHandler(value);
     }
-  }
+
+        private class DisplayClass49_0
+        {
+            internal OverCanvas u003E4;
+            internal ScrollViewer s;
+
+            public DisplayClass49_0()
+            {
+            }
+        }
+    }
 }

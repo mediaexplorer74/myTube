@@ -116,6 +116,15 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AboutPage.xaml.cs">
+      <DependentUpon>AboutPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AccountManagementControl.xaml.cs">
+      <DependentUpon>AccountManagementControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddPlaylistControl.xaml.cs">
+      <DependentUpon>AddPlaylistControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -127,15 +136,12 @@
     <Compile Include="MessageClient.cs" />
     <Compile Include="ProductKeyClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RE\AboutPage.cs" />
-    <Compile Include="RE\AccountManagementControl.cs" />
     <Compile Include="RE\Activities\ActivitiesList.cs" />
     <Compile Include="RE\Activities\ActivityListTemplateSelector.cs" />
     <Compile Include="RE\Activities\ActivityThumb.cs" />
     <Compile Include="RE\Activities\LikeThumb.cs" />
     <Compile Include="RE\Activities\RecommendedThumb.cs" />
     <Compile Include="RE\Activities\UploadThumb.cs" />
-    <Compile Include="RE\AddPlaylistControl.cs" />
     <Compile Include="RE\AfterVideoSection.cs" />
     <Compile Include="RE\Ani.cs" />
     <Compile Include="RE\AnnotationControl.cs" />
@@ -220,8 +226,8 @@
     <Compile Include="RE\ObjectCollection.cs" />
     <Compile Include="RE\OnScrollingStoppedEventArgs.cs" />
     <Compile Include="RE\OnSelectedPageChangedEventArgs.cs" />
-    <Compile Include="RE\OverCanvas.cs" />
-    <Compile Include="RE\OverCanvasWidthType.cs" />
+    <Compile Include="OverCanvas.cs" />
+    <Compile Include="OverCanvasWidthType.cs" />
     <Compile Include="RE\Overlays\SelectControl.cs" />
     <Compile Include="RE\Overlays\SortingControl.cs" />
     <Compile Include="RE\PageInfo.cs" />
@@ -284,8 +290,6 @@
     <Compile Include="RE\Vector3.cs" />
     <Compile Include="RE\VideoContextMenu.cs" />
     <Compile Include="RE\VideoDetails.cs" />
-    <Compile Include="RE\VideoList.cs" />
-    <Compile Include="RE\VideoPage.cs" />
     <Compile Include="RE\VideoPageThumb.cs" />
     <Compile Include="RE\VideoPlayer.cs" />
     <Compile Include="RE\VideoThumb.cs" />
@@ -295,6 +299,15 @@
     <Compile Include="RE\WrapPanel.cs" />
     <Compile Include="RE\YouTubeEntryCollection.cs" />
     <Compile Include="RykenUserClient.cs" />
+    <Compile Include="TestPage.xaml.cs">
+      <DependentUpon>TestPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VideiList.xaml.cs">
+      <DependentUpon>VideiList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VideoPage.xaml.cs">
+      <DependentUpon>VideoPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -316,9 +329,33 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="AboutPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AccountManagementControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddPlaylistControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TestPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VideiList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VideoPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

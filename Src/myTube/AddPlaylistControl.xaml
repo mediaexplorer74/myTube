@@ -1,0 +1,248 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:myTube" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" x:Name="parent" x:Class="myTube.AddPlaylistControl" VerticalContentAlignment="Top">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style TargetType="TextBox">
+                <!--Setters>
+                    <SetterBaseCollection>
+                        <Setter Property="Margin" Value="0, 0, 0, 14.25" />
+                        <Setter Property="HeaderTemplate">
+                            <Value>
+                                <DataTemplate>
+                                    <Template>
+                                        <ContentControl FontWeight="SemiLight">
+                                            <Foreground>
+                                                <ThemeResource ResourceKey="ApplicationForegroundThemeBrush" />
+                                            </Foreground>
+                                            <Content>
+                                                <Binding />
+                                            </Content>
+                                            <FontSize>
+                                                <StaticResource ResourceKey="LargeFontSize" />
+                                            </FontSize>
+                                        </ContentControl>
+                                    </Template>
+                                </DataTemplate>
+                            </Value>
+                        </Setter>
+                    </SetterBaseCollection>
+                </Setters-->
+            </Style>
+            <Style TargetType="CheckBox">
+                <!--Setters>
+                    <SetterBaseCollection>
+                        <Setter Property="ContentTemplate">
+                            <Value>
+                                <DataTemplate>
+                                    <Template>
+                                        <ContentControl Margin="0,-9,5,0,0" VerticalAlignment="Top" FontWeight="SemiLight">
+                                            <Foreground>
+                                                <ThemeResource ResourceKey="ApplicationForegroundThemeBrush" />
+                                            </Foreground>
+                                            <Content>
+                                                <Binding />
+                                            </Content>
+                                            <FontSize>
+                                                <StaticResource ResourceKey="LargeFontSize" />
+                                            </FontSize>
+                                        </ContentControl>
+                                    </Template>
+                                </DataTemplate>
+                            </Value>
+                        </Setter>
+                    </SetterBaseCollection>
+                </Setters-->
+            </Style>
+            <Style TargetType="Button">
+                <!--Setters>
+                    <SetterBaseCollection>
+                        <Setter Property="Margin" Value="0, 0, 19, 0" />
+                        <Setter Property="FontSize">
+                            <Value>
+                                <StaticResource ResourceKey="LargeFontSize" />
+                            </Value>
+                        </Setter>
+                        <Setter Property="FontWeight" Value="SemiLight" />
+                        <Setter Property="BorderBrush">
+                            <Value>
+                                <Null />
+                            </Value>
+                        </Setter>
+                        <Setter Property="Background">
+                            <Value>
+                                <ThemeResource ResourceKey="AccentBrush" />
+                            </Value>
+                        </Setter>
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Padding" Value="19, 4" />
+                    </SetterBaseCollection>
+                </Setters-->
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Border>
+            <Background>
+                <ThemeResource ResourceKey="PopupBackground" />
+            </Background>
+            <VerticalAlignment>
+                <Binding Path="VerticalContentAlignment" ElementName="parent" />
+            </VerticalAlignment>
+            <VisualStateGroups>
+                <VisualStateGroupCollection>
+                    <VisualStateGroup x:Name="NormalStates">
+                        <States>
+                            <VisualStateCollection>
+                                <VisualState x:Name="Create" />
+                                <VisualState x:Name="Edit">
+                                    <DeferredStoryboard>
+                                        <Storyboard>
+                                            <Children>
+                                                <TimelineCollection>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="createButton" TargetProperty="Content">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                                    <Value>
+                                                                        <Binding Path="Values" ConverterParameter="common.edit/edit">
+                                                                            <Converter>
+                                                                                <StaticResource ResourceKey="LowerConverter" />
+                                                                            </Converter>
+                                                                            <Source>
+                                                                                <StaticResource ResourceKey="Strings" />
+                                                                            </Source>
+                                                                        </Binding>
+                                                                    </Value>
+                                                                </DiscreteObjectKeyFrame>
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="cancelButton" TargetProperty="Content">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                                    <Value>
+                                                                        <Binding Path="Values" ConverterParameter="common.delete/delete">
+                                                                            <Converter>
+                                                                                <StaticResource ResourceKey="LowerConverter" />
+                                                                            </Converter>
+                                                                            <Source>
+                                                                                <StaticResource ResourceKey="Strings" />
+                                                                            </Source>
+                                                                        </Binding>
+                                                                    </Value>
+                                                                </DiscreteObjectKeyFrame>
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </TimelineCollection>
+                                            </Children>
+                                        </Storyboard>
+                                    </DeferredStoryboard>
+                                </VisualState>
+                            </VisualStateCollection>
+                        </States>
+                    </VisualStateGroup>
+                </VisualStateGroupCollection>
+            </VisualStateGroups>
+            <Child>
+                <StackPanel Margin="19,19,19,0">
+                    <Children>
+                        <UIElementCollection>
+                            <TextBlock Margin="0,0,0,9,5" FontWeight="SemiLight">
+                <Text>
+                  <Binding Path="Values" ConverterParameter="playlists.new/new playlist">
+                    <Source>
+                      <StaticResource ResourceKey="Strings" />
+                    </Source>
+                    <Converter>
+                      <StaticResource ResourceKey="LowerConverter" />
+                    </Converter>
+                  </Binding>
+                </Text>
+                <FontSize>
+                  <StaticResource ResourceKey="VeryLargeFontSize" />
+                </FontSize>
+                <Foreground>
+                  <ThemeResource ResourceKey="AccentBrush" />
+                </Foreground>
+                            </TextBlock>
+                            <TextBox x:Name="titleBox">
+                                <Header>
+                                    <Binding Path="Values" ConverterParameter="common.title/title">
+                                        <Converter>
+                                            <StaticResource ResourceKey="LowerConverter" />
+                                        </Converter>
+                                        <Source>
+                                            <StaticResource ResourceKey="Strings" />
+                                        </Source>
+                                    </Binding>
+                                </Header>
+                            </TextBox>
+                            <TextBox x:Name="descriptionBox" AcceptsReturn="False" TextWrapping="Wrap">
+                                <Header>
+                                    <Binding Path="Values" ConverterParameter="common.description/description">
+                                        <Converter>
+                                            <StaticResource ResourceKey="LowerConverter" />
+                                        </Converter>
+                                        <Source>
+                                            <StaticResource ResourceKey="Strings" />
+                                        </Source>
+                                    </Binding>
+                                </Header>
+                            </TextBox>
+                            <CheckBox x:Name="privateBox" Margin="0,9,5,0,0">
+                                <Content>
+                                    <Binding Path="Values" ConverterParameter="common.private/private">
+                                        <Converter>
+                                            <StaticResource ResourceKey="LowerConverter" />
+                                        </Converter>
+                                        <Source>
+                                            <StaticResource ResourceKey="Strings" />
+                                        </Source>
+                                    </Binding>
+                                </Content>
+                            </CheckBox>
+                            <Grid Margin="0,9,5,0,9,5">
+                                <ColumnDefinitions>
+                                    <ColumnDefinitionCollection>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
+                                    </ColumnDefinitionCollection>
+                                </ColumnDefinitions>
+                                <Children>
+                                    <UIElementCollection>
+                                        <Button x:ConnectionId="1" x:Name="createButton">
+                                            <Content>
+                                                <Binding Path="Values" ConverterParameter="common.create/create">
+                                                    <Converter>
+                                                        <StaticResource ResourceKey="LowerConverter" />
+                                                    </Converter>
+                                                    <Source>
+                                                        <StaticResource ResourceKey="Strings" />
+                                                    </Source>
+                                                </Binding>
+                                            </Content>
+                                        </Button>
+                                        <Button x:ConnectionId="2" x:Name="cancelButton" Column="1">
+                                            <Content>
+                                                <Binding Path="Values" ConverterParameter="common.cancel/cancel">
+                                                    <Converter>
+                                                        <StaticResource ResourceKey="LowerConverter" />
+                                                    </Converter>
+                                                    <Source>
+                                                        <StaticResource ResourceKey="Strings" />
+                                                    </Source>
+                                                </Binding>
+                                            </Content>
+                                        </Button>
+                                    </UIElementCollection>
+                                </Children>
+                            </Grid>
+                        </UIElementCollection>
+                    </Children>
+                </StackPanel>
+            </Child>
+        </Border>
+    </Grid>
+</UserControl>

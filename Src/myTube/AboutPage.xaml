@@ -1,0 +1,245 @@
+﻿<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+      xmlns:local="using:myTube" 
+      xmlns:etensions="using:WinRTXamlToolkit.Controls.Extensions" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      x:Class="myTube.AboutPage">
+    <Page.Resources>
+        <ResourceDictionary>
+            <Style TargetType="ContentControl">
+                <!--Setters>
+                    <SetterBaseCollection>
+                        <Setter Property="FontSize">
+                            <Value>
+                                <StaticResource ResourceKey="ImportantFontSize" />
+                            </Value>
+                        </Setter>
+                        <Setter Property="Template">
+                            <Value>
+                                <StaticResource ResourceKey="StandardPointerContent" />
+                            </Value>
+                        </Setter>
+                        <Setter Property="Margin" Value="0, 0, 0, 9.5" />
+                        <Setter Property="ContentTemplate">
+                            <Value>
+                                <DataTemplate>
+                                    <Template>
+                                        <Border>
+                                            <Background>
+                                                <ThemeResource ResourceKey="AccentBrush" />
+                                            </Background>
+                                            <Child>
+                                                <TextBlock Padding="19,19,19,19" Foreground="White" FontWeight="SemiBold">
+                          <FontSize>
+                            <StaticResource ResourceKey="ImportantFontSize" />
+                          </FontSize>
+                          <Text>
+                            <Binding />
+                          </Text>
+                                                </TextBlock>
+                                            </Child>
+                                        </Border>
+                                    </Template>
+                                </DataTemplate>
+                            </Value>
+                        </Setter>
+                    </SetterBaseCollection>
+                </Setters-->
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+    
+    <Grid>
+        <Grid>
+            <ScrollViewer>
+                <Grid>
+                    <ScrollViewer x:Name="scrollViewer" VerticalScrollMode="Disabled" HorizontalScrollMode="Enabled">
+                        <Grid>
+                            <local:OverCanvas x:Name="overCanvas" ArrangeStyle="Pivot" Title="myTube">
+                                <Grid>
+                                    <Grid>
+                                        <ScrollViewer OverCanvasTitle="about" OverCanvasWidthType="Star" OverCanvasWidth="0,5">
+                                            <Content>
+                                                <StackPanel>
+                                                    <Margin>
+                                                        <Binding Path="DefaultMargin" Mode="OneWay">
+                                                            <Source>
+                                                                <StaticResource ResourceKey="GlobalAppObjects" />
+                                                            </Source>
+                                                        </Binding>
+                                                    </Margin>
+                                                    <Children>
+                                                        <UIElementCollection>
+                                                            <TextBlock Text="myTube for WinRT">
+                                <FontSize>
+                                  <StaticResource ResourceKey="LargeFontSize" />
+                                </FontSize>
+                                                            </TextBlock>
+                                                            <RichTextBlock TextWrapping="Wrap">
+                                                                <FontSize>
+                                                                    <StaticResource ResourceKey="DefaultFontSize" />
+                                                                </FontSize>
+                                                                <Blocks>
+                                                                    <BlockCollection>
+                                                                        <Paragraph>
+                                                                            <Inlines>
+                                                                                <InlineCollection>
+                                                                                    <Run Text="Version " />
+                                                                                    <Run>
+                                                                                        <Text>
+                                                                                            <Binding Path="Version" Mode="OneWay">
+                                                                                                <Source>
+                                                                                                    <StaticResource ResourceKey="GlobalAppObjects" />
+                                                                                                </Source>
+                                                                                            </Binding>
+                                                                                        </Text>
+                                                                                    </Run>
+                                                                                    <LineBreak />
+                                                                                    <LineBreak />
+                                                                                    <Run Text="Developed by Christopher Blackman" />
+                                                                                    <LineBreak />
+                                                                                    <LineBreak />
+                                                                                    <Run Text="Contact at " />
+                                                                                    <Hyperlink NavigateUri="mailto:rykenproductions@outlook.com">
+                                                                                        <Foreground>
+                                                                                            <ThemeResource ResourceKey="AccentBrush" />
+                                                                                        </Foreground>
+                                                                                        <Inlines>
+                                                                                            <InlineCollection>
+                                                                                                <Underline>
+                                                                                                    <Inlines>
+                                                                                                        <InlineCollection>
+                                                                                                            <Run FontWeight="SemiBold" Text="rykenproductions@outlook.com" />
+                                                                                                        </InlineCollection>
+                                                                                                    </Inlines>
+                                                                                                </Underline>
+                                                                                            </InlineCollection>
+                                                                                        </Inlines>
+                                                                                    </Hyperlink>
+                                                                                    <LineBreak />
+                                                                                    <LineBreak />
+                                                                                    <Run Text="2012 - ">
+                                                                                        <Foreground>
+                                                                                            <ThemeResource ResourceKey="AccentBrush" />
+                                                                                        </Foreground>
+                                                                                    </Run>
+                                                                                    <Run>
+                                                                                        <Foreground>
+                                                                                            <ThemeResource ResourceKey="AccentBrush" />
+                                                                                        </Foreground>
+                                                                                        <Text>
+                                                                                            <Binding Path="CurrentDate.Year" Mode="OneWay">
+                                                                                                <Source>
+                                                                                                    <StaticResource ResourceKey="GlobalAppObjects" />
+                                                                                                </Source>
+                                                                                            </Binding>
+                                                                                        </Text>
+                                                                                    </Run>
+                                                                                    <Run Text=" Ryken Studio.">
+                                                                                        <Foreground>
+                                                                                            <ThemeResource ResourceKey="AccentBrush" />
+                                                                                        </Foreground>
+                                                                                    </Run>
+                                                                                    <LineBreak />
+                                                                                    <LineBreak />
+                                                                                    <Hyperlink x:ConnectionId="11" x:Name="twitterLink">
+                                                                                        <Foreground>
+                                                                                            <ThemeResource ResourceKey="AccentBrush" />
+                                                                                        </Foreground>
+                                                                                        <Inlines>
+                                                                                            <InlineCollection>
+                                                                                                <Underline>
+                                                                                                    <Inlines>
+                                                                                                        <InlineCollection>
+                                                                                                            <Run Text="Follow @RykenApps on Twitter" />
+                                                                                                        </InlineCollection>
+                                                                                                    </Inlines>
+                                                                                                </Underline>
+                                                                                            </InlineCollection>
+                                                                                        </Inlines>
+                                                                                    </Hyperlink>
+                                                                                    <LineBreak />
+                                                                                    <LineBreak />
+                                                                                    <Run Text="This app is in no way affiliated with YouTube, its parent company Google, or any related parties.">
+                                                                                        <Foreground>
+                                                                                            <ThemeResource ResourceKey="SubtleBrush" />
+                                                                                        </Foreground>
+                                                                                    </Run>
+                                                                                    <LineBreak />
+                                                                                    <LineBreak />
+                                                                                    <Run Text="Thank you everyone who participated in the beta or contacted me! This app couldn't be what it is without you." />
+                                                                                    <LineBreak />
+                                                                                    <LineBreak />
+                                                                                    <Hyperlink NavigateUri="http://rykenapps.com/privacypolicy">
+                                                                                        <Foreground>
+                                                                                            <ThemeResource ResourceKey="AccentBrush" />
+                                                                                        </Foreground>
+                                                                                        <Inlines>
+                                                                                            <InlineCollection>
+                                                                                                <Underline>
+                                                                                                    <Inlines>
+                                                                                                        <InlineCollection>
+                                                                                                            <Run FontWeight="SemiBold" Text="Privacy policy" />
+                                                                                                        </InlineCollection>
+                                                                                                    </Inlines>
+                                                                                                </Underline>
+                                                                                            </InlineCollection>
+                                                                                        </Inlines>
+                                                                                    </Hyperlink>
+                                                                                </InlineCollection>
+                                                                            </Inlines>
+                                                                        </Paragraph>
+                                                                    </BlockCollection>
+                                                                </Blocks>
+                                                            </RichTextBlock>
+                                                        </UIElementCollection>
+                                                    </Children>
+                                                </StackPanel>
+                                            </Content>
+                                        </ScrollViewer>
+
+                                        <ScrollViewer OverCanvasTitle="extras">
+                                            <Content>
+                                                <StackPanel x:Name="stackPanel" Resources="">
+                                                    <Margin>
+                                                        <Binding Path="DefaultMargin" Mode="OneWay">
+                                                            <Source>
+                                                                <StaticResource ResourceKey="GlobalAppObjects" />
+                                                            </Source>
+                                                        </Binding>
+                                                    </Margin>
+
+                                                    <ChildrenTransitions>
+                                                        <TransitionCollection>
+                                                            <EntranceThemeTransition />
+                                                        </TransitionCollection>
+                                                    </ChildrenTransitions>
+
+                                                    <Children>
+                                                        <UIElementCollection>
+                                                            <ContentControl x:ConnectionId="1" x:Name="viewRecentMessages" Content="view messages from developer" />
+                                                            <ContentControl x:ConnectionId="2" x:Name="joinBeta" Content="get the beta" />
+                                                            <ContentControl x:ConnectionId="3" x:Name="addNewMessage" Content="add new message" />
+                                                            <ContentControl x:ConnectionId="4" x:Name="translationFormat" Content="set up translation format" />
+                                                            <ContentControl x:ConnectionId="5" x:Name="translate" Content="translate the app" />
+                                                            <ContentControl x:ConnectionId="6" x:Name="tiles" Content="live tile info" />
+                                                            <ContentControl x:ConnectionId="7" x:Name="manageUsers" Content="manage users" />
+                                                            <ContentControl x:ConnectionId="8" x:Name="productKey" Content="product key" />
+                                                            <ContentControl x:ConnectionId="9" x:Name="manageKeys" Content="manage keys" />
+                                                            <ContentControl x:ConnectionId="10" x:Name="exceptions" Content="exception database" />
+                                                        </UIElementCollection>
+                                                    </Children>
+                                                </StackPanel>
+                                            </Content>
+                                        </ScrollViewer>
+                                    </Grid>
+                                </Grid>
+                            </local:OverCanvas>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Page>

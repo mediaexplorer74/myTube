@@ -12,7 +12,7 @@ Sadly, its W10M developing stopped... and some bugs are critial :(
 ## My 2 cents
 - Appx Decomp.
 - Fast code/architecture research
-- WP8 -> W10M code "rebase" ("refactor.") - 15 % only  
+- WP8 -> W10M code "rebase" ("refactor.") - 17 % only  
 
 ## Architecture
 - myTube

@@ -70,8 +70,8 @@ namespace myTube
     private ChannelDetails details;
     [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
     private VideoList uploads;
-    [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private bool _contentLoaded;
+    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
+    //private bool _contentLoaded;
 
     private UserInfo Channel => ((FrameworkElement) this).DataContext as UserInfo;
 
