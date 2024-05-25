@@ -5,6 +5,7 @@
 // Assembly location: C:\Users\Admin\Desktop\re\MyTube\myTubeAppLibrary.dll
 
 using RykenTube;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -83,16 +84,38 @@ namespace myTube
       return (OfflinePlaylist) null;
     }
 
+         //The error message you're seeing is related to the use of the
+         //await keyword with an object of type IAsyncOperation<StorageFile>. The await keyword is used to wait for an asynchronous operation to complete, but it can only be used with objects that implement the INotifyCompletion interface or have a compatible return type.
+        // In your case, the CreateFileAsync method returns an IAsyncOperation<StorageFile>,
+        // which is not directly awaitable. To fix this issue, you need to await the AsTask
+        // method of the IAsyncOperation<StorageFile> object.
     public async Task Save(string filePath = "OfflinePlaylists.xml")
     {
       try
       {
-        await FileIO.WriteTextAsync((IStorageFile) await OfflinePlaylistsCollection.folder.CreateFileAsync(filePath, (CreationCollisionOption) 1), this.xml.ToString());
+        await FileIO.WriteTextAsync((IStorageFile) 
+            await OfflinePlaylistsCollection.folder.CreateFileAsync(
+                filePath, (CreationCollisionOption) 1), this.xml.ToString());
       }
       catch
       {
       }
     }
+    
+        /*
+        public async Task Save(string filePath = "OfflinePlaylists.xml")
+    {
+        try
+        {
+            StorageFile file = await OfflinePlaylistsCollection.folder.CreateFileAsync(
+                filePath, CreationCollisionOption.ReplaceExisting).AsTask();
+            await FileIO.WriteTextAsync(file, this.xml.ToString());
+        }
+        catch
+        {
+        }
+    }*/
+
 
     public static async Task<OfflinePlaylistsCollection> Load(string filePath = "OfflinePlaylists.xml")
     {

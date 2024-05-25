@@ -1,8 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: myTube.TimeBookmarksManager
-// Assembly: myTubeAppLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 421B05F1-0283-4856-94C3-9442AF560132
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\myTubeAppLibrary.dll
+﻿// myTube.TimeBookmarksManager
 
 using RykenTube;
 using System;
@@ -28,25 +24,11 @@ namespace myTube
     {
       add
       {
-        TypedEventHandler<TimeBookmarksManager, TimeBookmark> typedEventHandler1 = this.Changed;
-        TypedEventHandler<TimeBookmarksManager, TimeBookmark> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<TimeBookmarksManager, TimeBookmark>>(ref this.Changed, (TypedEventHandler<TimeBookmarksManager, TimeBookmark>) Delegate.Combine((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+        this.Changed += value;
       }
       remove
       {
-        TypedEventHandler<TimeBookmarksManager, TimeBookmark> typedEventHandler1 = this.Changed;
-        TypedEventHandler<TimeBookmarksManager, TimeBookmark> typedEventHandler2;
-        do
-        {
-          typedEventHandler2 = typedEventHandler1;
-          typedEventHandler1 = Interlocked.CompareExchange<TypedEventHandler<TimeBookmarksManager, TimeBookmark>>(ref this.Changed, (TypedEventHandler<TimeBookmarksManager, TimeBookmark>) Delegate.Remove((Delegate) typedEventHandler2, (Delegate) value), typedEventHandler2);
-        }
-        while (typedEventHandler1 != typedEventHandler2);
+        this.Changed -= value;
       }
     }
 
@@ -71,8 +53,9 @@ namespace myTube
       {
         this.changesMade = true;
         this.bookmarks.Remove(timeBookmark);
-        // ISSUE: reference to a compiler-generated field
-        this.Changed?.Invoke(this, new TimeBookmark(entry.ID, TimeSpan.Zero));
+        
+        //this.Changed?.Invoke(this, new TimeBookmark(entry.ID, TimeSpan.Zero));
+        this.Changed += (sender, e) => { new TimeBookmark(entry.ID, TimeSpan.Zero); };
       }
       return (TimeBookmark) null;
     }
@@ -91,8 +74,10 @@ namespace myTube
           this.bookmarks.Add(timeBookmark1);
         }
         this.changesMade = true;
-        // ISSUE: reference to a compiler-generated field
-        this.Changed?.Invoke(this, timeBookmark1);
+        
+        //this.Changed?.Invoke(this, timeBookmark1);
+        this.Changed += (sender, e) => { e = timeBookmark1; };
+
         return timeBookmark1;
       }
       if (time < this.OnlyRememberAfter)
@@ -102,8 +87,10 @@ namespace myTube
       if (this.bookmarks.Count > 20)
         this.bookmarks.RemoveAt(0);
       this.changesMade = true;
-      // ISSUE: reference to a compiler-generated field
-      this.Changed?.Invoke(this, timeBookmark2);
+     
+      //this.Changed?.Invoke(this, timeBookmark2);
+      this.Changed += (sender, e) => { e = timeBookmark2; };
+
       return timeBookmark2;
     }
 
@@ -111,7 +98,9 @@ namespace myTube
     {
       try
       {
-        foreach (string s in (IEnumerable<string>) await FileIO.ReadLinesAsync((IStorageFile) await this.folder.GetFileAsync(fileName)))
+        foreach (string s in (IEnumerable<string>) 
+                    await FileIO.ReadLinesAsync((IStorageFile) 
+                           await this.folder.GetFileAsync(fileName)))
         {
           TimeBookmark timeBookmark = TimeBookmarksManager.bookmarkFromString(s);
           if (timeBookmark != null)
@@ -153,7 +142,10 @@ namespace myTube
       }
     }
 
-    private static string bookmarkToString(TimeBookmark b) => b.ID + "," + ((int) b.Time.TotalSeconds).ToString();
+    private static string bookmarkToString(TimeBookmark b)
+    {
+        return b.ID + "," + ((int)b.Time.TotalSeconds).ToString();
+    }
 
     private static TimeBookmark bookmarkFromString(string s)
     {

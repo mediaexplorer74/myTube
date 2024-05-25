@@ -87,8 +87,9 @@ namespace myTube
 
     public async Task<StorageFile> GetVideoStorageFile()
     {
-      int num;
-      if (num != 0 && (!(this.VideoFilePath != (Uri) null) || string.IsNullOrEmpty(this.VideoFilePath.OriginalString)))
+      //int num; //?
+      if (/*num != 0 &&*/ (!(this.VideoFilePath != (Uri) null) 
+         || string.IsNullOrEmpty(this.VideoFilePath.OriginalString)))
         return (StorageFile) null;
       try
       {
@@ -108,8 +109,8 @@ namespace myTube
 
     public async Task<StorageFile> GetAudioStorageFile()
     {
-      int num;
-      if (num != 0 && (!(this.AudioFilePath != (Uri) null) || string.IsNullOrEmpty(this.AudioFilePath.OriginalString)))
+      //int num;
+      if (/*num != 0 &&*/ (!(this.AudioFilePath != (Uri) null) || string.IsNullOrEmpty(this.AudioFilePath.OriginalString)))
         return (StorageFile) null;
       try
       {

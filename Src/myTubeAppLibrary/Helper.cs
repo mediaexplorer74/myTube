@@ -1,8 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: myTube.Helper
-// Assembly: myTubeAppLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 421B05F1-0283-4856-94C3-9442AF560132
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\myTubeAppLibrary.dll
+﻿// myTube.Helper
 
 using System;
 using System.Collections.Generic;
@@ -52,7 +48,9 @@ namespace myTube
 
     public static void Write(object o)
     {
-      string str = o.ToString() + (Helper.watch != null ? (object) (" - " + (object) Helper.watch.Elapsed.TotalSeconds + "s") : (object) "");
+      string str = o.ToString() + (Helper.watch != null 
+                ? (object) (" - " + (object) Helper.watch.Elapsed.TotalSeconds + "s") 
+                : (object) "");
       if (Helper.Logged != null)
         Helper.Logged((object) null, str);
       Helper.AddToLog(str);
@@ -68,13 +66,22 @@ namespace myTube
       }
     }
 
-    public static Task<List<string>> ListLocalFiles() => Helper.ListLocalFiles(ApplicationData.Current.LocalFolder, (Func<string, bool>) null);
+        public static Task<List<string>> ListLocalFiles()
+        {
+            return Helper.ListLocalFiles(ApplicationData.Current.LocalFolder, (Func<string, bool>)null);
+        }
 
-    public static Task<List<string>> ListLocalFiles(Func<string, bool> Where) => Helper.ListLocalFiles(ApplicationData.Current.LocalFolder, Where);
+        public static Task<List<string>> ListLocalFiles(Func<string, bool> Where)
+        {
+            return Helper.ListLocalFiles(ApplicationData.Current.LocalFolder, Where);
+        }
 
-    public static Task<List<string>> ListLocalFiles(StorageFolder sf) => Helper.ListLocalFiles(sf, (Func<string, bool>) null);
+        public static Task<List<string>> ListLocalFiles(StorageFolder sf)
+        {
+            return Helper.ListLocalFiles(sf, (Func<string, bool>)null);
+        }
 
-    public static async Task<List<string>> ListLocalFiles(
+        public static async Task<List<string>> ListLocalFiles(
       StorageFolder sf,
       Func<string, bool> Where)
     {
@@ -93,9 +100,12 @@ namespace myTube
       return paths;
     }
 
-    public static void WriteMemory(string tag) => Helper.Write((object) tag, (object) (".NET memory " + (object) ((double) GC.GetTotalMemory(true) / 1048576.0) + " MB"));
+        public static void WriteMemory(string tag)
+        {
+            Helper.Write((object)tag, (object)(".NET memory " + (object)((double)GC.GetTotalMemory(true) / 1048576.0) + " MB"));
+        }
 
-    public static void StartTimer()
+        public static void StartTimer()
     {
       Helper.watch = new Stopwatch();
       Helper.watch.Start();
@@ -112,11 +122,21 @@ namespace myTube
       return elapsed;
     }
 
-    public static void Write(object tag, object o) => Helper.Write((object) ("[" + tag + "] " + o + (Helper.watch != null ? (object) (" - " + (object) Helper.watch.Elapsed.TotalSeconds + "s") : (object) "")));
+        public static void Write(object tag, object o)
+        {
+            Helper.Write((object)("[" + tag + "] " + o + (Helper.watch != null 
+                ? (object)(" - " + (object)Helper.watch.Elapsed.TotalSeconds + "s") 
+                : (object)"")));
+        }
 
-    public static void Write(object tag, object o, int indentation) => Helper.Write((object) (Helper.indent(indentation) + "[" + tag + "] " + o + (Helper.watch != null ? (object) (" - " + (object) Helper.watch.Elapsed.TotalSeconds + "s") : (object) "")));
+        public static void Write(object tag, object o, int indentation)
+        {
+            Helper.Write((object)(Helper.indent(indentation) + "[" + tag + "] " + o + (Helper.watch != null 
+                ? (object)(" - " + (object)Helper.watch.Elapsed.TotalSeconds + "s")
+                : (object)"")));
+        }
 
-    private static string indent(int num)
+        private static string indent(int num)
     {
       string str = "";
       for (int index = 0; index < num; ++index)
@@ -206,11 +226,18 @@ namespace myTube
       return default (T);
     }
 
-    public static string ToLocalUriPath(string path) => path.Replace(ApplicationData.Current.LocalFolder.Path, "ms-appdata:///local").Replace("\\", "/");
+        public static string ToLocalUriPath(string path)
+        {
+            return path.Replace(ApplicationData.Current.LocalFolder.Path,
+            "ms-appdata:///local").Replace("\\", "/");
+        }
 
-    public static string ToLocalUriPath(string path, string replacement) => path.Replace(ApplicationData.Current.LocalFolder.Path, replacement).Replace("\\", "/");
+        public static string ToLocalUriPath(string path, string replacement)
+        {
+            return path.Replace(ApplicationData.Current.LocalFolder.Path, replacement).Replace("\\", "/");
+        }
 
-    public static string ToFileName(this string s)
+        public static string ToFileName(this string s)
     {
       foreach (char invalidFileNameChar in Path.GetInvalidFileNameChars())
         s = s.Replace(invalidFileNameChar, ' ');
@@ -274,7 +301,9 @@ namespace myTube
             destination.Add(child1 as FrameworkElement);
             break;
           }
-          List<FrameworkElement> childrenLine = Helper.FindChildrenLine(child1 as FrameworkElement, child, maxIterations, ref currentIteration);
+          List<FrameworkElement> childrenLine = Helper.FindChildrenLine(child1 as FrameworkElement, child, 
+              maxIterations, ref currentIteration);
+
           if (childrenLine.Count > 0)
           {
             destination.Add(parent);
@@ -326,15 +355,21 @@ namespace myTube
         tcs.SetResult((ExceptionRoutedEventArgs) null);
         return await tcs.Task;
       }
-      RoutedEventHandler reh = (RoutedEventHandler) null;
-      ExceptionRoutedEventHandler ereh = (ExceptionRoutedEventHandler) null;
-      EventHandler<object> progressCheckTimerTickHandler = (EventHandler<object>) null;
+      RoutedEventHandler reh = (RoutedEventHandler) default;
+      ExceptionRoutedEventHandler ereh = (ExceptionRoutedEventHandler) default;
+      EventHandler<object> progressCheckTimerTickHandler = (EventHandler<object>) default;
+
       DispatcherTimer progressCheckTimer = new DispatcherTimer();
+
       Action dismissWatchmen = (Action) (() =>
       {
-        WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>(new Action<EventRegistrationToken>(bitmapImage.remove_ImageOpened), reh);
+        /* WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>(new Action<EventRegistrationToken>(bitmapImage.remove_ImageOpened), reh);
         WindowsRuntimeMarshal.RemoveEventHandler<ExceptionRoutedEventHandler>(new Action<EventRegistrationToken>(bitmapImage.remove_ImageFailed), ereh);
-        WindowsRuntimeMarshal.RemoveEventHandler<EventHandler<object>>(new Action<EventRegistrationToken>(progressCheckTimer.remove_Tick), progressCheckTimerTickHandler);
+        WindowsRuntimeMarshal.RemoveEventHandler<EventHandler<object>>(new Action<EventRegistrationToken>(progressCheckTimer.remove_Tick), progressCheckTimerTickHandler);*/
+        bitmapImage.ImageOpened -= reh;
+        bitmapImage.ImageFailed -= ereh;
+        progressCheckTimer.Tick -= progressCheckTimerTickHandler;
+       
         progressCheckTimer.Stop();
       });
       int totalWait = 0;
@@ -354,9 +389,15 @@ namespace myTube
           tcs.SetResult((ExceptionRoutedEventArgs) null);
         }
       });
-      progressCheckTimer.put_Interval(TimeSpan.FromMilliseconds(10.0));
+      progressCheckTimer.Interval = TimeSpan.FromMilliseconds(10.0);
       DispatcherTimer dispatcherTimer = progressCheckTimer;
-      WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>, EventRegistrationToken>(dispatcherTimer.add_Tick), new Action<EventRegistrationToken>(dispatcherTimer.remove_Tick), progressCheckTimerTickHandler);
+
+      //WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(
+      //new Func<EventHandler<object>, EventRegistrationToken>(dispatcherTimer.add_Tick), 
+      //new Action<EventRegistrationToken>(dispatcherTimer.remove_Tick), progressCheckTimerTickHandler);
+      dispatcherTimer.Tick += new EventHandler<object>(progressCheckTimerTickHandler);
+      dispatcherTimer.Tick -= progressCheckTimerTickHandler;
+
       progressCheckTimer.Start();
       reh = (RoutedEventHandler) ((s, e) =>
       {
@@ -368,12 +409,15 @@ namespace myTube
         dismissWatchmen();
         tcs.SetResult(e);
       });
-      BitmapImage bitmapImage1 = bitmapImage;
 
-      //RnD
+      BitmapImage bitmapImage1 = bitmapImage;
       //WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(bitmapImage1.add_ImageOpened), new Action<EventRegistrationToken>(bitmapImage1.remove_ImageOpened), reh);
+      bitmapImage1.ImageOpened -= reh;
+
       BitmapImage bitmapImage2 = bitmapImage;
       //WindowsRuntimeMarshal.AddEventHandler<ExceptionRoutedEventHandler>(new Func<ExceptionRoutedEventHandler, EventRegistrationToken>(bitmapImage2.add_ImageFailed), new Action<EventRegistrationToken>(bitmapImage2.remove_ImageFailed), ereh);
+      bitmapImage2.ImageFailed -= ereh;
+
       return await tcs.Task;
     }
   }

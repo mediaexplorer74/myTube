@@ -1,7 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: myTube.App
-// Assembly: myTube.WindowsPhone, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: B5B96F9E-0572-4971-BFB4-9D68A15DDB38
+﻿// myTube.App
 // Assembly location: C:\Users\Admin\Desktop\re\MyTube\myTube.WindowsPhone.exe
 
 using myTube.Cloud;
@@ -449,9 +446,9 @@ namespace myTube
       e.put_Handled(true);
       // ISSUE: object of a compiler-generated type is created
       // ISSUE: variable of a compiler-generated type
-      App.\u003C\u003Ec__DisplayClass91_0 cDisplayClass910 = new App.\u003C\u003Ec__DisplayClass91_0();
+      App.DisplayClass91_0 cDisplayClass910 = new App.DisplayClass91_0();
       // ISSUE: reference to a compiler-generated field
-      cDisplayClass910.\u003C\u003E4__this = this;
+      cDisplayClass910.u003E4 = this;
       try
       {
         if (Settings.UserMode != UserMode.Owner)
@@ -977,6 +974,15 @@ namespace myTube
     {
       gobj = App.GlobalObjects,
       strings = App.Strings
+private class DisplayClass91_0
+        {
+            internal ExceptionData data;
+            internal string exceptionMessage;
+
+            public DisplayClass91_0()
+            {
+            }
+        }
     }, __methodptr(\u003CInitialChecks\u003Eb__0)));
 
     private void YouTube_SignInFailed(object sender, SignedInFailedEventArgs e) => App.trySignIn = true;

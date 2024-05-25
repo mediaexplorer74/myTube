@@ -1,8 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: myTube.Helpers.Ani
-// Assembly: myTubeAppLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 421B05F1-0283-4856-94C3-9442AF560132
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\myTubeAppLibrary.dll
+﻿// Type: myTube.Helpers.Ani
 
 using System;
 using System.Collections.Generic;

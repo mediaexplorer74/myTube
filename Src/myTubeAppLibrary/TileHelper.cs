@@ -101,9 +101,9 @@ namespace myTube
       string str2 = str1;
       Uri uri = new Uri("ms-appx:///Assets/Logo.scale-100.png", UriKind.Absolute);
       SecondaryTile tile = new SecondaryTile(tileId, title, str2, uri, (TileSize) 0);
-      tile.VisualElements.put_Wide310x150Logo(new Uri("ms-appx:///Assets/TileLogo.scale-180.png", UriKind.Absolute));
-      tile.VisualElements.put_ShowNameOnSquare150x150Logo(false);
-      tile.VisualElements.put_ForegroundText((ForegroundText) 1);
+      tile.VisualElements.Wide310x150Logo = new Uri("ms-appx:///Assets/TileLogo.scale-180.png", UriKind.Absolute);
+      tile.VisualElements.ShowNameOnSquare150x150Logo = false;
+      tile.VisualElements.ForegroundText = (ForegroundText) 1;
       return tile;
     }
 
@@ -122,10 +122,10 @@ namespace myTube
       try
       {
         SecondaryTile secondaryTile = new SecondaryTile(str1, title, str2, new Uri("ms-appx:///Assets/Logo.scale-100.png", UriKind.Absolute), (TileSize) 4);
-        secondaryTile.VisualElements.put_Wide310x150Logo(new Uri("ms-appx:///Assets/LogoWide.scale-200.png", UriKind.Absolute));
-        secondaryTile.VisualElements.put_Square310x310Logo(new Uri("ms-appx:///Assets/Logo.scale-100.png", UriKind.Absolute));
-        secondaryTile.VisualElements.put_ShowNameOnSquare150x150Logo(false);
-        secondaryTile.VisualElements.put_ForegroundText((ForegroundText) 1);
+        secondaryTile.VisualElements.Wide310x150Logo = new Uri("ms-appx:///Assets/LogoWide.scale-200.png", UriKind.Absolute);
+        secondaryTile.VisualElements.Square310x310Logo = new Uri("ms-appx:///Assets/Logo.scale-100.png", UriKind.Absolute);
+        secondaryTile.VisualElements.ShowNameOnSquare150x150Logo = false;
+        secondaryTile.VisualElements.ForegroundText = (ForegroundText) 1;
         tile = secondaryTile;
       }
       catch (Exception ex)
@@ -166,11 +166,20 @@ namespace myTube
       }
     }
 
-    private static string ToLocalUriPath(string path) => path.Replace(ApplicationData.Current.LocalFolder.Path, "ms-appdata:///local").Replace("\\", "/");
+    private static string ToLocalUriPath(string path)
+    {
+        return path.Replace(ApplicationData.Current.LocalFolder.Path, "ms-appdata:///local").Replace("\\", "/");
+    }
 
-    private static async Task<StorageFolder> GetFolderForTile(YouTubeEntry entry) => await TileHelper.GetFolderForTile(TileHelper.CreateTileID(entry));
+    private static async Task<StorageFolder> GetFolderForTile(YouTubeEntry entry)
+    {
+        return await TileHelper.GetFolderForTile(TileHelper.CreateTileID(entry));
+    }
 
-    private static async Task<StorageFolder> GetFolderForTile(TypeConstructor type) => await TileHelper.GetFolderForTile(TileHelper.CreateTileID(type));
+    private static async Task<StorageFolder> GetFolderForTile(TypeConstructor type)
+    {
+        return await TileHelper.GetFolderForTile(TileHelper.CreateTileID(type));
+    }
 
     public static async Task<StorageFolder> GetFolderForTile(string id)
     {
@@ -295,13 +304,15 @@ namespace myTube
       RenderTargetBitmap bitmap,
       TileSize size)
     {
-      StorageFile file = await (await TileHelper.GetFolderForTile(id)).CreateFileAsync(entry.ID + "-" + (object) size + ".png", (CreationCollisionOption) 1);
+      StorageFile file = await (await TileHelper.GetFolderForTile(id)).CreateFileAsync(
+          entry.ID + "-" + (object) size + ".png", (CreationCollisionOption) 1);
       byte[] pixelBuffer = (await bitmap.GetPixelsAsync()).ToArray();
       GC.Collect();
       using (IRandomAccessStream stream = await file.OpenAsync((FileAccessMode) 1))
       {
         BitmapEncoder async = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, stream);
-        async.SetPixelData((BitmapPixelFormat) 87, (BitmapAlphaMode) 1, (uint) bitmap.PixelWidth, (uint) bitmap.PixelHeight, 96.0, 96.0, pixelBuffer);
+        async.SetPixelData((BitmapPixelFormat) 87, (BitmapAlphaMode) 1,
+            (uint) bitmap.PixelWidth, (uint) bitmap.PixelHeight, 96.0, 96.0, pixelBuffer);
         await async.FlushAsync();
       }
       pixelBuffer = (byte[]) null;
@@ -441,7 +452,8 @@ namespace myTube
       XmlDocument templateContent2 = TileUpdateManager.GetTemplateContent((TileTemplateType) 10);
       templateContent2.SetImage(0, TileHelper.ToLocalUriPath(wideImage));
       templateContent2.SetBranding(branding);
-      IXmlNode ixmlNode = templateContent2.ImportNode(templateContent1.GetElementsByTagName("binding").Item(0U), true);
+      IXmlNode ixmlNode = templateContent2.ImportNode(templateContent1.GetElementsByTagName("binding").Item(0U), 
+          true);
       ((IReadOnlyList<IXmlNode>) templateContent2.GetElementsByTagName("visual"))[0].AppendChild(ixmlNode);
       return templateContent2;
     }
@@ -461,7 +473,8 @@ namespace myTube
       else
       {
         StorageFile mediumImage = await TileHelper.GetTileImageFile(entry, (TileSize) 3);
-        XmlDocument secondaryImageTileXml = await TileHelper.GetSecondaryImageTileXml(mediumImage, await TileHelper.GetTileImageFile(entry, (TileSize) 4), "none");
+        XmlDocument secondaryImageTileXml = await TileHelper.GetSecondaryImageTileXml(mediumImage, 
+            await TileHelper.GetTileImageFile(entry, (TileSize) 4), "none");
         mediumImage = (StorageFile) null;
         updater.Update(new TileNotification(secondaryImageTileXml));
       }
@@ -517,7 +530,8 @@ namespace myTube
           youTubeEntryClient.APIKey = "AIzaSyCRuvaqjnVtmh6FOnfIDQ8XyDVWzi_6UIA";
           youTubeEntryClient.UseAccessToken = false;
           youTubeClient2.RefreshClientOverride = (EntryClient<YouTubeEntry>) youTubeEntryClient;
-          if (youTubeClient1 is SignedInUserClient && (youTubeClient1 as SignedInUserClient).Type == UserFeed.Subscriptions)
+          if (youTubeClient1 is SignedInUserClient && (youTubeClient1 as SignedInUserClient).Type 
+                        == UserFeed.Subscriptions)
             youTubeClient1 = (YouTubeClient<YouTubeEntry>) new SubscriptionsPageClient();
           if (accessToken != null)
             youTubeClient1.AccessToken = accessToken;
@@ -563,29 +577,29 @@ namespace myTube
                 {
                   bit = new BitmapImage();
                   tileElement = await TileHelper.GetVideoTileGrid();
-                  ((FrameworkElement) tileElement).put_Height(336.0);
-                  ((FrameworkElement) tileElement).put_Width(336.0);
+                  ((FrameworkElement) tileElement).Height = 336.0;
+                  ((FrameworkElement) tileElement).Width = 336.0;
                   ImageBrush imageBrush1 = new ImageBrush();
-                  ((Brush) imageBrush1).put_Opacity(0.5);
-                  ((TileBrush) imageBrush1).put_Stretch((Stretch) 3);
+                  ((Brush) imageBrush1).Opacity = 0.5;
+                  ((TileBrush) imageBrush1).Stretch = ((Stretch) 3);
                   image = imageBrush1;
                   ImageBrush imageBrush2 = image;
                   ScaleTransform scaleTransform = new ScaleTransform();
-                  scaleTransform.put_CenterX(0.5);
-                  scaleTransform.put_CenterY(0.5);
-                  scaleTransform.put_ScaleX(1.35);
-                  scaleTransform.put_ScaleY(1.35);
-                  ((Brush) imageBrush2).put_RelativeTransform((Transform) scaleTransform);
-                  ((Panel) tileElement).put_Background((Brush) image);
+                  scaleTransform.CenterX = 0.5;
+                  scaleTransform.CenterY = 0.5;
+                  scaleTransform.ScaleX = 1.35;
+                  scaleTransform.ScaleY = 1.35;
+                  ((Brush) imageBrush2).RelativeTransform = ((Transform) scaleTransform);
+                  ((Panel) tileElement).Background = ((Brush) image);
                   textBlocks = Helper.FindChildren<TextBlock>((DependencyObject) tileElement, 100);
                   foreach (TextBlock textBlock in textBlocks)
-                    textBlock.put_FontFamily(new FontFamily("Segoe WP"));
+                    textBlock.FontFamily = new FontFamily("Segoe WP");
                   GC.Collect();
                 }
                 if (image.ImageSource != null && image.ImageSource is BitmapImage)
                 {
-                  (image.ImageSource as BitmapImage).put_UriSource((Uri) null);
-                  image.put_ImageSource((ImageSource) null);
+                  (image.ImageSource as BitmapImage).UriSource = (Uri) null;
+                  image.ImageSource = (ImageSource) null;
                   GC.Collect();
                 }
                 Helper.Write((object) nameof (TileHelper), (object) "Creating tile");
@@ -605,26 +619,31 @@ namespace myTube
                     try
                     {
                       bitmapImage = bit;
-                      ((BitmapSource) bitmapImage).SetSource(stream = await Helper.GetImageStream(v.GetThumb(thumbQual)));
+                      ((BitmapSource) bitmapImage).SetSource(stream 
+                          = await Helper.GetImageStream(v.GetThumb(thumbQual)));
                       bitmapImage = (BitmapImage) null;
                     }
                     catch
                     {
                     }
-                    image.put_ImageSource((ImageSource) bit);
+                    image.ImageSource = (ImageSource) bit;
                     if (stream != null)
                     {
                       ((IDisposable) stream).Dispose();
                       stream = (IRandomAccessStream) null;
                     }
                   }
-                  textBlocks[0].put_Text(v.AuthorDisplayName.ToLower());
-                  textBlocks[1].put_Text(v.Title.ToUpper());
-                  ((FrameworkElement) tileElement).put_Width(336.0);
+                  textBlocks[0].Text = v.AuthorDisplayName.ToLower();
+                  textBlocks[1].Text = v.Title.ToUpper();
+                  ((FrameworkElement) tileElement).Width = 336.0;
                   ((UIElement) tileElement).UpdateLayout();
                   RenderTargetBitmap renderTargetBitmap2 = new RenderTargetBitmap();
                   GC.Collect();
-                  mediumFile = await TileHelper.CreateTileImageFile(id, v, await renderTask((FrameworkElement) tileElement, renderTargetBitmap2), (TileSize) 3);
+
+                  mediumFile = await TileHelper.CreateTileImageFile(
+                      id, v, await renderTask((FrameworkElement) tileElement, renderTargetBitmap2), 
+                      (TileSize) 3);
+
                   rendered = true;
                 }
                 string medPath = mediumFile.Path;
@@ -641,13 +660,14 @@ namespace myTube
                     try
                     {
                       bitmapImage = bit;
-                      ((BitmapSource) bitmapImage).SetSource(stream = await Helper.GetImageStream(v.GetThumb(thumbQual)));
+                      ((BitmapSource) bitmapImage).SetSource(stream = 
+                          await Helper.GetImageStream(v.GetThumb(thumbQual)));
                       bitmapImage = (BitmapImage) null;
                     }
                     catch
                     {
                     }
-                    image.put_ImageSource((ImageSource) bit);
+                    image.ImageSource = (ImageSource) bit;
                     if (stream != null)
                     {
                       ((IDisposable) stream).Dispose();
@@ -656,10 +676,10 @@ namespace myTube
                   }
                   if (!rendered)
                   {
-                    textBlocks[0].put_Text(v.AuthorDisplayName.ToLower());
-                    textBlocks[1].put_Text(v.Title.ToUpper());
+                    textBlocks[0].Text = v.AuthorDisplayName.ToLower();
+                    textBlocks[1].Text = v.Title.ToUpper();
                   }
-                  ((FrameworkElement) tileElement).put_Width(691.0);
+                  ((FrameworkElement) tileElement).Width = 691.0;
                   ((UIElement) tileElement).UpdateLayout();
                   RenderTargetBitmap renderTargetBitmap3 = new RenderTargetBitmap();
                   GC.Collect();

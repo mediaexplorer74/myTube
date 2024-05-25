@@ -1,8 +1,5 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: myTube.Helpers.InputPaneHelper
-// Assembly: myTubeAppLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 421B05F1-0283-4856-94C3-9442AF560132
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\myTubeAppLibrary.dll
+﻿// myTube.Helpers.InputPaneHelper
+
 
 using System;
 using System.Collections.Generic;
@@ -23,11 +20,12 @@ namespace myTube.Helpers
     static InputPaneHelper()
     {
       InputPane pane1 = InputPaneHelper.pane;
-      // ISSUE: method pointer
-      WindowsRuntimeMarshal.AddEventHandler<TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>>(new Func<TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>, EventRegistrationToken>(pane1.add_Showing), new Action<EventRegistrationToken>(pane1.remove_Showing), new TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>((object) null, __methodptr(pane_Showing)));
+           
+      pane1.Showing += new TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>(InputPaneHelper.pane_Showing);
+
       InputPane pane2 = InputPaneHelper.pane;
-      // ISSUE: method pointer
-      WindowsRuntimeMarshal.AddEventHandler<TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>>(new Func<TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>, EventRegistrationToken>(pane2.add_Hiding), new Action<EventRegistrationToken>(pane2.remove_Hiding), new TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>((object) null, __methodptr(pane_Hiding)));
+     
+      pane2.Hiding += new TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>(InputPaneHelper.pane_Hiding);
     }
 
     public static void Register(FrameworkElement el, TranslateTransform trans)
@@ -73,9 +71,11 @@ namespace myTube.Helpers
     {
       foreach (InputPaneHelper.ElementAndTransform element in InputPaneHelper.elements)
       {
-        if (!(element.Element is TextBox) || element.Element is TextBox && ((Control) (element.Element as TextBox)).FocusState != null)
+        if (!(element.Element is TextBox) 
+             || element.Element is TextBox && ((Control) (element.Element as TextBox)).FocusState != null)
         {
-          double num = InputPaneHelper.pane.OccludedRect.Top - element.Element.GetBounds(Window.Current.Content).Bottom;
+          double num = InputPaneHelper.pane.OccludedRect.Top 
+                        - element.Element.GetBounds(Window.Current.Content).Bottom;
           if (num < 0.0)
           {
             double To = num - 19.0;

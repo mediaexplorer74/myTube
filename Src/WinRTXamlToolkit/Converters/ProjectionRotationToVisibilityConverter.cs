@@ -1,4 +1,6 @@
-﻿using System;
+﻿// WinRTXamlToolkit.Converters.ProjectionRotationToVisibilityConverter
+
+using System;
 //using System.Diagnostics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;

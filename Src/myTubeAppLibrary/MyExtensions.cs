@@ -16,6 +16,7 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.Web.Http;
 
 namespace myTube
@@ -106,7 +107,7 @@ namespace myTube
       Point position = new Point();
       try
       {
-        el.TransformToVisual(from).TryTransform(new Point(), ref position);
+        el.TransformToVisual(from).TryTransform(new Point(), out position);
         return position;
       }
       catch
@@ -128,12 +129,15 @@ namespace myTube
       }
     }
 
-    public static bool HasMedia(this MediaElement el) => el.CurrentState != null && el.CurrentState != 1;
+        public static bool HasMedia(this MediaElement el)
+        {
+            return el.CurrentState != null && el.CurrentState != MediaElementState.Opening;
+        }
 
-    public static Task<bool> WaitForOpened(this MediaElement med)
+        public static Task<bool> WaitForOpened(this MediaElement med)
     {
       TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-      if (med.CurrentState != 1)
+      if (med.CurrentState != MediaElementState.Opening)
       {
         tcs.SetResult(true);
         return tcs.Task;
@@ -143,19 +147,20 @@ namespace myTube
       failed = (ExceptionRoutedEventHandler) ((o, e) =>
       {
         tcs.SetResult(false);
-        WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>(new Action<EventRegistrationToken>(med.remove_MediaOpened), opened);
-        WindowsRuntimeMarshal.RemoveEventHandler<ExceptionRoutedEventHandler>(new Action<EventRegistrationToken>(med.remove_MediaFailed), failed);
+        med.MediaOpened -= opened;
+        med.MediaFailed -= failed;       
       });
       opened = (RoutedEventHandler) ((sender, e) =>
       {
         tcs.SetResult(true);
-        WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>(new Action<EventRegistrationToken>(med.remove_MediaOpened), opened);
-        WindowsRuntimeMarshal.RemoveEventHandler<ExceptionRoutedEventHandler>(new Action<EventRegistrationToken>(med.remove_MediaFailed), failed);
+        med.MediaOpened -= opened;
+        med.MediaFailed -= failed;       
       });
       MediaElement mediaElement1 = med;
-      WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(mediaElement1.add_MediaOpened), new Action<EventRegistrationToken>(mediaElement1.remove_MediaOpened), opened);
+      //RnD
+      med.MediaOpened += new RoutedEventHandler(opened);
       MediaElement mediaElement2 = med;
-      WindowsRuntimeMarshal.AddEventHandler<ExceptionRoutedEventHandler>(new Func<ExceptionRoutedEventHandler, EventRegistrationToken>(mediaElement2.add_MediaFailed), new Action<EventRegistrationToken>(mediaElement2.remove_MediaFailed), failed);
+      med.MediaFailed += failed;
       return tcs.Task;
     }
 
@@ -164,18 +169,21 @@ namespace myTube
       TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
       TappedEventHandler tapped = (TappedEventHandler) null;
       RoutedEventHandler unloaded = (RoutedEventHandler) null;
-      tapped = (TappedEventHandler) ((s, e) =>
+   
+      tapped = (TappedEventHandler)((s, e) =>
       {
-        WindowsRuntimeMarshal.RemoveEventHandler<TappedEventHandler>(new Action<EventRegistrationToken>(((UIElement) el).remove_Tapped), tapped);
-        WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>(new Action<EventRegistrationToken>(el.remove_Unloaded), unloaded);
+        ((UIElement)el).Tapped -= tapped;
+        el.Unloaded -= unloaded;
         tcs.SetResult(true);
       });
-      unloaded = (RoutedEventHandler) ((s, e) =>
+
+      unloaded = (RoutedEventHandler)((s, e) =>
       {
-        WindowsRuntimeMarshal.RemoveEventHandler<TappedEventHandler>(new Action<EventRegistrationToken>(((UIElement) el).remove_Tapped), tapped);
-        WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>(new Action<EventRegistrationToken>(el.remove_Unloaded), unloaded);
+        ((UIElement)el).Tapped -= tapped;
+        el.Unloaded -= unloaded;
         tcs.SetResult(false);
       });
+
       return tcs.Task;
     }
 
@@ -205,7 +213,8 @@ namespace myTube
       return el.ContainsPoint(position);
     }
 
-    public static bool ContainsPoint(this FrameworkElement el, Point p) => p.X > 0.0 && p.Y > 0.0 && p.X < el.ActualWidth && p.Y < el.ActualHeight;
+    public static bool ContainsPoint(this FrameworkElement el, Point p) => p.X > 0.0 
+            && p.Y > 0.0 && p.X < el.ActualWidth && p.Y < el.ActualHeight;
 
     public static async Task<bool> FileExists(this StorageFolder folder, string path)
     {
