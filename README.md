@@ -35,7 +35,7 @@ Sadly, its W10M developing stopped... and some bugs are critial :(
 ## License / Credits
 - MIT  
 - https://github.com/Ryken100 Christopher Blackman aka Ryken (Ryken Studio) 
-- https://github.com/Ryken100/mytube empty repo (in memorry of myTube?...)
+- https://github.com/Ryken100/mytube myTube Wiki, Discord link, etc...
 
 
 ## ..
