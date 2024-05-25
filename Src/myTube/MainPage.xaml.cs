@@ -25,6 +25,11 @@ namespace myTube
         public MainPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = ((NavigationCacheMode)1);
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
         }
     }
 }

@@ -49,15 +49,13 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.Web.Http.Filters;
-using Microsoft.VisualBasic;
-using myTube;
+
 
 namespace myTube
 {
 
-    sealed partial class App : Application
+    public partial class App : Application
     {
-
         private const string Tag = "App";
         public const string ExceptionFileName = "exception.json";
         public const string SupportEmail = "rykenproductions@outlook.com";
@@ -68,10 +66,10 @@ namespace myTube
         private static TimeSpan startTime;
         private static GlobalObjects gObjects;
         private static List<string> apiKeys = new List<string>();
-        public List<ColorSchemes> AddedSchemes = new List<ColorSchemes>();
-        private ColorSchemes curentScheme;
+        //public List<ColorSchemes> AddedSchemes = new List<ColorSchemes>();
+        //private ColorSchemes curentScheme;
         private Dictionary<string, Dictionary<string, SolidColorBrush>> themeCollection;
-        private static ThumbnailDispatcher thumbnailDispatcher = new ThumbnailDispatcher();
+        //private static ThumbnailDispatcher thumbnailDispatcher = new ThumbnailDispatcher();
         private static TaskDispatcher taskDispatcher = new TaskDispatcher();
         private GlobalObjects globalObjects;
         private bool backgroundAudio;
@@ -92,13 +90,71 @@ namespace myTube
         private static TileArgs launchTile;
         private PageInfoCollection pageInfoCollection;
         private static object u003E9__135_0;
+        private static ThumbnailDispatcher thumbnailDispatcher;
+        private ColorSchemes curentScheme;
 
-        //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        //private bool _contentLoaded;
-        //private XamlTypeInfoProvider _provider;
+        public App()
+        {
+            Helper.Logged += new EventHandler<string>(this.Helper_Logged);
+            Helper.StartTimer();
+            App.Instance = this;
+
+            this.InitializeComponent();
+
+            Helper.Write((object)nameof(App), (object)"Initialized component");
+
+            //TODO: handlers for unhandled exceptions
+            //WindowsRuntimeMarshal.AddEventHandler<UnhandledExceptionEventHandler>(
+            //    new Func<UnhandledExceptionEventHandler, EventRegistrationToken>(((Application)this)
+            //    .add_UnhandledException), 
+            //    new Action<EventRegistrationToken>(((Application)this).remove_UnhandledException), 
+            //    new UnhandledExceptionEventHandler(this.App_UnhandledException));
+            Application.Current.UnhandledException += this.App_UnhandledException;
 
 
+            Helper.Write((object)nameof(App), "App events registered");
+            Helper.Write((object)nameof(App), "Registered app events");
 
+            YouTube.GetFilterMethod = (Func<IHttpFilter>)(() =>
+            {
+                HttpBaseProtocolFilter baseProtocolFilter = new HttpBaseProtocolFilter();
+                baseProtocolFilter.MaxConnectionsPerServer = 128U;
+                baseProtocolFilter.AutomaticDecompression = true;
+                baseProtocolFilter.UseProxy = false;
+                return (IHttpFilter)baseProtocolFilter;
+            });
+
+            YouTube.DeveloperKey
+             = "AI39si6dXEJmpguaJJhUrdMQhjP-MTkCM8Nj1SZrHlRdRP_jq25wIBzK5TAHpdyh7woySA6kOVjJ9r80uiL9jU4Gnnx3KE499w";
+            YouTube.RedirectUri
+             = "urn:ietf:wg:oauth:2.0:oob";
+            YouTube.ClientID
+                = "424014257505-067odu7bdq7gg0dj7tvm1jkp7vf8ng9i.apps.googleusercontent.com";
+            YouTube.ClientSecret
+         = "l0ExNytvMCAuN0QJ0MnsI0_m";
+
+            List<string> stringList = new List<string>();
+
+            stringList.Add("AIzaSyCRuvaqjnVtmh6FOnfIDQ8XyDVWzi_6UIA");
+            stringList.Add("AIzaSyCdLTxn2Jbn7d_4qCQ3OEMklYTMyKNZBXU");
+            stringList.Add("AIzaSyDl4-bxkoPfLfpA7yc3Rj67ue-1FtU_Vtg");
+            stringList.Add("AIzaSyC_sKKS0i_p5DtIsUMsg3nVZ022mJF5pe8");
+            stringList.Add("AIzaSyBnEvrWFEjePAkAi_8Jo6e6_mzwe9aPaqk");
+            stringList.Add("AIzaSyAn7aiEcVjR7UCHawWq32CqyHpS_37PQHc");
+            stringList.Add("AIzaSyDeuLOy0xPMh55gxBwbTqG3gYFdRH6nI2E");
+            App.apiKeys = stringList;
+            YouTube.APIKey = App.apiKeys[0];
+
+            Helper.Write((object)nameof(App), (object)"Set up RykenTube constants");
+            YouTube.init();
+            TileHelper.Platform = App.PlatformType;
+            this.themeCollection = new Dictionary<string, Dictionary<string, SolidColorBrush>>();
+            Helper.Write((object)"App constructor completed");
+
+            //
+
+            this.Suspending += OnSuspending;
+        }
 
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
@@ -248,10 +304,21 @@ namespace myTube
             }
         }
 
-        public static ElementTheme OppositeTheme => Settings.Theme == ElementTheme.Dark 
-            ? ElementTheme.Light : ElementTheme.Dark;
+        public static ElementTheme OppositeTheme
+        {
+            get
+            {
+                return ElementTheme.Dark;//Settings.Theme == ElementTheme.Dark ? ElementTheme.Light : ElementTheme.Dark;
+            }
+        }
 
-        public static ElementTheme Theme => Settings.Theme;
+        public static ElementTheme Theme
+        {
+            get
+            {
+                return default;//Settings.Theme;
+            }
+        }
 
         public static string GetPassword(UserMode mode)
         {
@@ -302,7 +369,7 @@ namespace myTube
             {
                 try
                 {
-                    return Settings.UserMode < UserMode.Owner && string.IsNullOrWhiteSpace(Settings.ProductKey) && !Settings.WasPaidFor && CurrentApp.LicenseInformation.IsTrial;
+                    return false;//Settings.UserMode < UserMode.Owner && string.IsNullOrWhiteSpace(Settings.ProductKey) && !Settings.WasPaidFor && CurrentApp.LicenseInformation.IsTrial;
                 }
                 catch
                 {
@@ -320,66 +387,6 @@ namespace myTube
             string str = await CurrentApp.RequestAppPurchaseAsync(true);
         }
 
-        public App()
-        {
-
-            this.InitializeComponent();
-            this.Suspending += OnSuspending;
-
-
-            Helper.Logged += new EventHandler<string>(this.Helper_Logged);
-            Helper.StartTimer();
-            App.Instance = this;
-            this.InitializeComponent();
-            Helper.Write((object)nameof(App), (object)"Initialized component");
-
-            //TODO: handlers for unhandled exceptions
-            //WindowsRuntimeMarshal.AddEventHandler<UnhandledExceptionEventHandler>(
-            //    new Func<UnhandledExceptionEventHandler, EventRegistrationToken>(((Application)this)
-            //    .add_UnhandledException), 
-            //    new Action<EventRegistrationToken>(((Application)this).remove_UnhandledException), 
-            //    new UnhandledExceptionEventHandler(this.App_UnhandledException));
-
-
-            Helper.Write((object)nameof(App), "App events registered");
-            Helper.Write((object)nameof(App), "Registered app events");
-
-            YouTube.GetFilterMethod = (Func<IHttpFilter>)(() =>
-            {
-                HttpBaseProtocolFilter baseProtocolFilter = new HttpBaseProtocolFilter();
-                baseProtocolFilter.MaxConnectionsPerServer = 128U;
-                baseProtocolFilter.AutomaticDecompression = true;
-                baseProtocolFilter.UseProxy = false;
-                return (IHttpFilter)baseProtocolFilter;
-            });
-
-            YouTube.DeveloperKey
-             = "AI39si6dXEJmpguaJJhUrdMQhjP-MTkCM8Nj1SZrHlRdRP_jq25wIBzK5TAHpdyh7woySA6kOVjJ9r80uiL9jU4Gnnx3KE499w";
-            YouTube.RedirectUri
-             = "urn:ietf:wg:oauth:2.0:oob";
-            YouTube.ClientID
-                = "424014257505-067odu7bdq7gg0dj7tvm1jkp7vf8ng9i.apps.googleusercontent.com";
-            YouTube.ClientSecret
-         = "l0ExNytvMCAuN0QJ0MnsI0_m";
-
-            List<string> stringList = new List<string>();
-
-            stringList.Add("AIzaSyCRuvaqjnVtmh6FOnfIDQ8XyDVWzi_6UIA");
-            stringList.Add("AIzaSyCdLTxn2Jbn7d_4qCQ3OEMklYTMyKNZBXU");
-            stringList.Add("AIzaSyDl4-bxkoPfLfpA7yc3Rj67ue-1FtU_Vtg");
-            stringList.Add("AIzaSyC_sKKS0i_p5DtIsUMsg3nVZ022mJF5pe8");
-            stringList.Add("AIzaSyBnEvrWFEjePAkAi_8Jo6e6_mzwe9aPaqk");
-            stringList.Add("AIzaSyAn7aiEcVjR7UCHawWq32CqyHpS_37PQHc");
-            stringList.Add("AIzaSyDeuLOy0xPMh55gxBwbTqG3gYFdRH6nI2E");
-            App.apiKeys = stringList;
-            YouTube.APIKey = App.apiKeys[0];
-
-            Helper.Write((object)nameof(App), (object)"Set up RykenTube constants");
-            YouTube.init();
-            TileHelper.Platform = App.PlatformType;
-            this.themeCollection = new Dictionary<string, Dictionary<string, SolidColorBrush>>();
-            Helper.Write((object)"App constructor completed");
-        }
 
         private async Task createLogStream()
         {
@@ -415,7 +422,7 @@ namespace myTube
             if (this.initialThemeSetup)
                 return;
             this.initialThemeSetup = true;
-            this.AddThemeToDictionary(ColorSchemes.Default);
+            //this.AddThemeToDictionary(ColorSchemes.Default);
             string key = "PhoneAccentBrush";
 
             //RnD
@@ -441,9 +448,9 @@ namespace myTube
                 ((IDictionary<object, object>)themeDictionary2).Add((object)"MenuForegroundBrush",
                     ((IDictionary<object, object>)this.Resources)[(object)key]);
             }
-            this.AddThemeToDictionary(ColorSchemes.Accent);
-            this.AddThemeToDictionary(ColorSchemes.Classic);
-            this.AddThemeToDictionary(ColorSchemes.YouTube);
+            //this.AddThemeToDictionary(ColorSchemes.Accent);
+            //this.AddThemeToDictionary(ColorSchemes.Classic);
+            //this.AddThemeToDictionary(ColorSchemes.YouTube);
         }
 
         public void ApplyTheme(ColorSchemes scheme)
@@ -470,14 +477,21 @@ namespace myTube
             this.ApplyTheme(customThemeDictionary3, (ApplicationTheme)0);
         }
 
-        private Dictionary<string, SolidColorBrush> GetCustomThemeDictionary(string name) => this.themeCollection.ContainsKey(name) ? this.themeCollection[name] : (Dictionary<string, SolidColorBrush>)null;
+        private Dictionary<string, SolidColorBrush> GetCustomThemeDictionary(string name) 
+            => this.themeCollection.ContainsKey(name) 
+                ? this.themeCollection[name] 
+                : (Dictionary<string, SolidColorBrush>)null;
 
         private Dictionary<string, SolidColorBrush> GetCustomThemeDictionary(
           ColorSchemes scheme,
           ApplicationTheme theme)
         {
-            string key = (scheme == ColorSchemes.Default ? (object)"" : (object)scheme.ToString()).ToString() + (object)theme;
-            return this.themeCollection.ContainsKey(key) ? this.themeCollection[key] : (Dictionary<string, SolidColorBrush>)null;
+            string key = (scheme == ColorSchemes.Default 
+                ? (object)"" 
+                : (object)scheme.ToString()).ToString() + (object)theme;
+            return this.themeCollection.ContainsKey(key) 
+                ? this.themeCollection[key] 
+                : (Dictionary<string, SolidColorBrush>)null;
         }
 
         private void ApplyTheme(Dictionary<string, SolidColorBrush> dict, ApplicationTheme theme)
@@ -496,7 +510,7 @@ namespace myTube
 
         private void AddThemeToDictionary(ColorSchemes scheme)
         {
-            if (this.AddedSchemes.Contains(scheme))
+            /*if (this.AddedSchemes.Contains(scheme))
                 return;
             this.AddedSchemes.Add(scheme);
             string name = scheme == ColorSchemes.Default ? "" : scheme.ToString();
@@ -510,7 +524,7 @@ namespace myTube
             ResourceDictionary dict3 = this.GetThemeDictionary(name + (object)(ApplicationTheme)0) ?? themeDictionary;
             if (dict3 == null)
                 return;
-            this.AddThemeToDictionary(name + (object)(ApplicationTheme)0, dict3);
+            this.AddThemeToDictionary(name + (object)(ApplicationTheme)0, dict3);*/
         }
 
         private void AddThemeToDictionary(string name, ResourceDictionary dict)
@@ -525,7 +539,8 @@ namespace myTube
                 dictionary1 = new Dictionary<string, SolidColorBrush>();
                 this.themeCollection.Add(name, dictionary1);
             }
-            foreach (KeyValuePair<object, object> keyValuePair in (IEnumerable<KeyValuePair<object, object>>)dict)
+            foreach (KeyValuePair<object, object> keyValuePair 
+                in (IEnumerable<KeyValuePair<object, object>>)dict)
             {
                 if (keyValuePair.Value is SolidColorBrush solidColorBrush1)
                 {
@@ -552,7 +567,7 @@ namespace myTube
         private async void App_Resuming(object sender, object e)
         {
             Helper.Write((object)nameof(App_Resuming), (object)"Resuming");
-            App.CheckMessages(45.0);
+            /*App.CheckMessages(45.0);
             PlayerControls.UpdateBackgroundAudioState();
             if (PlayerControls.BackgroundAudio)
                 DefaultPage.Current.VideoPlayer.RegisterBackgroundEvent();
@@ -569,6 +584,7 @@ namespace myTube
             catch
             {
             }
+            */
         }
 
         private async void App_UnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
@@ -781,14 +797,14 @@ namespace myTube
             Storyboard closeAnimation = Ani.Animation(Ani.DoubleAni((DependencyObject)Element1, 
                 "Opacity", 0.0, 0.1, (EasingFunctionBase)null, 0.0));
 
-            Task<bool> task = DefaultPage.Current.ShowPopup(popup2, position, new Point(0.0, 0.0),
-                lightDismissed: false, closeAnimation: closeAnimation);
+            //Task<bool> task = DefaultPage.Current.ShowPopup(popup2, position, new Point(0.0, 0.0),
+            //    lightDismissed: false, closeAnimation: closeAnimation);
 
             Ani.Begin((DependencyObject)Element2, "RotationX", 0.0, 0.35, 
                 (EasingFunctionBase)Ani.Ease((EasingMode)0, 6.0));
 
             Helper.Write((object)"  -Awaiting popup");
-            int num = await task ? 1 : 0;
+            int num = 0;//await task ? 1 : 0;
             Helper.Write((object)"      -Popup awaited");
         }
 
@@ -938,13 +954,13 @@ namespace myTube
                         switch (urlType.Type)
                         {
                             case YouTubeURLType.Video:
-                                this.rootFrame.Navigate(typeof(VideoPage), (object)urlType.ID);
+                                //this.rootFrame.Navigate(typeof(VideoPage), (object)urlType.ID);
                                 break;
                             case YouTubeURLType.Playlist:
-                                this.rootFrame.Navigate(typeof(PlaylistPage), (object)urlType.ID);
+                                //this.rootFrame.Navigate(typeof(PlaylistPage), (object)urlType.ID);
                                 break;
                             case YouTubeURLType.Channel:
-                                this.rootFrame.Navigate(typeof(ChannelPage), (object)urlType.ID);
+                                //this.rootFrame.Navigate(typeof(ChannelPage), (object)urlType.ID);
                                 break;
                             default:
                                 loadOrigPage = true;
@@ -955,27 +971,27 @@ namespace myTube
                             if (((ContentControl)this.rootFrame).Content != null)
                                 this.rootFrame.ClearBackStackAtNavigate();
                             this.pageInfoCollection = new PageInfoCollection();
-                            this.pageInfoCollection.AddPage(new PageInfo(typeof(HomePage), (object)null));
+                            //this.pageInfoCollection.AddPage(new PageInfo(typeof(HomePage), (object)null));
                         }
                     }
                     else if (originalString.IndexOf("mytube:videoID=") == 0)
                     {
-                        this.rootFrame.Navigate(typeof(VideoPage), (object)originalString.Replace("mytube:videoID=", ""));
+                        //this.rootFrame.Navigate(typeof(VideoPage), (object)originalString.Replace("mytube:videoID=", ""));
                         loadOrigPage = false;
                     }
                     else if (urlConstructor.BaseAddress.Contains("Video") && urlConstructor.ContainsKey("ID"))
                     {
                         loadOrigPage = false;
                         this.rootFrame.ClearBackStackAtNavigate();
-                        this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
-                        this.rootFrame.Navigate(typeof(VideoPage), (object)urlConstructor["ID"]);
+                        //this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
+                        //this.rootFrame.Navigate(typeof(VideoPage), (object)urlConstructor["ID"]);
                     }
                     else if (urlConstructor.BaseAddress.Contains("Search") && urlConstructor.ContainsKey("Term"))
                     {
                         loadOrigPage = false;
                         this.rootFrame.ClearBackStackAtNavigate();
-                        this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
-                        this.rootFrame.Navigate(typeof(SearchPage), (object)urlConstructor["Term"]);
+                        //this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
+                        //this.rootFrame.Navigate(typeof(SearchPage), (object)urlConstructor["Term"]);
                     }
                     else if (urlConstructor.BaseAddress.Contains("vnd.youtube:"))
                     {
@@ -983,20 +999,20 @@ namespace myTube
                         YouTubeURLInfo urlType = YouTubeURLHelper.GetUrlType(str);
                         loadOrigPage = false;
                         this.rootFrame.ClearBackStackAtNavigate();
-                        this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
+                        //this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
                         switch (urlType.Type)
                         {
                             case YouTubeURLType.None:
-                                this.rootFrame.Navigate(typeof(VideoPage), (object)str);
+                                //this.rootFrame.Navigate(typeof(VideoPage), (object)str);
                                 break;
                             case YouTubeURLType.Video:
-                                this.rootFrame.Navigate(typeof(VideoPage), (object)urlType.ID);
+                                //this.rootFrame.Navigate(typeof(VideoPage), (object)urlType.ID);
                                 break;
                             case YouTubeURLType.Playlist:
-                                this.rootFrame.Navigate(typeof(PlaylistPage), (object)urlType.ID);
+                                //this.rootFrame.Navigate(typeof(PlaylistPage), (object)urlType.ID);
                                 break;
                             case YouTubeURLType.Channel:
-                                this.rootFrame.Navigate(typeof(ChannelPage), (object)urlType.ID);
+                                //this.rootFrame.Navigate(typeof(ChannelPage), (object)urlType.ID);
                                 break;
                         }
                     }
@@ -1008,12 +1024,12 @@ namespace myTube
                     FileOpenPickerContinuationEventArgs activationArgs 
                         = this.activationArgs as FileOpenPickerContinuationEventArgs;
                     loadOrigPage = false;
-                    if (this.rootFrame.CurrentSourcePageType == typeof(UploaderPage))
-                        (((ContentControl)this.rootFrame).Content as UploaderPage).SelectFile(
-                            (IStorageFile)Enumerable.FirstOrDefault<StorageFile>(
-                                (IEnumerable<StorageFile>)activationArgs.Files));
-                    else
-                        this.rootFrame.Navigate(typeof(UploaderPage), (object)Enumerable.FirstOrDefault<StorageFile>((IEnumerable<StorageFile>)activationArgs.Files));
+                    //if (this.rootFrame.CurrentSourcePageType == typeof(UploaderPage))
+                    //    (((ContentControl)this.rootFrame).Content as UploaderPage).SelectFile(
+                    //        (IStorageFile)Enumerable.FirstOrDefault<StorageFile>(
+                    //            (IEnumerable<StorageFile>)activationArgs.Files));
+                    //else
+                    //    this.rootFrame.Navigate(typeof(UploaderPage), (object)Enumerable.FirstOrDefault<StorageFile>((IEnumerable<StorageFile>)activationArgs.Files));
                 }
                 else if (this.activationArgs.Kind == ActivationKind.ShareTarget)
                 {
@@ -1025,15 +1041,15 @@ namespace myTube
                             if (istorageItem is IStorageFile)
                             {
                                 loadOrigPage = false;
-                                if (this.rootFrame.CurrentSourcePageType == typeof(UploaderPage))
-                                {
-                                    (((ContentControl)this.rootFrame).Content as UploaderPage).SelectFile(istorageItem as IStorageFile);
-                                }
-                                else
-                                {
-                                    this.rootFrame.Navigate(typeof(UploaderPage), (object)istorageItem);
-                                    break;
-                                }
+                                //if (this.rootFrame.CurrentSourcePageType == typeof(UploaderPage))
+                                //{
+                                //    (((ContentControl)this.rootFrame).Content as UploaderPage).SelectFile(istorageItem as IStorageFile);
+                                //}
+                                //else
+                                //{
+                                //    this.rootFrame.Navigate(typeof(UploaderPage), (object)istorageItem);
+                                //    break;
+                                //}
                             }
                         }
                     }
@@ -1043,14 +1059,14 @@ namespace myTube
             if (((ContentControl)this.rootFrame).Content == null & loadOrigPage && !this.initialized && App.launchTile == null)
             {
                 Helper.Write((object)"InitialSetup", (object)"Creating default page");
-                this.rootFrame.Navigate(typeof(HomePage));
+                //this.rootFrame.Navigate(typeof(HomePage));
                 Helper.Write((object)"InitialSetup", (object)"Navigated to homepage");
             }
             else if (App.launchTile != null)
             {
                 this.rootFrame.ClearBackStackAtNavigate();
-                if (Type.GetType(App.launchTile.PageType) != typeof(HomePage))
-                    this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
+                //if (Type.GetType(App.launchTile.PageType) != typeof(HomePage))
+                //    this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
                 this.rootFrame.Navigate(Type.GetType(App.launchTile.PageType), (object)App.launchTile.Param);
                 Helper.Write((object)"InitialSetup", (object)"Navigated to launchTile page");
             }
@@ -1096,7 +1112,8 @@ namespace myTube
             displayClass1150.u003E4 = this;
             // ISSUE: reference to a compiler-generated field
             displayClass1150.e = e;
-            if (Settings.UserMode < UserMode.Owner || Window.Current == null || Window.Current.Content == null)
+            if (Settings.UserMode < UserMode.Owner || Window.Current == null
+                || Window.Current.Content == null)
                 return;
             // ISSUE: method pointer
             //await ((DependencyObject)Window.Current.Content).Dispatcher.RunAsync(
@@ -1673,7 +1690,7 @@ namespace myTube
                     Y = bounds2.Bottom - ((FrameworkElement)settings).Height
                 };
             }));
-            DefaultPage.Current.ShowPopup(popup2, new Point(), new Point(0.0, 150.0));
+            //DefaultPage.Current.ShowPopup(popup2, new Point(), new Point(0.0, 150.0));
         }
 
         protected override void OnWindowCreated(WindowCreatedEventArgs args)
@@ -1687,7 +1704,7 @@ namespace myTube
         {
             if (DefaultPage.Current == null)
                 return;
-            DefaultPage.Current.VideoPlayer.SetBookmark(save: true);
+            //DefaultPage.Current.VideoPlayer.SetBookmark(save: true);
         }
 
         private void RootFrame_FirstNavigated(object sender, NavigationEventArgs e)
@@ -1719,7 +1736,7 @@ namespace myTube
             {
                 await Settings.SavePageInfoCollection(this.RootFrame);
                 Settings.SuspendedAt = DateTimeOffset.Now;
-                await DefaultPage.Current.VideoPlayer.SetBookmark(save: true);
+                //await DefaultPage.Current.VideoPlayer.SetBookmark(save: true);
             }
             catch
             {
@@ -1728,7 +1745,7 @@ namespace myTube
             }
             if (DefaultPage.Current != null)
             {
-                VideoPlayer vp = DefaultPage.Current.VideoPlayer;
+                VideoPlayer vp = default;//DefaultPage.Current.VideoPlayer;
                 if (App.DeviceFamily == DeviceFamily.Desktop)
                     BackgroundMediaPlayer.Shutdown();
 

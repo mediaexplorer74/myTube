@@ -121,7 +121,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Align.cs" />
-    <Compile Include="AllCapsConverter.cs" />
+    <Compile Include="Converters\AllCapsConverter.cs" />
     <Compile Include="AvailableQualitiesChangedEventArgs.cs" />
     <Compile Include="BookmarkableActionEventArgs.cs" />
     <Compile Include="BoolInverter.cs" />
@@ -132,7 +132,9 @@
     <Compile Include="CastingException.cs" />
     <Compile Include="ChannelNotifications.cs" />
     <Compile Include="ClientAndItem`1.cs" />
+    <Compile Include="Converters\LowerStringFormatConverter2.cs" />
     <Compile Include="Converters\SubtitlePlacementToVerticalAlignment.cs" />
+    <Compile Include="Converters\UpperStringFormatConverter2.cs" />
     <Compile Include="Crop.cs" />
     <Compile Include="DashMediaStreamSource.cs" />
     <Compile Include="DateToDotString.cs" />
@@ -159,7 +161,7 @@
     <Compile Include="NetworkConstants.cs" />
     <Compile Include="NextVideoEventArgs.cs" />
     <Compile Include="NullToVisibility.cs" />
-    <Compile Include="NumberWithNewLinesConverter.cs" />
+    <Compile Include="Converters\NumberWithNewLinesConverter2.cs" />
     <Compile Include="OfflinePlaylist.cs" />
     <Compile Include="OfflinePlaylistsCollection.cs" />
     <Compile Include="Placement.cs" />
@@ -177,13 +179,13 @@
     <Compile Include="SharedSettings.cs" />
     <Compile Include="SignInInfo.cs" />
     <Compile Include="StepForwardBackwardRequestedEventArgs.cs" />
-    <Compile Include="StringAppendConverter.cs" />
+    <Compile Include="Converters\StringAppendConverter.cs" />
     <Compile Include="StringBindingHelper.cs" />
     <Compile Include="StringCaseType.cs" />
     <Compile Include="StringFormat.cs" />
     <Compile Include="StringFormatCollection.cs" />
     <Compile Include="Strings.cs" />
-    <Compile Include="StringToVisibiltyConverter.cs" />
+    <Compile Include="Converters\StringToVisibiltyConverter.cs" />
     <Compile Include="TaskAndFuncBase.cs" />
     <Compile Include="TaskAndFunc`1.cs" />
     <Compile Include="TaskAndMethod`1.cs" />

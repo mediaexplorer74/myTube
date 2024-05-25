@@ -1,18 +1,21 @@
 # myTube
-myTube 2.x for WP8.1 RnD
+My myTube 3.9 "remake" (RnD)
 
 ## Design&Screenshots
 ![](Images/shot01.png)
 ![](Images/shot02.png)
 
 ## About the original
-MyTube is the (a) famous Toutube UWP client / application that using Youtube API from google. 
-Sadly, its W10M developing stopped... and some bugs are critial :( 
+MyTube is the the famous Youtube UWP client / application that using Youtube API from google. Sadly, its W10M developing stopped by its developers... and thera are some critial bugs such damaged webbrowser google auth. :(
+
+So, myTube reconstruction is very important thing :) 
 
 ## My 2 cents
 - Appx Decomp.
 - Fast code/architecture research
 - WP8 -> W10M code "rebase" ("refactor.") - 17 % only  
+- App builded with minimal UI yet
+- Min. Win. os build temporary set at 16299 (not at 14393) for future debug deals
 
 ## Architecture
 - myTube

@@ -17,7 +17,9 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
-    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <PackageCertificateThumbprint>43A7AFCB1C6E75472F9F9AD5EE6FBD5BF737CA3E</PackageCertificateThumbprint>
+    <PackageCertificateKeyFile>myTube_TemporaryKey.pfx</PackageCertificateKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -116,198 +118,83 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AboutPage.xaml.cs">
-      <DependentUpon>AboutPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="AccountManagementControl.xaml.cs">
-      <DependentUpon>AccountManagementControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="AddPlaylistControl.xaml.cs">
-      <DependentUpon>AddPlaylistControl.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="AccountManagementControl.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="CCheckRykenUser.cs" />
+    <Compile Include="ChannelHeader.xaml.cs">
+      <DependentUpon>ChannelHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ClientAndFirstLoadTask.cs" />
+    <Compile Include="ColorSchemes.cs" />
+    <Compile Include="Converters\NumberWithNewLinesConverter.cs" />
+    <Compile Include="CustomFrame.cs" />
+    <Compile Include="DefaultPage.cs" />
     <Compile Include="ExceptionClient.cs" />
+    <Compile Include="GlobalAppObjects\GlobalObjects.cs" />
+    <Compile Include="HistoryPage.cs" />
+    <Compile Include="IconButtonEvent.cs" />
+    <Compile Include="IconButtonInfo.cs" />
+    <Compile Include="LikesPage.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="MessageClient.cs" />
+    <Compile Include="MessageDialogs\ChannelPage.cs" />
+    <Compile Include="MessageDialogs\CommentsView.cs" />
+    <Compile Include="MessageDialogs\CommentThumb.cs" />
+    <Compile Include="MessageDialogs\MessageNotification.cs" />
+    <Compile Include="MessageDialogs\MessageThumb.cs" />
+    <Compile Include="MessageDialogs\MessageView.cs" />
+    <Compile Include="MessageDialogs\PollDataClient.cs" />
+    <Compile Include="MessageDialogs\PollView.cs" />
+    <Compile Include="MessageDialogs\RecentMessages.cs" />
+    <Compile Include="Popups\StringClient.cs" />
+    <Compile Include="VideoPage.cs" />
+    <Compile Include="MiniPlayerType.cs" />
+    <Compile Include="PageInfo.cs" />
+    <Compile Include="PageInfoCollection.cs" />
+    <Compile Include="PlaylistListPage.cs" />
+    <Compile Include="Popups\ChannelNotificationsPopup.cs" />
+    <Compile Include="Popups\ChannelNotificationViewModel.cs" />
+    <Compile Include="Popups\ClipboardPopup.cs" />
+    <Compile Include="Popups\DevicePickerFlyout.cs" />
+    <Compile Include="Popups\SearchFilterUI.cs" />
+    <Compile Include="Popups\StringUploadPopup.cs" />
+    <Compile Include="Popups\ViewString.cs" />
     <Compile Include="ProductKeyClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RE\Activities\ActivitiesList.cs" />
-    <Compile Include="RE\Activities\ActivityListTemplateSelector.cs" />
-    <Compile Include="RE\Activities\ActivityThumb.cs" />
-    <Compile Include="RE\Activities\LikeThumb.cs" />
-    <Compile Include="RE\Activities\RecommendedThumb.cs" />
-    <Compile Include="RE\Activities\UploadThumb.cs" />
-    <Compile Include="RE\AfterVideoSection.cs" />
-    <Compile Include="RE\Ani.cs" />
-    <Compile Include="RE\AnnotationControl.cs" />
-    <Compile Include="RE\AnnotationsPanel.cs" />
-    <Compile Include="RE\ArrangeStyle.cs" />
-    <Compile Include="RE\BetaPages\NewMessage.cs" />
-    <Compile Include="RE\BetaPages\StringFormatPage.cs" />
-    <Compile Include="RE\BetaPages\TileInfoPage.cs" />
-    <Compile Include="RE\BetaPages\TileListPage.cs" />
-    <Compile Include="RE\BetaPages\TranslationPage.cs" />
-    <Compile Include="RE\BitmapAndData.cs" />
-    <Compile Include="RE\CategoryTextInfo.cs" />
-    <Compile Include="RE\ChannelDetails.cs" />
-    <Compile Include="RE\ChannelHeader.cs" />
-    <Compile Include="RE\ChannelPage.cs" />
-    <Compile Include="RE\ChannelThumb.cs" />
-    <Compile Include="RE\ColorSchemes.cs" />
-    <Compile Include="RE\CommentControl.cs" />
-    <Compile Include="RE\CommentsList.cs" />
-    <Compile Include="RE\CommentThread.cs" />
-    <Compile Include="RE\Control16by9.cs" />
-    <Compile Include="RE\ControlDirection.cs" />
-    <Compile Include="RE\Converters\ColorSchemeToStringConverter.cs" />
-    <Compile Include="RE\Converters\IntToColorConverter.cs" />
-    <Compile Include="RE\Converters\SubtitlePlacementToVerticalAlignment.cs" />
-    <Compile Include="RE\CustomFrame.cs" />
-    <Compile Include="RE\CustomMath\Curve.cs" />
-    <Compile Include="RE\CustomMath\CurvePoint.cs" />
-    <Compile Include="RE\CustomSlider.cs" />
-    <Compile Include="RE\Debug\CommentListTestPage.cs" />
-    <Compile Include="RE\Debug\DebugInfoPanel.cs" />
-    <Compile Include="RE\DefaultPage.cs" />
-    <Compile Include="RE\DeviceFamily.cs" />
-    <Compile Include="RE\DeviceViewModel.cs" />
-    <Compile Include="RE\DirectionTappedEventArgs.cs" />
-    <Compile Include="RE\DownloaderPanel.cs" />
-    <Compile Include="RE\ExceptionPages\ExceptionDetails.cs" />
-    <Compile Include="RE\ExceptionPages\VersionListPage.cs" />
-    <Compile Include="RE\ExceptionPages\VersionsPage.cs" />
-    <Compile Include="RE\FadeType.cs" />
-    <Compile Include="RE\FlipStyle.cs" />
-    <Compile Include="RE\GlobalAppObjects\GlobalObjects.cs" />
-    <Compile Include="RE\Helpers\Accel.cs" />
-    <Compile Include="RE\Helpers\ClientAndFirstLoadTask.cs" />
-    <Compile Include="RE\Helpers\InputPaneHelper.cs" />
-    <Compile Include="RE\Helpers\ISelectableThumbnail.cs" />
-    <Compile Include="RE\Helpers\ISortableThumbnail`1.cs" />
-    <Compile Include="RE\Helpers\IVideoContainer.cs" />
-    <Compile Include="RE\Helpers\OrientChangedEventArgs.cs" />
-    <Compile Include="RE\Helpers\OrientChangedEventHandler.cs" />
-    <Compile Include="RE\Helpers\SortTappedEventArgs`1.cs" />
-    <Compile Include="RE\Helpers\VideoDepth.cs" />
-    <Compile Include="RE\Helpers\YouTubeCacheHandler.cs" />
-    <Compile Include="RE\HistoryPage.cs" />
-    <Compile Include="RE\HomePage.cs" />
-    <Compile Include="RE\IconButtonEvent.cs" />
-    <Compile Include="RE\IconButtonEventArgs.cs" />
-    <Compile Include="RE\IconButtonEventCollection.cs" />
-    <Compile Include="RE\IconButtonInfo.cs" />
-    <Compile Include="RE\IconButtonInfoCollection.cs" />
-    <Compile Include="RE\IconTextButton.cs" />
-    <Compile Include="RE\IDownloadPanelCallbackReceiver.cs" />
-    <Compile Include="RE\LeftRightControl.cs" />
-    <Compile Include="RE\LikesPage.cs" />
-    <Compile Include="RE\ListState.cs" />
-    <Compile Include="RE\ListStrings.cs" />
-    <Compile Include="RE\LowerStringFomatConverter.cs" />
-    <Compile Include="RE\MainPage.cs" />
-    <Compile Include="RE\MediaEndedEventArgs.cs" />
-    <Compile Include="RE\MediaOpenedEventArgs.cs" />
-    <Compile Include="RE\MediaRunningChangedEventArgs.cs" />
-    <Compile Include="RE\Media\myTubeMediaStreamSourceContainer.cs" />
-    <Compile Include="RE\MessageDialogs\CommentsView.cs" />
-    <Compile Include="RE\MessageDialogs\CommentThumb.cs" />
-    <Compile Include="RE\MessageDialogs\MessageNotification.cs" />
-    <Compile Include="RE\MessageDialogs\MessageThumb.cs" />
-    <Compile Include="RE\MessageDialogs\MessageView.cs" />
-    <Compile Include="RE\MessageDialogs\PollView.cs" />
-    <Compile Include="RE\MessageDialogs\RecentMessages.cs" />
-    <Compile Include="RE\MiniPlayerType.cs" />
-    <Compile Include="RE\MyMath.cs" />
-    <Compile Include="RE\ObjectCollection.cs" />
-    <Compile Include="RE\OnScrollingStoppedEventArgs.cs" />
-    <Compile Include="RE\OnSelectedPageChangedEventArgs.cs" />
-    <Compile Include="OverCanvas.cs" />
-    <Compile Include="OverCanvasWidthType.cs" />
-    <Compile Include="RE\Overlays\SelectControl.cs" />
-    <Compile Include="RE\Overlays\SortingControl.cs" />
-    <Compile Include="RE\PageInfo.cs" />
-    <Compile Include="RE\PageInfoCollection.cs" />
-    <Compile Include="RE\PivotHeader.cs" />
-    <Compile Include="RE\PlayerControls.cs" />
-    <Compile Include="RE\PlayerControlsState.cs" />
-    <Compile Include="RE\PlaylistEditMode.cs" />
-    <Compile Include="RE\PlaylistEntryCollection.cs" />
-    <Compile Include="RE\PlaylistList.cs" />
-    <Compile Include="RE\PlaylistListPage.cs" />
-    <Compile Include="RE\PlaylistOffsetEventHandler.cs" />
-    <Compile Include="RE\PlaylistPage.cs" />
-    <Compile Include="RE\PlaylistSelectorControl.cs" />
-    <Compile Include="RE\PlaylistThumbnail.cs" />
-    <Compile Include="RE\Popups\ChannelNotificationsPopup.cs" />
-    <Compile Include="RE\Popups\ChannelNotificationViewModel.cs" />
-    <Compile Include="RE\Popups\ClipboardPopup.cs" />
-    <Compile Include="RE\Popups\DevicePickerFlyout.cs" />
-    <Compile Include="RE\Popups\SearchFilterUI.cs" />
-    <Compile Include="RE\Popups\StringUploadPopup.cs" />
-    <Compile Include="RE\Popups\ViewString.cs" />
-    <Compile Include="RE\ProductKeyPages\KeyManagementPage.cs" />
-    <Compile Include="RE\ProductKeyPages\KeyRequestPage.cs" />
-    <Compile Include="RE\Program.cs" />
-    <Compile Include="RE\QualityButtonInfo.cs" />
-    <Compile Include="RE\QualityButtonInfoCollection.cs" />
-    <Compile Include="RE\RotationType.cs" />
-    <Compile Include="RE\RoundDirection.cs" />
-    <Compile Include="RE\SavedVideosPage.cs" />
-    <Compile Include="RE\SearchPage.cs" />
-    <Compile Include="RE\Settings.cs" />
-    <Compile Include="RE\SettingsContainer.cs" />
-    <Compile Include="RE\SettingsPages\GeneralSettings.cs" />
-    <Compile Include="RE\SettingsPages\SubscriptionsSettings.cs" />
-    <Compile Include="RE\SettingsPages\WatchLaterSettings.cs" />
-    <Compile Include="RE\ShareTargets\ShareLinkPage.cs" />
-    <Compile Include="RE\SliderValueChangedEventArgs.cs" />
-    <Compile Include="RE\SubscribedToPage.cs" />
-    <Compile Include="RE\TestPage.cs" />
-    <Compile Include="RE\TestPages\TestListPage.cs" />
-    <Compile Include="RE\Tests\Backend\AuthorizedClient.cs" />
-    <Compile Include="RE\Tests\Backend\CastingTest.cs" />
-    <Compile Include="RE\Tests\Backend\ChannelClients.cs" />
-    <Compile Include="RE\Tests\Backend\EmailTest.cs" />
-    <Compile Include="RE\Tests\Backend\PopularTests.cs" />
-    <Compile Include="RE\Tests\Backend\RelatedVideos.cs" />
-    <Compile Include="RE\Tests\Backend\VideoLoading.cs" />
-    <Compile Include="RE\TextToHyperlinkBlocksConverter.cs" />
-    <Compile Include="RE\ThumbnailDispatcher.cs" />
-    <Compile Include="RE\ThumbnailStyle.cs" />
-    <Compile Include="RE\TileStyle.cs" />
-    <Compile Include="RE\Tiles\VideoTile.cs" />
-    <Compile Include="RE\UploaderPage.cs" />
-    <Compile Include="RE\UploadProgressPanel.cs" />
-    <Compile Include="RE\UpperStringFomatConverter.cs" />
-    <Compile Include="RE\UserHome.cs" />
-    <Compile Include="RE\UserInfoCollection.cs" />
-    <Compile Include="RE\UserPages\UserManagement.cs" />
-    <Compile Include="RE\Vector3.cs" />
-    <Compile Include="RE\VideoContextMenu.cs" />
-    <Compile Include="RE\VideoDetails.cs" />
-    <Compile Include="RE\VideoPageThumb.cs" />
-    <Compile Include="RE\VideoPlayer.cs" />
-    <Compile Include="RE\VideoThumb.cs" />
-    <Compile Include="RE\VideoThumb2.cs" />
-    <Compile Include="RE\VisualStateHelpers\PointerStateHelper.cs" />
-    <Compile Include="RE\WatchLaterPage.cs" />
-    <Compile Include="RE\WrapPanel.cs" />
-    <Compile Include="RE\YouTubeEntryCollection.cs" />
+    <Compile Include="AfterVideoSection.cs" />
+    <Compile Include="Ani.cs" />
+    <Compile Include="ArrangeStyle.cs" />
+    <Compile Include="BitmapAndData.cs" />
+    <Compile Include="CategoryTextInfo.cs" />
+    <Compile Include="Converters\ColorSchemeToStringConverter.cs" />
+    <Compile Include="Converters\IntToColorConverter.cs" />
+    <Compile Include="Converters\SubtitlePlacementToVerticalAlignment.cs" />
+    <Compile Include="DeviceFamily.cs" />
+    <Compile Include="DeviceViewModel.cs" />
+    <Compile Include="Converters\LowerStringFormatConverter.cs" />
+    <Compile Include="RotationType.cs" />
+    <Compile Include="SavedVideosPage.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="SettingsContainer.cs" />
+    <Compile Include="ShareTargets\ShareLinkPage.cs" />
+    <Compile Include="SubscribedToPage.cs" />
+    <Compile Include="TestPage.cs" />
+    <Compile Include="Converters\UpperStringFormatConverter.cs" />
+    <Compile Include="ThumbnailDispatcher.cs" />
+    <Compile Include="ThumbnailStyle.cs" />
+    <Compile Include="TileStyle.cs" />
+    <Compile Include="UploaderPage.cs" />
+    <Compile Include="UserHome.cs" />
+    <Compile Include="Vector3.cs" />
+    <Compile Include="VideoList.cs" />
+    <Compile Include="VideoPlayer.cs" />
+    <Compile Include="WatchLaterPage.cs" />
+    <Compile Include="YouTubeEntryCollection.cs" />
     <Compile Include="RykenUserClient.cs" />
-    <Compile Include="TestPage.xaml.cs">
-      <DependentUpon>TestPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="VideiList.xaml.cs">
-      <DependentUpon>VideiList.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="VideoPage.xaml.cs">
-      <DependentUpon>VideoPage.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -315,13 +202,69 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Blank.png" />
+    <Content Include="Assets\LargeTile.scale-100.png" />
+    <Content Include="Assets\LargeTile.scale-125.png" />
+    <Content Include="Assets\LargeTile.scale-150.png" />
+    <Content Include="Assets\LargeTile.scale-200.png" />
+    <Content Include="Assets\LargeTile.scale-400.png" />
+    <Content Include="Assets\LargeTileT.png" />
+    <Content Include="Assets\Logo.scale-100.png" />
+    <Content Include="Assets\Logo.scale-240.png" />
+    <Content Include="Assets\SmallLogo.scale-240.png" />
+    <Content Include="Assets\SmallTile.scale-100.png" />
+    <Content Include="Assets\SmallTile.scale-125.png" />
+    <Content Include="Assets\SmallTile.scale-150.png" />
+    <Content Include="Assets\SmallTile.scale-200.png" />
+    <Content Include="Assets\SmallTile.scale-400.png" />
+    <Content Include="Assets\SmallTileT.png" />
+    <Content Include="Assets\SplashScreen.scale-100.png" />
+    <Content Include="Assets\SplashScreen.scale-125.png" />
+    <Content Include="Assets\SplashScreen.scale-150.png" />
+    <Content Include="Assets\SplashScreen.scale-240.png" />
+    <Content Include="Assets\SplashScreen.scale-400.png" />
+    <Content Include="Assets\Square150x150Logo.scale-100.png" />
+    <Content Include="Assets\Square150x150Logo.scale-125.png" />
+    <Content Include="Assets\Square150x150Logo.scale-150.png" />
+    <Content Include="Assets\Square150x150Logo.scale-400.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-16.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-24.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-256.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-32.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-48.png" />
+    <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-16.png" />
+    <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-256.png" />
+    <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-32.png" />
+    <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-48.png" />
+    <Content Include="Assets\Square44x44Logo.scale-100.png" />
+    <Content Include="Assets\Square44x44Logo.scale-125.png" />
+    <Content Include="Assets\Square44x44Logo.scale-150.png" />
+    <Content Include="Assets\Square44x44Logo.scale-400.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-16.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-24.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-256.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-32.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-48.png" />
+    <Content Include="Assets\Square71x71Logo.scale-240.png" />
+    <Content Include="Assets\StoreLogo.scale-100.png" />
+    <Content Include="Assets\StoreLogo.scale-125.png" />
+    <Content Include="Assets\StoreLogo.scale-150.png" />
+    <Content Include="Assets\StoreLogo.scale-200.png" />
+    <Content Include="Assets\StoreLogo.scale-240.png" />
+    <Content Include="Assets\StoreLogo.scale-400.png" />
+    <Content Include="Assets\TileLogo.scale-180.png" />
+    <Content Include="Assets\TileT.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-100.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-125.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-150.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-400.png" />
+    <Content Include="Assets\WideLogo.scale-240.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
     <Content Include="Assets\Square150x150Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
@@ -329,33 +272,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="AboutPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="AccountManagementControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="AddPlaylistControl.xaml">
+    <Page Include="ChannelHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="TestPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="VideiList.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="VideoPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -388,6 +311,12 @@
       <Project>{44840bb7-0348-48dd-9fa9-431c9bce39bc}</Project>
       <Name>XMLHelper</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="JSON\Regions.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="myTube_TemporaryKey.pfx" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
