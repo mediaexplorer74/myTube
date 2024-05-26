@@ -1,5 +1,4 @@
-# myTube
-My myTube 3.9 "remake" (RnD)
+# myTube - myTube 3.9 "remake" (RnD)
 ![](Images/logo.png)
 
 ## Screenshots
@@ -7,7 +6,7 @@ My myTube 3.9 "remake" (RnD)
 ![](Images/shot02.png)
 
 ## About the original
-MyTube is the the famous Youtube UWP client / application that using Youtube API from google. Sadly, its W10M developing stopped by its developers... and thera are some critial bugs such damaged webbrowser google auth. :(
+MyTube is the the famous Youtube client / application that using Youtube API from google. Sadly, its WP8 / W10M developing stopped by its developers... and thera are some critial bugs such damaged webbrowser google auth. :(
 
 So, myTube reconstruction is very important thing :) 
 
