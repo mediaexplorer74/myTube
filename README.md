@@ -1,7 +1,8 @@
 # myTube
 My myTube 3.9 "remake" (RnD)
+![](Images/logo.png)
 
-## Design&Screenshots
+## Screenshots
 ![](Images/shot01.png)
 ![](Images/shot02.png)
 
@@ -13,7 +14,7 @@ So, myTube reconstruction is very important thing :)
 ## My 2 cents
 - Appx Decomp.
 - Fast code/architecture research
-- WP8 -> W10M code "rebase" ("refactor.") - 17 % only  
+- WP8 -> W10M code "rebase" ("refactor.") - 18 % only  
 - App builded with minimal UI yet
 - Min. Win. os build temporary set at 16299 (not at 14393) for future debug deals
 

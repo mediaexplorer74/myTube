@@ -102,7 +102,10 @@ namespace myTube
 
         public static void WriteMemory(string tag)
         {
-            Helper.Write((object)tag, (object)(".NET memory " + (object)((double)GC.GetTotalMemory(true) / 1048576.0) + " MB"));
+            Helper.Write((object)tag, 
+                (object)(".NET memory " + (object)((double)GC.GetTotalMemory(true) / 1048576.0) + " MB"));
+            Debug.WriteLine(tag,
+                (".NET memory " + ((double)GC.GetTotalMemory(true) / 1048576.0) + " MB"));
         }
 
         public static void StartTimer()
@@ -117,6 +120,9 @@ namespace myTube
         return TimeSpan.Zero;
       Helper.watch.Stop();
       Helper.Write((object) "Helper Timer");
+
+      Debug.WriteLine("Helper Timer");
+            
       TimeSpan elapsed = Helper.watch.Elapsed;
       Helper.watch = (Stopwatch) null;
       return elapsed;
@@ -127,6 +133,9 @@ namespace myTube
             Helper.Write((object)("[" + tag + "] " + o + (Helper.watch != null 
                 ? (object)(" - " + (object)Helper.watch.Elapsed.TotalSeconds + "s") 
                 : (object)"")));
+            Debug.WriteLine(("[" + tag + "] " + o + (Helper.watch != null
+               ? (" - " + (object)Helper.watch.Elapsed.TotalSeconds + "s")
+               : "")));
         }
 
         public static void Write(object tag, object o, int indentation)
@@ -134,6 +143,9 @@ namespace myTube
             Helper.Write((object)(Helper.indent(indentation) + "[" + tag + "] " + o + (Helper.watch != null 
                 ? (object)(" - " + (object)Helper.watch.Elapsed.TotalSeconds + "s")
                 : (object)"")));
+            Debug.WriteLine((Helper.indent(indentation) + "[" + tag + "] " + o + (Helper.watch != null
+                ? (" - " + Helper.watch.Elapsed.TotalSeconds + "s")
+                : "")));
         }
 
         private static string indent(int num)
@@ -363,9 +375,7 @@ namespace myTube
 
       Action dismissWatchmen = (Action) (() =>
       {
-        /* WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>(new Action<EventRegistrationToken>(bitmapImage.remove_ImageOpened), reh);
-        WindowsRuntimeMarshal.RemoveEventHandler<ExceptionRoutedEventHandler>(new Action<EventRegistrationToken>(bitmapImage.remove_ImageFailed), ereh);
-        WindowsRuntimeMarshal.RemoveEventHandler<EventHandler<object>>(new Action<EventRegistrationToken>(progressCheckTimer.remove_Tick), progressCheckTimerTickHandler);*/
+          
         bitmapImage.ImageOpened -= reh;
         bitmapImage.ImageFailed -= ereh;
         progressCheckTimer.Tick -= progressCheckTimerTickHandler;
@@ -392,9 +402,6 @@ namespace myTube
       progressCheckTimer.Interval = TimeSpan.FromMilliseconds(10.0);
       DispatcherTimer dispatcherTimer = progressCheckTimer;
 
-      //WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(
-      //new Func<EventHandler<object>, EventRegistrationToken>(dispatcherTimer.add_Tick), 
-      //new Action<EventRegistrationToken>(dispatcherTimer.remove_Tick), progressCheckTimerTickHandler);
       dispatcherTimer.Tick += new EventHandler<object>(progressCheckTimerTickHandler);
       dispatcherTimer.Tick -= progressCheckTimerTickHandler;
 
@@ -411,11 +418,9 @@ namespace myTube
       });
 
       BitmapImage bitmapImage1 = bitmapImage;
-      //WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(bitmapImage1.add_ImageOpened), new Action<EventRegistrationToken>(bitmapImage1.remove_ImageOpened), reh);
       bitmapImage1.ImageOpened -= reh;
 
       BitmapImage bitmapImage2 = bitmapImage;
-      //WindowsRuntimeMarshal.AddEventHandler<ExceptionRoutedEventHandler>(new Func<ExceptionRoutedEventHandler, EventRegistrationToken>(bitmapImage2.add_ImageFailed), new Action<EventRegistrationToken>(bitmapImage2.remove_ImageFailed), ereh);
       bitmapImage2.ImageFailed -= ereh;
 
       return await tcs.Task;

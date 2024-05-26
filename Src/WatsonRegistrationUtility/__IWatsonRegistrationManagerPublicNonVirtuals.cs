@@ -1,12 +1,9 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WatsonRegistrationUtility.__IWatsonRegistrationManagerPublicNonVirtuals
+﻿// WatsonRegistrationUtility.__IWatsonRegistrationManagerPublicNonVirtuals
 // Assembly: WatsonRegistrationUtility, Version=255.255.255.255, Culture=neutral, PublicKeyToken=null, ContentType=WindowsRuntime
-// MVID: AD5C2DB1-83CB-472E-8543-879CBB01917C
 // Assembly location: C:\Users\Admin\Desktop\RE\myTubeBeta_3.9.23.0\WatsonRegistrationUtility.winmd
 
 using Windows.Foundation.Metadata;
 
-#nullable disable
 namespace WatsonRegistrationUtility
 {
   [Version(1)]

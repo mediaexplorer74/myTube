@@ -1,7 +1,5 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: ChannelNotificationsTask.RegularTask
+﻿// ChannelNotificationsTask.RegularTask
 // Assembly: ChannelNotificationsTask, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null, ContentType=WindowsRuntime
-// MVID: 41BF73AA-BC72-4F06-8835-20BEA97ACF00
 // Assembly location: C:\Users\Admin\Desktop\RE\myTubeBeta_3.9.23.0\ChannelNotificationsTask.winmd
 
 using System.Runtime.CompilerServices;
@@ -10,11 +8,10 @@ using Windows.ApplicationModel.Background;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
-#nullable disable
 namespace ChannelNotificationsTask
 {
-  [MarshalingBehavior]
-  [Threading]
+  //[MarshalingBehavior]
+  //[Threading]
   [Version(16777216)]
   [Activatable(16777216)]
   [Static(typeof (IRegularTaskStatic), 16777216)]

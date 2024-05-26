@@ -95,11 +95,11 @@ namespace myTube
 
         public App()
         {
+            this.InitializeComponent();
+
             Helper.Logged += new EventHandler<string>(this.Helper_Logged);
             Helper.StartTimer();
-            App.Instance = this;
-
-            this.InitializeComponent();
+            App.Instance = this;                     
 
             Helper.Write((object)nameof(App), (object)"Initialized component");
 
@@ -146,10 +146,14 @@ namespace myTube
             YouTube.APIKey = App.apiKeys[0];
 
             Helper.Write((object)nameof(App), (object)"Set up RykenTube constants");
+            Debug.WriteLine(nameof(App), "Set up RykenTube constants");
+
             YouTube.init();
             TileHelper.Platform = App.PlatformType;
             this.themeCollection = new Dictionary<string, Dictionary<string, SolidColorBrush>>();
+            
             Helper.Write((object)"App constructor completed");
+            Debug.WriteLine(nameof(App), "App constructor completed");
 
             //
 
@@ -160,6 +164,8 @@ namespace myTube
         {
             
             Helper.Write((object)nameof(OnLaunched), (object)"Started");
+            Debug.WriteLine(nameof(OnLaunched), "Launch Started...");
+
             TaskScheduler.UnobservedTaskException += 
                 new EventHandler<UnobservedTaskExceptionEventArgs>(this.TaskScheduler_UnobservedTaskException);
             this.launchArgs = e;
@@ -176,7 +182,7 @@ namespace myTube
             this.initialSetup();
 
             Helper.Write((object)nameof(OnLaunched), (object)"Finished");
-             
+            Debug.WriteLine(nameof(OnLaunched), "Launch Finished");
 
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -205,7 +211,8 @@ namespace myTube
                     // Если стек навигации не восстанавливается для перехода к первой странице,
                     // настройка новой страницы путем передачи необходимой информации в качестве параметра
                     // навигации
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    //rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    rootFrame.Navigate(typeof(TestPage), e.Arguments);
                 }
                 // Обеспечение активности текущего окна
                 Window.Current.Activate();

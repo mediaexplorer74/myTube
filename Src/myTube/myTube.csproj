@@ -151,6 +151,9 @@
     <Compile Include="MessageDialogs\PollView.cs" />
     <Compile Include="MessageDialogs\RecentMessages.cs" />
     <Compile Include="Popups\StringClient.cs" />
+    <Compile Include="TestPage.xaml.cs">
+      <DependentUpon>TestPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VideoPage.cs" />
     <Compile Include="MiniPlayerType.cs" />
     <Compile Include="PageInfo.cs" />
@@ -182,7 +185,6 @@
     <Compile Include="SettingsContainer.cs" />
     <Compile Include="ShareTargets\ShareLinkPage.cs" />
     <Compile Include="SubscribedToPage.cs" />
-    <Compile Include="TestPage.cs" />
     <Compile Include="Converters\UpperStringFormatConverter.cs" />
     <Compile Include="ThumbnailDispatcher.cs" />
     <Compile Include="ThumbnailStyle.cs" />
@@ -277,6 +279,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TestPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
