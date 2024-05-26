@@ -3,7 +3,7 @@
 using System;
 using Windows.UI.Xaml.Data;
 
-namespace myTube
+namespace myTube.Converters
 {
   public class UpperStringFormatConverter : IValueConverter
   {

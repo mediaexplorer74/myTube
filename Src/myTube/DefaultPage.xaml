@@ -1,0 +1,797 @@
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:local="using:myTube" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    x:Class="myTube.DefaultPage"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    >
+    <!--Foreground>
+        <ThemeResource ResourceKey="ApplicationForegroundThemeBrush" />
+    </Foreground-->
+    <!--FontSize>
+        <StaticResource ResourceKey="DefaultFontSize" />
+    </FontSize-->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <local:BoolInverter x:Key="BoolInverter" />
+            <local:AllCapsConverter x:Key="AllCapsConverter" />
+            <x:Double x:Key="BackgroundRecOpacity">0.25</x:Double>
+            <TranslateTransform x:Name="appBarTrans" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid Margin="0,0,0,0" Name="LayoutRoot" 
+          Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+             <!--Grid.VisualStateGroups>
+                <VisualStateGroupCollection>
+                    <VisualStateGroup>
+                        <States>
+                            <VisualStateCollection>
+                                <VisualState x:Name="DefaultState" />
+                                <VisualState x:Name="DefaultPhone">
+                                    <DeferredStoryboard>
+                                        <Storyboard>
+                                            <Children>
+                                                <TimelineCollection>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="backButton" TargetProperty="Visibility">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchButton" TargetProperty="HorizontalAlignment">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Stretch" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="buttonColumn" TargetProperty="Width">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="47.5" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="title" TargetProperty="FontSize">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="28" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </TimelineCollection>
+                                            </Children>
+                                        </Storyboard>
+                                    </DeferredStoryboard>
+                                </VisualState>
+                                <VisualState x:Name="NarrowState">
+                                    <DeferredStoryboard>
+                                        <Storyboard>
+                                            <Children>
+                                                <TimelineCollection>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="buttonColumn" TargetProperty="Width">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="64" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchColumn" TargetProperty="Width">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="64" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="title" TargetProperty="FontSize">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="26" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="RootFrame" TargetProperty="(Grid.Column)">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="RootFrame" TargetProperty="(Grid.ColumnSpan)">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="2" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </TimelineCollection>
+                                            </Children>
+                                        </Storyboard>
+                                    </DeferredStoryboard>
+                                </VisualState>
+                                <VisualState x:Name="NarrowPhone">
+                                    <DeferredStoryboard>
+                                        <Storyboard>
+                                            <Children>
+                                                <TimelineCollection>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="buttonColumn" TargetProperty="Width">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="19" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchColumn" TargetProperty="Width">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="64" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="backButton" TargetProperty="Visibility">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="title" TargetProperty="FontSize">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="22" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchButton" TargetProperty="HorizontalAlignment">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Center" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </TimelineCollection>
+                                            </Children>
+                                        </Storyboard>
+                                    </DeferredStoryboard>
+                                </VisualState>
+                                <VisualState x:Name="TinyState">
+                                    <DeferredStoryboard>
+                                        <Storyboard>
+                                            <Children>
+                                                <TimelineCollection>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="buttonColumn" TargetProperty="Width">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="64" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchColumn" TargetProperty="Width">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="64" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="title" TargetProperty="FontSize">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="19" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="title" TargetProperty="FontWeight">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Normal" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="RootFrame" TargetProperty="(Grid.Column)">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="RootFrame" TargetProperty="(Grid.ColumnSpan)">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="2" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="pivot" TargetProperty="(Grid.ColumnSpan)">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="3" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchTrans" TargetProperty="TranslateY">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="-19" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchButton" TargetProperty="Height">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="38" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="backTrans" TargetProperty="Y">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="-19" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="backButton" TargetProperty="Height">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="38" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </TimelineCollection>
+                                            </Children>
+                                        </Storyboard>
+                                    </DeferredStoryboard>
+                                </VisualState>
+                                <VisualState x:Name="TinyPhone">
+                                    <DeferredStoryboard>
+                                        <Storyboard>
+                                            <Children>
+                                                <TimelineCollection>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="buttonColumn" TargetProperty="Width">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="19" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchColumn" TargetProperty="Width">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="64" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="backButton" TargetProperty="Visibility">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="title" TargetProperty="FontSize">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="17.625" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="title" TargetProperty="FontWeight">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Normal" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="pivot" TargetProperty="(Grid.ColumnSpan)">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="3" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchTrans" TargetProperty="TranslateY">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="-19" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchButton" TargetProperty="Height">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="38" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchButton" TargetProperty="HorizontalAlignment">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Center" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </TimelineCollection>
+                                            </Children>
+                                        </Storyboard>
+                                    </DeferredStoryboard>
+                                </VisualState>
+                                <VisualState x:Name="TinyUWP">
+                                    <DeferredStoryboard>
+                                        <Storyboard>
+                                            <Children>
+                                                <TimelineCollection>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="buttonColumn" TargetProperty="Width">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="19" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchColumn" TargetProperty="Width">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Auto" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchColumn" TargetProperty="MinWidth">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="19" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="backButton" TargetProperty="Visibility">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="title" TargetProperty="FontSize">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="15.25" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="title" TargetProperty="FontWeight">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Normal" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="pivot" TargetProperty="(Grid.ColumnSpan)">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="3" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchTrans" TargetProperty="TranslateY">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="-19" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchTrans" TargetProperty="TranslateX">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="-4.75" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchSymbolTrans" TargetProperty="ScaleX">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0.75" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchSymbolTrans" TargetProperty="ScaleY">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0.75" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchSymbol" TargetProperty="RenderTransformOrigin">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0.5, 1" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchButton" TargetProperty="Height">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="38" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchButton" TargetProperty="HorizontalAlignment">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Center" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </TimelineCollection>
+                                            </Children>
+                                        </Storyboard>
+                                    </DeferredStoryboard>
+                                </VisualState>
+                                <VisualState x:Name="TinyLandscapePhone">
+                                    <DeferredStoryboard>
+                                        <Storyboard>
+                                            <Children>
+                                                <TimelineCollection>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="buttonColumn" TargetProperty="Width">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="19" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchColumn" TargetProperty="Width">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="64" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="backButton" TargetProperty="Visibility">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="title" TargetProperty="FontSize">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="17" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="pivot" TargetProperty="FontSize">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="20.6325" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="title" TargetProperty="FontWeight">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Normal" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="pivot" TargetProperty="(Grid.ColumnSpan)">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="1" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="title" TargetProperty="(Grid.ColumnSpan)">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="1" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="pivot" TargetProperty="(Grid.Column)">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="2" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="pivot" TargetProperty="(Grid.Row)">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="pivot" TargetProperty="Margin">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="title" TargetProperty="Margin">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0, 0, 19, 0" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="pivot" TargetProperty="VerticalAlignment">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Center" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="title" TargetProperty="VerticalAlignment">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Center" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchButton" TargetProperty="(Grid.Row)">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchButton" TargetProperty="(Grid.RowSpan)">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="1" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchTrans" TargetProperty="TranslateY">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchButton" TargetProperty="Height">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="38" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="searchButton" TargetProperty="HorizontalAlignment">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Center" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames TargetName="title" TargetProperty="MaxWidth">
+                                                        <KeyFrames>
+                                                            <ObjectKeyFrameCollection>
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="291" />
+                                                            </ObjectKeyFrameCollection>
+                                                        </KeyFrames>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </TimelineCollection>
+                                            </Children>
+                                        </Storyboard>
+                                    </DeferredStoryboard>
+                                </VisualState>
+                            </VisualStateCollection>
+                        </States>
+                    </VisualStateGroup>
+                </VisualStateGroupCollection>
+            </Grid.VisualStateGroups-->
+            <!--RowDefinitions>
+                <RowDefinitionCollection>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </RowDefinitionCollection>
+            </RowDefinitions-->
+            <!--ColumnDefinitions>
+                <ColumnDefinitionCollection>
+                    <ColumnDefinition />
+                </ColumnDefinitionCollection>
+            </ColumnDefinitions-->
+           
+              <ListView>
+                    <Canvas x:Name="renderingCanvas" Visibility="Collapsed">
+                         <Canvas.RenderTransform>
+                            <TranslateTransform X="-5000" />
+                        </Canvas.RenderTransform>
+                    </Canvas>
+                
+                    <Rectangle x:Name="blackRec" Opacity="0" 
+                               Fill="Black" 
+                               CacheMode="BitmapCache" />
+                    
+                    <local:VideoPlayer x:Name="player" 
+                                      
+                                       
+                                       />
+                  
+                    <local:CustomFrame x:Name="RootFrame" 
+                                       HorizontalAlignment="Stretch" 
+                                       VerticalAlignment="Stretch">
+                        
+                    </local:CustomFrame>
+
+                     <Button x:Name="openVideoButton" Content="Open video" Opacity="0" 
+                             Visibility="Collapsed"
+                             HorizontalAlignment="Right" 
+                             VerticalAlignment="Bottom" Width="95" Height="95">
+                        <!--Template>
+                            <StaticResource ResourceKey="StandardPointerContent" />
+                        </Template>
+                        <Content>
+                            <Grid Visibility="Visible">
+                                <Children>
+                                    <UIElementCollection>
+                                        <Ellipse Opacity="1">
+                                            <Fill>
+                                                <ThemeResource ResourceKey="AccentBrush" />
+                                            </Fill>
+                                        </Ellipse>
+                                        <Ellipse StrokeThickness="0,25">
+                                            <Stroke>
+                                                <ThemeResource ResourceKey="ApplicationPageBackgroundThemeBrush" />
+                                            </Stroke>
+                                        </Ellipse>
+                                        <SymbolIcon Foreground="White" Symbol="Video" />
+                                    </UIElementCollection>
+                                </Children>
+                            </Grid>
+                        </Content-->
+                    </Button>
+                
+                    <Grid x:Name="titleGrid" 
+                          RenderTransformOrigin="0.5, 0.5" 
+                          Margin="0,0,0,0" 
+                          Column="1" 
+                          VerticalAlignment="Center">
+                        <!--Background>
+                            <ThemeResource ResourceKey="MenuBackground" />
+                        </Background-->
+                        <Grid.RowDefinitions>                   
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />                   
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                             <ColumnDefinition x:Name="buttonColumn" Width="128px" />
+                              <ColumnDefinition x:Name="titleColumn" MaxWidth="320" Width="Auto" />
+                              <ColumnDefinition />
+                              <ColumnDefinition x:Name="searchColumn" Width="128px" />
+
+                         </Grid.ColumnDefinitions>                        
+                            <ListView>
+                                <Rectangle x:Name="backgroundRec" IsHitTestVisible="True" 
+                                           >
+                                   <Rectangle.Fill>
+                                        <Binding Path="TitleBackgroundBrush" />
+                                    </Rectangle.Fill>
+                                     <Rectangle.Opacity>
+                                        <StaticResource ResourceKey="BackgroundRecOpacity" />
+                                    </Rectangle.Opacity>
+                                </Rectangle>
+                                
+                                <TextBlock x:Name="title" FontSize="36" MaxLines="1"
+                                           VerticalAlignment="Top" 
+                                           HorizontalAlignment="Left" 
+                                           FontWeight="SemiLight">
+
+                            <TextBlock.Text>
+                                <Binding Path="Title" FallbackValue="WELCOME TO">
+                                    <!--TextBlock.Text.Converter>
+                                        <StaticResource ResourceKey="AllCapsConverter" />
+                                    </TextBlock.Text.Converter-->
+                                </Binding>
+                            </TextBlock.Text>   
+                          <!--Style>
+                            <StaticResource ResourceKey="DefaultTitleTextStyle" />
+                          </Style-->
+                          </TextBlock>
+
+                            <!--HorizontalAlignment="Left" 
+                               ColumnSpan="3" 
+                               FontWeight="SemiBold"-->
+                          <local:PivotHeader x:Name="pivot">
+                          </local:PivotHeader>
+
+                    <Button x:Name="backButton" Background="Transparent" 
+                                        HorizontalAlignment="Stretch" 
+                                        VerticalAlignment="Stretch" 
+                                        Margin="0,0,0,0">
+
+                        <!--RenderTransform>
+                                <TranslateTransform x:Name="backTrans" />
+                            </RenderTransform-->
+                            <Grid>
+                                <SymbolIcon x:Name="backSymbol" Symbol="Back">
+                                    <!--Foreground>
+                                        <Binding Path="TitleForegroundBrush">
+                                            <FallbackValue>
+                                                <ThemeResource ResourceKey="MenuForegroundBrush" />
+                                            </FallbackValue>
+                                            <TargetNullValue>
+                                                <ThemeResource ResourceKey="MenuForegroundBrush" />
+                                            </TargetNullValue>
+                                        </Binding>
+                                    </Foreground-->
+                                </SymbolIcon>
+                            </Grid>
+                        </Button>
+
+                        <Button 
+                                x:Name="searchButton"                                      
+                                Background="Transparent" 
+                                HorizontalAlignment="Stretch" 
+                                VerticalAlignment="Stretch" 
+                                Margin="0,0,0,0" 
+                                VerticalContentAlignment="Stretch" 
+                                HorizontalContentAlignment="Stretch">
+                            
+                            <!--RenderTransform>
+                                    <CompositeTransform x:Name="searchTrans" />
+                                </RenderTransform-->
+                            <Grid>
+                                <SymbolIcon x:Name="searchSymbol" Symbol="Find" Margin="0,0,0,0">
+                                    <!--RenderTransform>
+                                            <CompositeTransform x:Name="searchSymbolTrans" />
+                                        </RenderTransform-->
+                                </SymbolIcon>
+                            </Grid>
+                        </Button>
+                                
+                    </ListView>
+                    </Grid>
+                    <Grid x:Name="appBarPlaceHolder" Visibility="Collapsed" Row="2">
+                        <!--RenderTransform>
+                            <StaticResource ResourceKey="appBarTrans" />
+                        </RenderTransform-->
+                        <!--Background>
+                            <ThemeResource ResourceKey="MenuBackground" />
+                        </Background-->
+                        
+                            <ListView>
+                                <Rectangle x:Name="appBarFill" Opacity="0">
+                                    <!--Fill>
+                                        <ThemeResource ResourceKey="SubtleBrush" />
+                                    </Fill-->
+                                </Rectangle>
+
+                                          <!--Margin="19,0,19,2,325" -->
+                        <TextBlock Text="..." TextLineBounds="TrimToCapHeight" 
+                                           
+                                           FontWeight="Bold" 
+                                           HorizontalAlignment="Right" 
+                                           VerticalAlignment="Center" 
+                                           CharacterSpacing="200">
+                  <!--FontSize>
+                    <StaticResource ResourceKey="ImportantFontSize" />
+                  </FontSize-->
+                  <!--Foreground>
+                    <ThemeResource ResourceKey="MenuForegroundBrush" />
+                  </Foreground-->
+                                </TextBlock>
+                            </ListView>
+                    </Grid>
+            </ListView>
+        </Grid>
+</UserControl>
+<!--UserControl
+    x:Class="myTube.DefaultPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:myTube"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <Grid>
+
+    </Grid>
+</UserControl-->

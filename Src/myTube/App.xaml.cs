@@ -885,7 +885,7 @@ namespace myTube
                 Window.Current.Activate();
 
                 Helper.Write((object)"InitialSetup", (object)"Created DefaultPage");
-                this.rootFrame = defaultPage.Frame;
+                this.rootFrame = defaultPage.Current.Frame; //?
                 this.rootFrame.CacheSize = 4;
                 CustomFrame rootFrame = this.rootFrame;
 

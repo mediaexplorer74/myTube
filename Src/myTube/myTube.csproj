@@ -129,11 +129,24 @@
     <Compile Include="ClientAndFirstLoadTask.cs" />
     <Compile Include="ColorSchemes.cs" />
     <Compile Include="ControlDirection.cs" />
+    <Compile Include="Converters\AllCapsConverter.cs" />
+    <Compile Include="Converters\BoolInverter.cs" />
+    <Compile Include="Converters\BoolToVisibility.cs" />
     <Compile Include="Converters\NumberWithNewLinesConverter.cs" />
     <Compile Include="CustomFrame.cs" />
-    <Compile Include="DefaultPage.cs" />
+    <Compile Include="Debug\CommentListTestPage.xaml.cs">
+      <DependentUpon>CommentListTestPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Debug\DebugInfoPanel.xaml.cs">
+      <DependentUpon>DebugInfoPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DefaultPage.xaml.cs">
+      <DependentUpon>DefaultPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DirectionTappedEventArgs.cs" />
     <Compile Include="DownloaderPanel.cs" />
     <Compile Include="ExceptionClient.cs" />
+    <Compile Include="FadeType.cs" />
     <Compile Include="FlipStyle.cs" />
     <Compile Include="GlobalAppObjects\GlobalObjects.cs" />
     <Compile Include="Helpers\Accel.cs" />
@@ -152,6 +165,7 @@
     <Compile Include="IconButtonEventArgs.cs" />
     <Compile Include="IconButtonEventCollection.cs" />
     <Compile Include="IconButtonInfo.cs" />
+    <Compile Include="LeftRightControl.cs" />
     <Compile Include="LikesPage.cs" />
     <Compile Include="ListState.cs" />
     <Compile Include="ListStrings.cs" />
@@ -173,7 +187,15 @@
     <Compile Include="OnSelectedPageChangedEventArgs.cs" />
     <Compile Include="OverCanvas.cs" />
     <Compile Include="OverCanvasWidthType.cs" />
+    <Compile Include="PivotHeader.xaml.cs">
+      <DependentUpon>PivotHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerControls.xaml.cs">
+      <DependentUpon>PlayerControls.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Popups\StringClient.cs" />
+    <Compile Include="QualityButtonInfo.cs" />
+    <Compile Include="QualityButtonInfoCollection.cs" />
     <Compile Include="RoundDirection.cs" />
     <Compile Include="TestPage.xaml.cs">
       <DependentUpon>TestPage.xaml</DependentUpon>
@@ -227,8 +249,9 @@
     <Compile Include="UploaderPage.cs" />
     <Compile Include="UserHome.cs" />
     <Compile Include="Vector3.cs" />
-    <Compile Include="VideoList1.cs" />
-    <Compile Include="VideoPlayer.cs" />
+    <Compile Include="VideoPlayer.xaml.cs">
+      <DependentUpon>VideoPlayer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WatchLaterPage.cs" />
     <Compile Include="YouTubeEntryCollection.cs" />
     <Compile Include="RykenUserClient.cs" />
@@ -313,9 +336,29 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Debug\CommentListTestPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Debug\DebugInfoPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DefaultPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PivotHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PlayerControls.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TestPage.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -336,6 +379,10 @@
     <Page Include="VideoPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VideoPlayer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

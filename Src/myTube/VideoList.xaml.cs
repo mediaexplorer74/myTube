@@ -1269,10 +1269,10 @@ namespace myTube
                     VideoTile tileElement = videoTile;
                     await Task.Delay(100);
 
-                    RenderTargetBitmap wb = default;//await DefaultPage.Current.RenderElementAsync((FrameworkElement)tileElement, 0.40000000596046448);
+                    RenderTargetBitmap wb = await DefaultPage.Current.RenderElementAsync((FrameworkElement)tileElement, 0.40000000596046448);
                     ((FrameworkElement)tileElement).Width = 691.0;
 
-                    RenderTargetBitmap wb2 = default;//await DefaultPage.Current.RenderElementAsync((FrameworkElement)tileElement, 0.40000000596046448);
+                    RenderTargetBitmap wb2 = await DefaultPage.Current.RenderElementAsync((FrameworkElement)tileElement, 0.40000000596046448);
                     ((FrameworkElement)tileElement).Width = 336.0;
                     Image image1 = new Image();
                     image1.Source = (ImageSource)wb;
@@ -1300,7 +1300,6 @@ namespace myTube
                         //and that tile_VisualElementsRequested is a method in your code-behind
                         //that handles the VisualElementsRequested event.
                         secondaryTile.VisualElementsRequested += tile_VisualElementsRequested;
-
 
                         await TileHelper.UpdateSecondaryTile(ent);
                     }
@@ -1405,7 +1404,7 @@ namespace myTube
             videoContextMenu = (VideoContextMenu)null;
 
             //TODO
-            //menu.CancelTapped += (EventHandler)((s, args) => DefaultPage.Current.ClosePopup());
+            menu.CancelTapped += (EventHandler)((s, args) => DefaultPage.Current.ClosePopup());
 
             Popup popup1 = new Popup();
             popup1.Child = (UIElement)menu;

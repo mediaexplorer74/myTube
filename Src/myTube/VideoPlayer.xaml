@@ -1,0 +1,277 @@
+﻿<UserControl 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:local="using:myTube" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:Converters="using:myTube.Converters" 
+    x:Name="videoPlayer" 
+    x:Class="myTube.VideoPlayer" 
+    FontFamily="Global User Interface">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Converters:SubtitlePlacementToVerticalAlignment x:Key="SubtitlePlacementToVerticalAlignment" />
+            <TranslateTransform x:Name="titleTrans" Y="-130" />
+            <DataTemplate x:Key="annotationsTemplate">
+                <!--Template>
+                    <local:AnnotationControl />
+                </Template-->
+            </DataTemplate>
+            <DataTemplate x:Key="captionsTemplate">
+                <!--Template>
+                    <Border Margin="38,28,5,38,28,5" Padding="14,25,14,25,14,25,14,25" HorizontalAlignment="Center">
+                        <VerticalAlignment>
+                            <Binding Path="Placement" Mode="OneWay">
+                                <Converter>
+                                    <StaticResource ResourceKey="SubtitlePlacementToVerticalAlignment" />
+                                </Converter>
+                            </Binding>
+                        </VerticalAlignment>
+                        <Background>
+                            <SolidColorBrush Color="4278190080" Opacity="0,75" />
+                        </Background>
+                        <Child>
+                            <TextBlock FontWeight="Normal" TextWrapping="Wrap" Foreground="White" TextAlignment="Center">
+                <FontSize>
+                  <StaticResource ResourceKey="ImportantFontSize" />
+                </FontSize>
+                <Text>
+                  <Binding Path="Text" />
+                </Text>
+                            </TextBlock>
+                        </Child>
+                    </Border>
+                </Template-->
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid x:Name="layoutRoot">
+            <!--Background>
+                <Binding Path="Background" ElementName="videoPlayer" />
+            </Background-->
+            <ListView>
+                    <TextBlock x:Name="noVideoText" 
+                               IsHitTestVisible="True" 
+                               CacheMode="BitmapCache" 
+                               TextWrapping="Wrap" FontSize="24" 
+                               MaxWidth="600" 
+                               Padding="47,0,47,5"
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center" 
+                               TextAlignment="Center" 
+                               FontWeight="SemiLight">
+            <!--Inlines>
+              <InlineCollection>
+                <Run Text="this is where your videos will play, now go find something to watch! " />
+                <LineBreak />
+                <LineBreak />
+                <Run FontWeight="SemiBold" Text="keep swiping to get back into the app">
+                  <FontSize>
+                    <StaticResource ResourceKey="UnmportantFontSize" />
+                  </FontSize>
+                  <Foreground>
+                    <ThemeResource ResourceKey="AccentBrush" />
+                  </Foreground>
+                </Run>
+              </InlineCollection>
+            </Inlines-->
+                    </TextBlock>
+                    <Viewbox x:Name="viewBox" Stretch="Uniform" StretchDirection="Both" 
+                             >
+                        <!--Child-->
+                            <MediaElement x:Name="mediaElement" Opacity="0.99" 
+                                          IsHitTestVisible="True" 
+                                          AudioCategory="BackgroundCapableMedia" 
+                                          AutoPlay="True" 
+                                          IsDoubleTapEnabled="True" 
+                                          IsHoldingEnabled="True" 
+                                          IsRightTapEnabled="True" 
+                                          IsTapEnabled="True" />
+                        <!--/Child-->
+                    </Viewbox>
+                
+                    <Image x:Name="musicThumb" IsHitTestVisible="True" Stretch="Uniform" 
+                           Visibility="Collapsed" Opacity="0">
+                    <Image.Source>
+                            <BitmapImage  x:Name="musicBitmap" />
+                        </Image.Source>
+                    </Image>
+                
+                    <Viewbox x:Name="annotationsViewBox" Visibility="Collapsed">
+                    <Viewbox.Opacity>
+                            <Binding Path="Opacity" ElementName="mediaElement" />
+                        </Viewbox.Opacity>
+                        
+                        <Grid>
+                            <Grid Width="960" Height="540">
+                                <ListView>
+                                        <ItemsControl x:Name="annotationsControl">
+                                         <ItemsControl.ItemTemplate>
+                                                <StaticResource ResourceKey="annotationsTemplate" />
+                                            </ItemsControl.ItemTemplate>
+                                             <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                  <!--TODO-->
+                                                <!--local:AnnotationsPanel>
+                                                            <ChildrenTransitions>
+                                                                <TransitionCollection>
+                                                                    <AddDeleteThemeTransition />
+                                                                </TransitionCollection>
+                                                            </ChildrenTransitions>
+                                                        </local:AnnotationsPanel-->
+                                                 
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                        </ItemsControl>
+                                    
+                                        <ItemsControl x:Name="subtitlesControl" IsHitTestVisible="True">
+                                        <ItemsControl.ItemTemplate>
+                                                <StaticResource ResourceKey="captionsTemplate" />
+                                            </ItemsControl.ItemTemplate>
+                                          <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                   <Grid />                                                   
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                        </ItemsControl>
+                                  </ListView>
+                            </Grid>
+                        </Grid>
+                    </Viewbox>
+                    <Rectangle x:Name="blurRectangle" IsHitTestVisible="True" Visibility="Collapsed" />
+                    <Grid x:Name="titleGrid" VerticalAlignment="Top">
+                    <Grid.RenderTransform>
+                            <StaticResource ResourceKey="titleTrans" />
+                        </Grid.RenderTransform>
+                        
+                        <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        
+                        <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        
+                        <ListView>
+                                <Rectangle>
+                                    <Rectangle.Fill>
+                                        <ThemeResource ResourceKey="ApplicationPageBackgroundThemeBrush" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <ContentControl x:Name="stopButton" 
+                                                VerticalContentAlignment="Center"
+                                                Background="Transparent">
+                                     <!--ContentControl.Template>
+                                        <StaticResource ResourceKey="StandardPointerContent" />
+                                    </ContentControl.Template-->
+                                    <Grid>
+                                        <SymbolIcon Margin="19,0,0,0" Symbol="Cancel">
+                                            <!--SymbolIcon.Foreground>
+                                                <ThemeResource ResourceKey="AccentBrush" />
+                                            </SymbolIcon.Foreground-->
+                                        </SymbolIcon>
+                                    </Grid>
+                                </ContentControl>
+                                <TextBlock x:Name="titleTextBlock" 
+                                           HorizontalAlignment="Left" 
+                                           TextTrimming="CharacterEllipsis" 
+                                           Padding="19,19,19,9" 
+                                           FontWeight="SemiBold" 
+                                           TextWrapping="Wrap" 
+                                           MaxLines="1">
+                  <!--FontSize>
+                    <StaticResource ResourceKey="ImportantFontSize" />
+                  </FontSize-->
+                  <!--Foreground>
+                    <StaticResource ResourceKey="ApplicationForegroundThemeBrush" />
+                  </Foreground-->
+                  <!--Transitions>
+                    <TransitionCollection>
+                      <ReorderThemeTransition />
+                    </TransitionCollection>
+                  </Transitions-->
+                  <!--Inlines>
+                    <InlineCollection>
+                      <Run x:Name="titleText" Text="no video" />
+                    </InlineCollection>
+                  </Inlines-->
+                        </TextBlock>
+                        <TextBlock x:Name="authorText" FontWeight="Normal" 
+                                   Margin="19,0,0,9" 
+                                   Text="author">
+                  <!--FontSize>
+                    <StaticResource ResourceKey="SmallFontSize" />
+                  </FontSize-->
+                  <!--Foreground>
+                    <ThemeResource ResourceKey="SubtleBrush" />
+                  </Foreground-->
+                  <!--Transitions>
+                    <TransitionCollection>
+                      <RepositionThemeTransition />
+                    </TransitionCollection>
+                  </Transitions-->
+                 </TextBlock>
+                    <ContentControl x:Name="castingControl"
+                                    Background="Transparent" 
+                                    HorizontalAlignment="Right" 
+                                    VerticalAlignment="Stretch" 
+                                    VerticalContentAlignment="Center">
+                            <!--ContentControl.Template>
+                               <StaticResource ResourceKey="StandardPointerContent" />
+                           </ContentControl.Template-->
+                        <Grid>
+                            <TextBlock x:Name="castingText" Text="" Margin="19,19,19,19" 
+                                       VerticalAlignment="Center" 
+                                       FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="22">
+                              <!--TextBlock.Foreground>
+                                <ThemeResource ResourceKey="AccentBrush" />
+                              </TextBlock.Foreground--> 
+                            </TextBlock>
+                          </Grid>
+                        </ContentControl>
+                           
+                      </ListView>
+                    </Grid>
+                
+                    <ProgressBar x:Name="progress" Foreground="White">
+                        <!--ProgressBar.Background>
+                            <Null />
+                        </ProgressBar.Background-->
+                        <!--BorderBrush>
+                            <Null />
+                        </BorderBrush-->
+                    <!--ProgressBar.Visibility>
+                            <Binding Path="IsIndeterminate">
+                            <Binding.Converter>
+                                    <StaticResource ResourceKey="BoolToVisibility" />
+                                </Binding.Converter>
+                                 <Binding.RelativeSource>
+                                    <RelativeSource Mode="Self" />
+                                </Binding.RelativeSource>
+                            </Binding>
+                        </ProgressBar.Visibility-->
+                    </ProgressBar>
+
+                <!--TODO-->
+                    <!--local:PlayerControls x:Name="controls" 
+                                          Visibility="Collapsed" 
+                                          VerticalAlignment="Bottom" 
+                                          Margin="19,0,19,37" 
+                                          MaxWidth="570" 
+                                          RenderTransformOrigin="0.5,0.8514286">
+                        <!- - RenderTransform>
+                            <CompositeTransform ScaleX="1" ScaleY="1" />
+                        </RenderTransform- - >
+                    </local:PlayerControls-->
+               
+            </ListView>
+        </Grid>
+    </Grid>
+</UserControl>
+

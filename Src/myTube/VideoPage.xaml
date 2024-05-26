@@ -174,10 +174,11 @@
     <Page.BottomAppBar>
         <CommandBar x:Name="appBar">
 
-            <AppBarButton  x:Name="saveButton" Visibility="Collapsed" Label="{Binding Text}" Icon="{Binding Symbol}">
-                <AppBarButton.DataContext>
+            <AppBarButton  x:Name="saveButton" Visibility="Collapsed" Label="{Binding Text}" 
+                           Icon="{Binding Symbol}">
+                <!--AppBarButton.DataContext>
                     <StaticResource ResourceKey="saveButtonInfo" />
-                </AppBarButton.DataContext>          
+                </AppBarButton.DataContext-->          
             </AppBarButton>
             
             <AppBarButton x:Name="addToButton" Visibility="Collapsed" Icon="Add">
