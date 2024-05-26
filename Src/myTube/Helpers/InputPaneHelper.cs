@@ -1,8 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: myTube.Helpers.InputPaneHelper
-// Assembly: myTube.WindowsPhone, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: B5B96F9E-0572-4971-BFB4-9D68A15DDB38
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\myTube.WindowsPhone.exe
+﻿// myTube.Helpers.InputPaneHelper
 
 using System;
 using System.Collections.Generic;
@@ -17,17 +13,16 @@ namespace myTube.Helpers
 {
   public static class InputPaneHelper
   {
-    private static List<InputPaneHelper.ElementAndTransform> elements = new List<InputPaneHelper.ElementAndTransform>();
+    private static List<InputPaneHelper.ElementAndTransform> elements 
+            = new List<InputPaneHelper.ElementAndTransform>();
     private static InputPane pane = InputPane.GetForCurrentView();
 
     static InputPaneHelper()
     {
-      InputPane pane1 = InputPaneHelper.pane;
-      // ISSUE: method pointer
-      WindowsRuntimeMarshal.AddEventHandler<TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>>(new Func<TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>, EventRegistrationToken>(pane1.add_Showing), new Action<EventRegistrationToken>(pane1.remove_Showing), new TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>((object) null, __methodptr(pane_Showing)));
-      InputPane pane2 = InputPaneHelper.pane;
-      // ISSUE: method pointer
-      WindowsRuntimeMarshal.AddEventHandler<TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>>(new Func<TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>, EventRegistrationToken>(pane2.add_Hiding), new Action<EventRegistrationToken>(pane2.remove_Hiding), new TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>((object) null, __methodptr(pane_Hiding)));
+        InputPane pane1 = InputPaneHelper.pane;
+        pane1.Showing += pane_Showing;
+        InputPane pane2 = InputPaneHelper.pane;
+        pane2.Hiding += pane_Hiding;
     }
 
     public static void Register(FrameworkElement el, TranslateTransform trans)
@@ -65,7 +60,8 @@ namespace myTube.Helpers
 
     private static void pane_Hiding(InputPane sender, InputPaneVisibilityEventArgs args)
     {
-      using (List<InputPaneHelper.ElementAndTransform>.Enumerator enumerator = InputPaneHelper.elements.GetEnumerator())
+      using (List<InputPaneHelper.ElementAndTransform>.Enumerator enumerator 
+                = InputPaneHelper.elements.GetEnumerator())
       {
         while (enumerator.MoveNext())
           Ani.Begin((DependencyObject) enumerator.Current.Trans, "Y", 0.0, 0.5, 5.0);
@@ -74,14 +70,17 @@ namespace myTube.Helpers
 
     private static void pane_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
     {
-      using (List<InputPaneHelper.ElementAndTransform>.Enumerator enumerator = InputPaneHelper.elements.GetEnumerator())
+      using (List<InputPaneHelper.ElementAndTransform>.Enumerator enumerator
+                = InputPaneHelper.elements.GetEnumerator())
       {
         while (enumerator.MoveNext())
         {
           InputPaneHelper.ElementAndTransform current = enumerator.Current;
-          if (!(current.Element is TextBox) || current.Element is TextBox && ((Control) (current.Element as TextBox)).FocusState != null)
+          if (!(current.Element is TextBox) || current.Element is TextBox
+                        && ((Control) (current.Element as TextBox)).FocusState != null)
           {
-            double num = InputPaneHelper.pane.OccludedRect.Top - current.Element.GetBounds((UIElement) DefaultPage.Current).Bottom;
+            double num = InputPaneHelper.pane.OccludedRect.Top 
+                            - current.Element.GetBounds((UIElement) DefaultPage.Current).Bottom;
             if (num < 0.0)
             {
               double To = num - 19.0;

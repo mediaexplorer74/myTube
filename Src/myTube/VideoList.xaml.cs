@@ -106,12 +106,12 @@ namespace myTube
         private ListStrings listStrings;
         private ListView ItemList;
         private ScrollViewer scroll;
-        private List<MenuFlyoutItem> contextMenuCollection;
-        private MenuFlyoutItem playIcon;
-        private MenuFlyoutItem deleteButton;
-        private MenuFlyoutItem watchLaterIcon;
-        private MenuFlyoutItem pinIcon;
-        private MenuFlyoutItem saveIcon;
+        private List<IconButtonEvent> contextMenuCollection;
+        private IconButtonEvent playIcon;
+        private IconButtonEvent deleteButton;
+        private IconButtonEvent watchLaterIcon;
+        private IconButtonEvent pinIcon;
+        private IconButtonEvent saveIcon;
 
         private static void OnEntriesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -210,7 +210,8 @@ namespace myTube
 
         public ObservableCollection<YouTubeEntry> Entries
         {
-            get => (ObservableCollection<YouTubeEntry>)((DependencyObject)this).GetValue(VideoList.EntriesProperty);
+            get => (ObservableCollection<YouTubeEntry>)((DependencyObject)this)
+                .GetValue(VideoList.EntriesProperty);
             set => ((DependencyObject)this).SetValue(VideoList.EntriesProperty, (object)value);
         }
 
@@ -278,13 +279,15 @@ namespace myTube
 
         public Func<int, Task<YouTubeEntry[]>> LoadVideosFunc
         {
-            get => (Func<int, Task<YouTubeEntry[]>>)((DependencyObject)this).GetValue(VideoList.LoadVideosFuncProperty);
+            get => (Func<int, Task<YouTubeEntry[]>>)((DependencyObject)this)
+                .GetValue(VideoList.LoadVideosFuncProperty);
             set => ((DependencyObject)this).SetValue(VideoList.LoadVideosFuncProperty, (object)value);
         }
 
         public Func<YouTubeEntry, YouTubeEntry, bool> SortVideosFunc
         {
-            get => (Func<YouTubeEntry, YouTubeEntry, bool>)((DependencyObject)this).GetValue(VideoList.SortVideosFuncProperty);
+            get => (Func<YouTubeEntry, YouTubeEntry, bool>)(
+                (DependencyObject)this).GetValue(VideoList.SortVideosFuncProperty);
             set => ((DependencyObject)this).SetValue(VideoList.SortVideosFuncProperty, (object)value);
         }
 
@@ -309,29 +312,16 @@ namespace myTube
             this.Entries = new ObservableCollection<YouTubeEntry>();
             this.InitializeComponent();
 
-            // ISSUE: method pointer
-            //WindowsRuntimeMarshal.AddEventHandler<TypedEventHandler<FrameworkElement, DataContextChangedEventArgs>>(
-            //    new Func<TypedEventHandler<FrameworkElement, DataContextChangedEventArgs>, EventRegistrationToken>(
-            //        ((FrameworkElement)this).add_DataContextChanged), 
-            //    new Action<EventRegistrationToken>(((FrameworkElement)this).remove_DataContextChanged), 
-            //    new TypedEventHandler<FrameworkElement, DataContextChangedEventArgs>((object)this, 
-            //    __methodptr(VideoList_DataContextChanged)));
             this.DataContextChanged += (sender, args) 
-                => this.VideoList_DataContextChanged(sender as FrameworkElement, args as DataContextChangedEventArgs);
+                => this.VideoList_DataContextChanged(sender as FrameworkElement, args 
+                as DataContextChangedEventArgs);
 
             ((FrameworkElement)this.ItemList).DataContext = (object)this;
 
-            //WindowsRuntimeMarshal.AddEventHandler<SizeChangedEventHandler>(new Func<SizeChangedEventHandler, 
-            //    EventRegistrationToken>(((FrameworkElement)this).add_SizeChanged), 
-            //    new Action<EventRegistrationToken>(((FrameworkElement)this).remove_SizeChanged), 
-            //    new SizeChangedEventHandler(this.VideoList_SizeChanged));
             this.SizeChanged += this.VideoList_SizeChanged;
 
             ScrollViewer scroll = this.scroll;
 
-            //WindowsRuntimeMarshal.AddEventHandler<EventHandler<ScrollViewerViewChangedEventArgs>>(new Func<EventHandler<ScrollViewerViewChangedEventArgs>, EventRegistrationToken>(scroll.add_ViewChanged), new Action<EventRegistrationToken>(scroll.remove_ViewChanged), new EventHandler<ScrollViewerViewChangedEventArgs>(this.scroll_ViewChanged));
-            //WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(((FrameworkElement)this).add_Loaded), new Action<EventRegistrationToken>(((FrameworkElement)this).remove_Loaded), new RoutedEventHandler(this.VideoList_Loaded));
-            //WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(((FrameworkElement)this).add_Unloaded), new Action<EventRegistrationToken>(((FrameworkElement)this).remove_Unloaded), new RoutedEventHandler(this.VideoList_Unloaded));
             scroll.ViewChanged += this.scroll_ViewChanged;
             this.Loaded += this.VideoList_Loaded;
             this.Unloaded += this.VideoList_Unloaded;
@@ -479,7 +469,9 @@ namespace myTube
             if (this.currentSortingThumb != null)
             {
                 this.currentSortingThumb.EndSorting();
-                this.currentSortingThumb.SortTapped -= new EventHandler<SortTappedEventArgs<YouTubeEntry>>(this.thumb_SortTapped);
+                this.currentSortingThumb.SortTapped -= 
+                    new EventHandler<SortTappedEventArgs<YouTubeEntry>>(this.thumb_SortTapped);
+
                 this.setSortTrans(this.currentSortingThumb as UIElement, false);
                 this.currentSortingEntry = (YouTubeEntry)null;
             }
@@ -525,10 +517,14 @@ namespace myTube
             else
                 this.sortingDictonary.Add(e.Object, index2);
             Panel itemsPanelRoot = this.ItemList.ItemsPanelRoot;
-            FrameworkElement sortingElement = this.getSortingElement(((IList<UIElement>)itemsPanelRoot.Children)[index2]);
+            FrameworkElement sortingElement = 
+                this.getSortingElement(((IList<UIElement>)itemsPanelRoot.Children)[index2]);
+
             double scrollTo = -1.0;
             if (sortingElement != null)
-                scrollTo = sortingElement.GetBounds((UIElement)itemsPanelRoot).Top - ((FrameworkElement)this.scroll).ActualHeight / 2.0 + sortingElement.ActualHeight / 2.0;
+                scrollTo = sortingElement.GetBounds((UIElement)itemsPanelRoot).Top
+                    - ((FrameworkElement)this.scroll).ActualHeight / 2.0 + sortingElement.ActualHeight / 2.0;
+
             ((Collection<YouTubeEntry>)this.Entries)[index1] = ((Collection<YouTubeEntry>)this.Entries)[index2];
             ((Collection<YouTubeEntry>)this.Entries)[index2] = e.Object;
             await Task.Delay(200);
@@ -537,7 +533,8 @@ namespace myTube
 
         private FrameworkElement getSortingElement(UIElement c)
         {
-            foreach (FrameworkElement child in Helper.FindChildren<FrameworkElement>((DependencyObject)(c as FrameworkElement), 10))
+            foreach (FrameworkElement child 
+                in Helper.FindChildren<FrameworkElement>((DependencyObject)(c as FrameworkElement), 10))
             {
                 if (child is ISortableThumbnail<YouTubeEntry>)
                     return child;
@@ -547,7 +544,10 @@ namespace myTube
 
         private async void scroll_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-            if ((this.Client == null || this.Client.IsBusy) && this.LoadVideosFunc == null || !this.LoadOnScroll || this.scroll.ScrollableHeight - this.scroll.VerticalOffset >= 3000.0 || this.busy || this.isSorting || this.isSelecting)
+            if ((this.Client == null || this.Client.IsBusy) && this.LoadVideosFunc == null 
+                || !this.LoadOnScroll 
+                || this.scroll.ScrollableHeight - this.scroll.VerticalOffset >= 3000.0 
+                || this.busy || this.isSorting || this.isSelecting)
                 return;
             await this.Load();
         }
@@ -592,7 +592,8 @@ namespace myTube
                 this.ThumbPadding = new Thickness(0.0, 0.0, 19.0, 19.0);
                 itemsPanelRoot.ItemWidth = (size.Width + num) / 3.0;
             }
-            else if (size.Width > 665.0 || size.Width > size.Height && size.Width > 400.0 && size.Height < 480.0)
+            else if (size.Width > 665.0 || size.Width > size.Height && size.Width > 400.0 
+                && size.Height < 480.0)
             {
                 this.ThumbPadding = new Thickness(0.0, 0.0, 19.0, 19.0);
                 itemsPanelRoot.ItemWidth = ((size.Width + num) / 2.0);
@@ -609,7 +610,8 @@ namespace myTube
             this.ThumbnailDispatcher.Reset();
             if (this.clearingTcs != null)
             {
-                if (!this.clearingTcs.Task.IsCompleted && !this.clearingTcs.Task.IsCanceled && !this.clearingTcs.Task.IsFaulted)
+                if (!this.clearingTcs.Task.IsCompleted && !this.clearingTcs.Task.IsCanceled 
+                    && !this.clearingTcs.Task.IsFaulted)
                     return this.clearingTcs.Task;
                 if (animate)
                 {
@@ -618,7 +620,9 @@ namespace myTube
                 }
             }
             this.clearingTcs = new TaskCompletionSource<bool>();
-            this.listStrings.State = !this.DependsOnSignIn || this.IsSignedIn ? ListState.Default : ListState.SignIn;
+            this.listStrings.State = !this.DependsOnSignIn || this.IsSignedIn 
+                ? ListState.Default 
+                : ListState.SignIn;
             if (animate)
             {
                 this.page = 0;
@@ -641,7 +645,8 @@ namespace myTube
                                     ((UIElement)frameworkElement).RenderTransform = (Transform)Element;
 
                                     sb.Add((Timeline)Ani.DoubleAni((DependencyObject)frameworkElement, 
-                                        "Opacity", 0.0, 0.15, (EasingFunctionBase)Ani.Ease((EasingMode)2, 1.0), startTime),
+                                        "Opacity", 0.0, 0.15, (EasingFunctionBase)Ani.Ease((EasingMode)2, 1.0), 
+                                        startTime),
                                         (Timeline)Ani.DoubleAni((DependencyObject)Element, 
                                         "Y", -50.0, 0.15, (EasingFunctionBase)Ani.Ease((EasingMode)1, 5.0), 
                                         startTime));
@@ -779,7 +784,9 @@ namespace myTube
                     else if (!this.isSorting && !this.isSelecting)
                     {
                         await ((FrameworkElement)this).WaitForLayoutUpdateAsync();
+
                         await Task.Delay(500);
+
                         if (this.loaded && vids.Length != 0 && this.scroll.ScrollableHeight < this.scroll.ViewportHeight)
                             this.Load();
                     }
@@ -799,7 +806,9 @@ namespace myTube
         {
             if (e.AddedItems.Count != 1)
                 return;
-            ((App)Application.Current).RootFrame.Navigate(typeof(VideoPage), (object)(e.AddedItems[0] as YouTubeEntry));
+
+            ((App)Application.Current).RootFrame.Navigate(typeof(VideoPage), 
+                (object)(e.AddedItems[0] as YouTubeEntry));
         }
 
         public static void TappedThumb(FrameworkElement thumb)
@@ -843,13 +852,15 @@ namespace myTube
             TransferManager.State state = TransferManager.State.Complete;
             foreach (YouTubeEntry e in entries)
             {
-                TransferManager.State s = await App.GlobalObjects.TransferManager.GetTransferState(e, TransferType.Video);
+                TransferManager.State s = await App.GlobalObjects.TransferManager.GetTransferState
+                    (e, TransferType.Video);
                 if (state == TransferManager.State.Complete)
                 {
                     switch (s)
                     {
                         case TransferManager.State.None:
-                            if (await App.GlobalObjects.TransferManager.GetTransferState(e, TransferType.Audio) == TransferManager.State.None)
+                            if (await App.GlobalObjects.TransferManager.GetTransferState
+                                (e, TransferType.Audio) == TransferManager.State.None)
                             {
                                 state = TransferManager.State.None;
                                 return state;
@@ -862,7 +873,8 @@ namespace myTube
                 }
                 else if (state == TransferManager.State.Downloading && s == TransferManager.State.None)
                 {
-                    if (await App.GlobalObjects.TransferManager.GetTransferState(e, TransferType.Audio) == TransferManager.State.None)
+                    if (await App.GlobalObjects.TransferManager.GetTransferState(e, TransferType.Audio)
+                        == TransferManager.State.None)
                     {
                         state = TransferManager.State.None;
                         return state;
@@ -909,7 +921,8 @@ namespace myTube
                             {
                                 case TransferManager.State.None:
                                     c.Symbol = (Symbol)57605;
-                                    c.Text = (App.Strings["common.save", "save"] + " (" + App.Strings["common.highestquality",
+                                    c.Text = (App.Strings["common.save", "save"] + 
+                                        " (" + App.Strings["common.highestquality",
                                         "highest quality"] + ")").ToLower();
                                     break;
                                 case TransferManager.State.Downloading:
@@ -992,8 +1005,8 @@ namespace myTube
 
         public static void HoldingThumb(FrameworkElement thumb, HoldingRoutedEventArgs e)
         {
-            e.put_Handled(true);
-            if (e.HoldingState != null || e.PointerDeviceType == 2)
+            e.Handled = true;
+            if (e.HoldingState != null || e.PointerDeviceType == PointerDeviceType.Mouse)
                 return;
             VideoList parentFromTree = Helper.FindParentFromTree<VideoList>(thumb, 50);
             if (parentFromTree == null)
@@ -1007,23 +1020,24 @@ namespace myTube
           VideoList list)
         {
             VideoContextMenu videoContextMenu1 = new VideoContextMenu();
-            ((FrameworkElement)videoContextMenu1).put_RequestedTheme(App.Theme);
+            ((FrameworkElement)videoContextMenu1).RequestedTheme = App.Theme;
             videoContextMenu1.SelectButtonEnabled = thumb.DataContext is YouTubeEntry;
             VideoContextMenu menu = videoContextMenu1;
             Rect bounds1 = Window.Current.Bounds;
             Rect bounds2 = thumb.GetBounds((UIElement)DefaultPage.Current);
-            ((FrameworkElement)menu).put_Width(bounds2.Width);
-            ((FrameworkElement)menu).put_Height(Math.Min(bounds2.Height - list.ThumbPadding.Bottom, bounds1.Height - bounds2.Y));
+            ((FrameworkElement)menu).Width = (bounds2.Width);
+            ((FrameworkElement)menu).Height = (Math.Min(bounds2.Height - list.ThumbPadding.Bottom, 
+                bounds1.Height - bounds2.Y));
             Popup popup = new Popup();
-            popup.put_Child((UIElement)menu);
-            ((FrameworkElement)popup).put_RequestedTheme(App.Theme);
+            popup.Child = ((UIElement)menu);
+            ((FrameworkElement)popup).RequestedTheme = App.Theme;
             Popup p = popup;
             Point showAt = new Point();
             showAt.X = bounds2.X;
             menu.SetTransitionOffset(0.0, -40.0);
             showAt.Y = bounds2.Y;
-            ((Control)menu).put_HorizontalContentAlignment((HorizontalAlignment)3);
-            ((Control)menu).put_VerticalContentAlignment((VerticalAlignment)3);
+            ((Control)menu).HorizontalContentAlignment = HorizontalAlignment.Stretch;
+            ((Control)menu).VerticalContentAlignment = VerticalAlignment.Stretch;
             VideoContextMenu videoContextMenu = menu;
             IconButtonEventCollection collection = await list.getCollection(thumb.DataContext as YouTubeEntry);
             videoContextMenu.ItemsSource = (List<IconButtonEvent>)collection;
@@ -1031,15 +1045,17 @@ namespace myTube
             menu.SelectedElement = thumb;
             menu.SelectTapped += (EventHandler)((s, e) =>
             {
-                DefaultPage.Current.ClosePopup();
+                //TODO
+                //DefaultPage.Current.ClosePopup();
                 list.beginSelect(thumb.DataContext as YouTubeEntry);
             });
             if (menu.ItemsSource.Count > 0)
             {
                 ((UIElement)thumb).CancelDirectManipulations();
-                DefaultPage.Current.ShowPopup(p, showAt, new Point(0.0, -10.0), FadeType.Half, hideAppBar: false);
+                //TODO
+                //DefaultPage.Current.ShowPopup(p, showAt, new Point(0.0, -10.0), FadeType.Half, hideAppBar: false);
             }
-            p.put_IsLightDismissEnabled(false);
+            p.IsLightDismissEnabled = false;
         }
 
         private void beginSelect(YouTubeEntry ent)
@@ -1067,8 +1083,9 @@ namespace myTube
             }
             if (!this.isSelecting)
                 return;
-            ((UIElement)this.cancelSelectedButton).put_Visibility((Visibility)0);
-            ((UIElement)this.acceptSelectedButton).put_Visibility((Visibility)0);
+
+            ((UIElement)this.cancelSelectedButton).Visibility = (Visibility)0;
+            ((UIElement)this.acceptSelectedButton).Visibility = (Visibility)0;
         }
 
         private void S_SelectChanged(object sender, bool e)
@@ -1114,7 +1131,7 @@ namespace myTube
                 }
             }
             this.isSelecting = false;
-            ((UIElement)this.acceptSelectedButton).put_Visibility((Visibility)1);
+            ((UIElement)this.acceptSelectedButton).Visibility = Visibility.Collapsed;
             this.selected.Clear();
             return youTubeEntryList;
         }
@@ -1122,11 +1139,13 @@ namespace myTube
         private async void watchLaterSelected(object sender, IconButtonEventArgs e)
         {
             e.Close();
-            if (e.OriginalSender is FrameworkElement originalSender1 && originalSender1.DataContext is YouTubeEntry dataContext)
+            if (e.OriginalSender is FrameworkElement originalSender1 
+                && originalSender1.DataContext is YouTubeEntry dataContext)
             {
                 try
                 {
-                    int num = await YouTube.WatchLater(dataContext.ID, Settings.WatchLater.AddVideosTo == PlaylistPosition.End ? -1 : 0) ? 1 : 0;
+                    int num = await YouTube.WatchLater(dataContext.ID, 
+                        Settings.WatchLater.AddVideosTo == PlaylistPosition.End ? -1 : 0) ? 1 : 0;
                 }
                 catch
                 {
@@ -1138,7 +1157,8 @@ namespace myTube
             {
                 try
                 {
-                    int num = await YouTube.WatchLater(youTubeEntry.ID, Settings.WatchLater.AddVideosTo == PlaylistPosition.End ? -1 : 0) ? 1 : 0;
+                    int num = await YouTube.WatchLater(youTubeEntry.ID, 
+                        Settings.WatchLater.AddVideosTo == PlaylistPosition.End ? -1 : 0) ? 1 : 0;
                 }
                 catch
                 {
@@ -1153,10 +1173,13 @@ namespace myTube
             {
                 if (originalSender.DataContext is YouTubeEntry ent)
                 {
-                    if (await App.GlobalObjects.TransferManager.GetTransferState(ent) != TransferManager.State.None)
+                    if (await App.GlobalObjects.TransferManager.GetTransferState(ent) != 
+                        TransferManager.State.None)
                     {
-                        int num1 = await App.GlobalObjects.TransferManager.DeleteTransfer(ent, TransferType.Video) ? 1 : 0;
-                        int num2 = await App.GlobalObjects.TransferManager.DeleteTransfer(ent, TransferType.Audio) ? 1 : 0;
+                        int num1 = await App.GlobalObjects.TransferManager.DeleteTransfer(ent, 
+                            TransferType.Video) ? 1 : 0;
+                        int num2 = await App.GlobalObjects.TransferManager.DeleteTransfer(ent, 
+                            TransferType.Audio) ? 1 : 0;
                     }
                     else
                     {
@@ -1168,7 +1191,9 @@ namespace myTube
                             {
                                 if (info.FoundVideos)
                                 {
-                                    DownloadOperation downloadOperation = await App.GlobalObjects.TransferManager.StartTransfer(ent, info, info.HighestQuality(YouTubeQuality.HD), (Progress<DownloadOperation>)null);
+                                    DownloadOperation downloadOperation = 
+                                        await App.GlobalObjects.TransferManager.StartTransfer(ent, 
+                                        info, info.HighestQuality(YouTubeQuality.HD), (Progress<DownloadOperation>)null);
                                 }
                             }
                         }
@@ -1186,14 +1211,16 @@ namespace myTube
             {
                 foreach (YouTubeEntry ent in coll)
                 {
-                    TransferManager.State st = await App.GlobalObjects.TransferManager.GetTransferState(ent, TransferType.Video);
+                    TransferManager.State st = await App.GlobalObjects.TransferManager.GetTransferState(ent,
+                        TransferType.Video);
                     if (status != TransferManager.State.None)
                     {
                         if (st != TransferManager.State.None)
                         {
                             try
                             {
-                                int num = await App.GlobalObjects.TransferManager.DeleteTransfer(ent, TransferType.Video) ? 1 : 0;
+                                int num = await App.GlobalObjects.TransferManager.DeleteTransfer(ent,
+                                    TransferType.Video) ? 1 : 0;
                             }
                             catch
                             {
@@ -1210,7 +1237,10 @@ namespace myTube
                             {
                                 if (info.FoundVideos)
                                 {
-                                    DownloadOperation downloadOperation = await App.GlobalObjects.TransferManager.StartTransfer(ent, info, info.HighestQuality(YouTubeQuality.HD), (Progress<DownloadOperation>)null);
+                                    DownloadOperation downloadOperation = 
+                                        await App.GlobalObjects.TransferManager.StartTransfer(
+                                            ent, info, info.HighestQuality(YouTubeQuality.HD), 
+                                            (Progress<DownloadOperation>)null);
                                 }
                             }
                         }
@@ -1233,27 +1263,31 @@ namespace myTube
                 if (!SecondaryTile.Exists(TileHelper.CreateTileID(ent)))
                 {
                     VideoTile videoTile = new VideoTile();
-                    ((FrameworkElement)videoTile).put_DataContext((object)ent);
-                    ((FrameworkElement)videoTile).put_Width(336.0);
-                    ((FrameworkElement)videoTile).put_Height(336.0);
+                    ((FrameworkElement)videoTile).DataContext = ((object)ent);
+                    ((FrameworkElement)videoTile).Width = (336.0);
+                    ((FrameworkElement)videoTile).Height = (336.0);
                     VideoTile tileElement = videoTile;
                     await Task.Delay(100);
-                    RenderTargetBitmap wb = await DefaultPage.Current.RenderElementAsync((FrameworkElement)tileElement, 0.40000000596046448);
-                    ((FrameworkElement)tileElement).put_Width(691.0);
-                    RenderTargetBitmap wb2 = await DefaultPage.Current.RenderElementAsync((FrameworkElement)tileElement, 0.40000000596046448);
-                    ((FrameworkElement)tileElement).put_Width(336.0);
+
+                    RenderTargetBitmap wb = default;//await DefaultPage.Current.RenderElementAsync((FrameworkElement)tileElement, 0.40000000596046448);
+                    ((FrameworkElement)tileElement).Width = 691.0;
+
+                    RenderTargetBitmap wb2 = default;//await DefaultPage.Current.RenderElementAsync((FrameworkElement)tileElement, 0.40000000596046448);
+                    ((FrameworkElement)tileElement).Width = 336.0;
                     Image image1 = new Image();
-                    image1.put_Source((ImageSource)wb);
+                    image1.Source = (ImageSource)wb;
                     Image image2 = image1;
                     Image image3 = new Image();
-                    image3.put_Source((ImageSource)wb2);
+                    image3.Source = ((ImageSource)wb2);
                     Image image4 = image3;
                     StackPanel stackPanel = new StackPanel();
                     ((FrameworkElement)DefaultPage.Current).GetBounds((UIElement)DefaultPage.Current);
                     ((ICollection<UIElement>)((Panel)stackPanel).Children).Add((UIElement)tileElement);
                     ((ICollection<UIElement>)((Panel)stackPanel).Children).Add((UIElement)image2);
                     ((ICollection<UIElement>)((Panel)stackPanel).Children).Add((UIElement)image4);
+                   
                     SecondaryTile tile = await TileHelper.CreateTile(ent, new TileArgs(typeof(VideoPage), ent.ID));
+                   
                     el.GetBounds((UIElement)DefaultPage.Current);
                     StorageFile tileImageFile1 = await TileHelper.CreateTileImageFile(ent, wb, (TileSize)3);
                     StorageFile tileImageFile2 = await TileHelper.CreateTileImageFile(ent, wb2, (TileSize)4);
@@ -1261,8 +1295,13 @@ namespace myTube
                     if (await tile.RequestCreateAsync())
                     {
                         SecondaryTile secondaryTile = tile;
-                        // ISSUE: method pointer
-                        WindowsRuntimeMarshal.AddEventHandler<TypedEventHandler<SecondaryTile, VisualElementsRequestedEventArgs>>(new Func<TypedEventHandler<SecondaryTile, VisualElementsRequestedEventArgs>, EventRegistrationToken>(secondaryTile.add_VisualElementsRequested), new Action<EventRegistrationToken>(secondaryTile.remove_VisualElementsRequested), new TypedEventHandler<SecondaryTile, VisualElementsRequestedEventArgs>((object)this, __methodptr(tile_VisualElementsRequested)));
+
+                        //This assumes that secondaryTile is a SecondaryTile object
+                        //and that tile_VisualElementsRequested is a method in your code-behind
+                        //that handles the VisualElementsRequested event.
+                        secondaryTile.VisualElementsRequested += tile_VisualElementsRequested;
+
+
                         await TileHelper.UpdateSecondaryTile(ent);
                     }
                     tileElement = (VideoTile)null;
@@ -1271,7 +1310,8 @@ namespace myTube
                     tile = (SecondaryTile)null;
                 }
                 else
-                    await (await TileHelper.CreateTile(ent, new TileArgs(typeof(VideoPage), ent.ID))).DeleteAndCleanUpImages();
+                    await (await TileHelper.CreateTile(ent, new TileArgs(typeof(VideoPage), ent.ID)))
+                        .DeleteAndCleanUpImages();
             }
             ent = (YouTubeEntry)null;
         }
@@ -1288,7 +1328,11 @@ namespace myTube
             {
                 if (originalSender.DataContext is YouTubeEntry ent)
                 {
-                    int num = await new MessageDialog(App.Strings["dialogs.videos.deleteupload", "Are you sure you want to delete this upload?"], App.Strings["dialogs.titles.areyousure", "Are you sure?"]).ShowAsync(App.Strings["common.yes", "yes"].ToLower(), App.Strings["common.no", "no"].ToLower());
+                    int num = await new MessageDialog(App.Strings["dialogs.videos.deleteupload",
+                        "Are you sure you want to delete this upload?"], 
+                        App.Strings["dialogs.titles.areyousure",
+                        "Are you sure?"]).ShowAsync(App.Strings["common.yes", "yes"].ToLower(), 
+                        App.Strings["common.no", "no"].ToLower());
                     e.Close();
                     if (num == 0)
                     {
@@ -1309,9 +1353,16 @@ namespace myTube
             }
             if (!(e.OriginalSender is IEnumerable<YouTubeEntry> ents))
                 return;
-            if (await new MessageDialog(App.Strings["dialogs.videos.deleteuploadmultiple", "Are you sure you want to delete these upload?"], App.Strings["dialogs.titles.areyousure", "Are you sure?"]).ShowAsync(App.Strings["common.yes", "yes"].ToLower(), App.Strings["common.no", "no"].ToLower()) != 0)
+
+            if (await new MessageDialog(App.Strings["dialogs.videos.deleteuploadmultiple",
+                "Are you sure you want to delete these upload?"], 
+                App.Strings["dialogs.titles.areyousure", "Are you sure?"])
+                .ShowAsync(App.Strings["common.yes", "yes"].ToLower(), 
+                App.Strings["common.no", "no"].ToLower()) != 0)
                 return;
+
             e.Close();
+
             foreach (YouTubeEntry ent in ents)
             {
                 if (ent.Author == YouTube.UserInfo.ID)
@@ -1337,42 +1388,51 @@ namespace myTube
             if (!this.isSelecting)
                 return;
             List<YouTubeEntry> entries = this.endSelect();
-            ((UIElement)this.acceptSelectedButton).put_Visibility((Visibility)1);
-            ((UIElement)this.cancelSelectedButton).put_Visibility((Visibility)1);
+            ((UIElement)this.acceptSelectedButton).Visibility = Visibility.Collapsed;
+            ((UIElement)this.cancelSelectedButton).Visibility = Visibility.Collapsed;
             if (entries.Count <= 0)
                 return;
             VideoContextMenu videoContextMenu1 = new VideoContextMenu();
-            ((FrameworkElement)videoContextMenu1).put_DataContext((object)entries);
-            ((FrameworkElement)videoContextMenu1).put_RequestedTheme(App.Theme);
+            ((FrameworkElement)videoContextMenu1).DataContext = (object)entries;
+            ((FrameworkElement)videoContextMenu1).RequestedTheme = App.Theme;
             videoContextMenu1.CancelButtonEnabled = true;
             VideoContextMenu menu = videoContextMenu1;
             menu.SelectedElement = (FrameworkElement)this;
             VideoContextMenu videoContextMenu = menu;
-            IconButtonEventCollection multiselectCollection = await this.getMultiselectCollection((IEnumerable<YouTubeEntry>)entries);
+            IconButtonEventCollection multiselectCollection = 
+                await this.getMultiselectCollection((IEnumerable<YouTubeEntry>)entries);
             videoContextMenu.ItemsSource = (List<IconButtonEvent>)multiselectCollection;
             videoContextMenu = (VideoContextMenu)null;
-            menu.CancelTapped += (EventHandler)((s, args) => DefaultPage.Current.ClosePopup());
+
+            //TODO
+            //menu.CancelTapped += (EventHandler)((s, args) => DefaultPage.Current.ClosePopup());
+
             Popup popup1 = new Popup();
-            popup1.put_Child((UIElement)menu);
+            popup1.Child = (UIElement)menu;
             Popup popup2 = popup1;
             DefaultPage.SetPopupArrangeMethod((DependencyObject)popup2, (Func<Point>)(() =>
             {
                 ((UIElement)this).UpdateLayout();
                 Rect bounds = ((FrameworkElement)this).GetBounds(Window.Current.Content);
-                ((FrameworkElement)menu).put_Width(Math.Min(bounds.Width, 380.0));
-                ((FrameworkElement)menu).put_Height(Math.Min(bounds.Height, 380.0));
-                return new Point(bounds.Right - ((FrameworkElement)menu).Width, bounds.Bottom - ((FrameworkElement)menu).Height);
+                ((FrameworkElement)menu).Width = (Math.Min(bounds.Width, 380.0));
+                ((FrameworkElement)menu).Height = (Math.Min(bounds.Height, 380.0));
+                return new Point(bounds.Right - ((FrameworkElement)menu).Width, bounds.Bottom 
+                    - ((FrameworkElement)menu).Height);
             }));
-            int num = await DefaultPage.Current.ShowPopup(popup2, new Point(), new Point(0.0, -40.0)) ? 1 : 0;
-            ((UIElement)this.cancelSelectedButton).put_Visibility((Visibility)1);
+
+            //TODO
+            int num = 1;//await DefaultPage.Current.ShowPopup(popup2, new Point(), new Point(0.0, -40.0)) ? 1 : 0;
+            ((UIElement)this.cancelSelectedButton).Visibility = ((Visibility)1);
         }
 
         private void cancelSortButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             this.endSelect();
-            DefaultPage.Current.ClosePopup();
-            ((UIElement)this.cancelSelectedButton).put_Visibility((Visibility)1);
-            ((UIElement)this.acceptSelectedButton).put_Visibility((Visibility)1);
+            //TODO
+            //DefaultPage.Current.ClosePopup();
+
+            ((UIElement)this.cancelSelectedButton).Visibility = Visibility.Collapsed;
+            ((UIElement)this.acceptSelectedButton).Visibility = Visibility.Collapsed;
         }
 
         private void playIcon_Selected(object sender, IconButtonEventArgs e)
@@ -1389,67 +1449,14 @@ namespace myTube
                 {
                     Value = youTubeEntry.OriginalString
                 });
-            DefaultPage.Current.VideoPlayer.SetTypeConstructor(new OfflinePlaylistClient(WebUtility.UrlEncode(((object)xelement).ToString()), 15).GetTypeConstructor());
-            DefaultPage.Current.VideoPlayer.OpenVideo(entry, Settings.Quality);
+
+            //TODO
+            //DefaultPage.Current.VideoPlayer.SetTypeConstructor(
+            //    new OfflinePlaylistClient(WebUtility.UrlEncode(((object)xelement).ToString()), 15).GetTypeConstructor());
+            //DefaultPage.Current.VideoPlayer.OpenVideo(entry, Settings.Quality);
             e.Close();
         }
-
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        [DebuggerNonUserCode]
-        public void InitializeComponent()
-        {
-            if (this._contentLoaded)
-                return;
-            this._contentLoaded = true;
-            Application.LoadComponent((object)this, new Uri("ms-appx:///VideoList.xaml"), (ComponentResourceLocation)0);
-            this.userControl = (UserControl)((FrameworkElement)this).FindName("userControl");
-            this.listStrings = (ListStrings)((FrameworkElement)this).FindName("listStrings");
-            this.contextMenuCollection = (IconButtonEventCollection)((FrameworkElement)this).FindName("contextMenuCollection");
-            this.playIcon = (IconButtonEvent)((FrameworkElement)this).FindName("playIcon");
-            this.deleteButton = (IconButtonEvent)((FrameworkElement)this).FindName("deleteButton");
-            this.watchLaterIcon = (IconButtonEvent)((FrameworkElement)this).FindName("watchLaterIcon");
-            this.pinIcon = (IconButtonEvent)((FrameworkElement)this).FindName("pinIcon");
-            this.saveIcon = (IconButtonEvent)((FrameworkElement)this).FindName("saveIcon");
-            this.scroll = (ScrollViewer)((FrameworkElement)this).FindName("scroll");
-            this.cancelSelectedButton = (ContentControl)((FrameworkElement)this).FindName("cancelSelectedButton");
-            this.acceptSelectedButton = (ContentControl)((FrameworkElement)this).FindName("acceptSelectedButton");
-            this.multiSelectSymbol = (SymbolIcon)((FrameworkElement)this).FindName("multiSelectSymbol");
-            this.loadingText = (TextBlock)((FrameworkElement)this).FindName("loadingText");
-            this.ItemList = (ItemsControl)((FrameworkElement)this).FindName("ItemList");
-        }
-
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        [DebuggerNonUserCode]
-        public void Connect(int connectionId, object target)
-        {
-            switch (connectionId)
-            {
-                case 1:
-                    ((IconButtonEvent)target).Selected += new EventHandler<IconButtonEventArgs>(this.playIcon_Selected);
-                    break;
-                case 2:
-                    ((IconButtonEvent)target).Selected += new EventHandler<IconButtonEventArgs>(this.deleteButton_Selected);
-                    break;
-                case 3:
-                    ((IconButtonEvent)target).Selected += new EventHandler<IconButtonEventArgs>(this.watchLaterSelected);
-                    break;
-                case 4:
-                    ((IconButtonEvent)target).Selected += new EventHandler<IconButtonEventArgs>(this.pinIcon_Selected);
-                    break;
-                case 5:
-                    ((IconButtonEvent)target).Selected += new EventHandler<IconButtonEventArgs>(this.saveLaterSelected);
-                    break;
-                case 6:
-                    UIElement uiElement1 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement1.add_Tapped), new Action<EventRegistrationToken>(uiElement1.remove_Tapped), new TappedEventHandler(this.cancelSortButton_Tapped));
-                    break;
-                case 7:
-                    UIElement uiElement2 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement2.add_Tapped), new Action<EventRegistrationToken>(uiElement2.remove_Tapped), new TappedEventHandler(this.acceptSortButton_Tapped));
-                    break;
-            }
-            this._contentLoaded = true;
-        }
+      
     }
 }
 

@@ -7,10 +7,18 @@ namespace myTube
 {
   public class IconButtonInfo : DependencyObject
   {
-    public static readonly DependencyProperty TextProperty = DependencyProperty.Register(nameof (Text), typeof (string), typeof (IconButtonInfo), new PropertyMetadata((object) null));
-    public static readonly DependencyProperty NameProperty = DependencyProperty.Register(nameof (Name), typeof (string), typeof (IconButtonInfo), new PropertyMetadata((object) null));
-    public static readonly DependencyProperty SymbolProperty = DependencyProperty.Register(nameof (Symbol), typeof (Symbol), typeof (IconButtonInfo), new PropertyMetadata((object) (Symbol) 57629));
-    public static readonly DependencyProperty DataContextProperty = DependencyProperty.Register(nameof (DataContext), typeof (object), typeof (IconButtonInfo), new PropertyMetadata((object) null));
+    public static readonly DependencyProperty TextProperty 
+            = DependencyProperty.Register(nameof (Text), typeof (string), typeof (IconButtonInfo), 
+                new PropertyMetadata((object) null));
+    public static readonly DependencyProperty NameProperty 
+            = DependencyProperty.Register(nameof (Name), typeof (string), typeof (IconButtonInfo), 
+                new PropertyMetadata((object) null));
+    public static readonly DependencyProperty SymbolProperty 
+            = DependencyProperty.Register(nameof (Symbol), typeof (Symbol), typeof (IconButtonInfo), 
+                new PropertyMetadata((object) (Symbol) 57629));
+    public static readonly DependencyProperty DataContextProperty 
+            = DependencyProperty.Register(nameof (DataContext), typeof (object), typeof (IconButtonInfo), 
+                new PropertyMetadata((object) null));
 
     public string Text
     {

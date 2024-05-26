@@ -6,6 +6,23 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     x:Name="userControl" 
     x:Class="myTube.VideoList">
+    
+    <Grid>
+        <!--"control experimental" /-->
+            <ContentControl x:Name="cancelSelectedButton" Visibility="Collapsed"/>
+            <ContentControl x:Name="acceptSelectedButton" Visibility="Collapsed"/>
+    </Grid>
+</UserControl>
+    
+ <!-- TODO
+ <UserControl 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:local="using:myTube" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    x:Name="userControl" 
+    x:Class="myTube.VideoList">
     <UserControl.Resources>
         <ResourceDictionary>
             <local:ListStrings x:Name="listStrings" Default="we're waiting..." 
@@ -199,3 +216,4 @@
         </Grid>
     </ScrollViewer>
 </UserControl>
+  -->

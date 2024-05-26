@@ -66,9 +66,11 @@ namespace myTube.Helpers
       if (Accel.accel == null)
         return;
       Accelerometer accel = Accel.accel;
-      // ISSUE: method pointer
-      WindowsRuntimeMarshal.AddEventHandler<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>>(new Func<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>, EventRegistrationToken>(accel.add_ReadingChanged), new Action<EventRegistrationToken>(accel.remove_ReadingChanged), new TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>((object) null, __methodptr(accel_ReadingChanged)));
-      Accel.accel.put_ReportInterval(Math.Max(33U, Accel.accel.MinimumReportInterval));
+
+     
+      accel.ReadingChanged += accel_ReadingChanged;
+
+      Accel.accel.ReportInterval = Math.Max(33U, Accel.accel.MinimumReportInterval);
     }
 
     public static void Stop()
@@ -79,9 +81,11 @@ namespace myTube.Helpers
       Accel.running = false;
       if (Accel.accel == null)
         return;
-      // ISSUE: method pointer
-      WindowsRuntimeMarshal.RemoveEventHandler<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>>(new Action<EventRegistrationToken>(Accel.accel.remove_ReadingChanged), new TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>((object) null, __methodptr(accel_ReadingChanged)));
-      Accel.accel.put_ReportInterval(0U);
+
+    
+      accel.ReadingChanged -= accel_ReadingChanged;
+
+      Accel.accel.ReportInterval = 0U;
       for (int index = 0; index < Accel.vs.Length; ++index)
       {
         Accel.vs[index] = new Vector3();
@@ -89,7 +93,10 @@ namespace myTube.Helpers
       }
     }
 
-    private static double Distance(this Vector3 v) => Math.Sqrt((double) v.X * (double) v.X + (double) v.Y * (double) v.Y + (double) v.Z * (double) v.Z);
+    private static double Distance(this Vector3 v)
+    {
+        return Math.Sqrt((double)v.X * (double)v.X + (double)v.Y * (double)v.Y + (double)v.Z * (double)v.Z);
+    }
 
     public static void Lock()
     {
@@ -109,7 +116,8 @@ namespace myTube.Helpers
       Accelerometer sender,
       AccelerometerReadingChangedEventArgs args)
     {
-      Vector3 vector3_1 = new Vector3((float) args.Reading.AccelerationX, (float) args.Reading.AccelerationY, (float) args.Reading.AccelerationZ);
+      Vector3 vector3_1 = new Vector3((float) args.Reading.AccelerationX, 
+          (float) args.Reading.AccelerationY, (float) args.Reading.AccelerationZ);
       Accel.vs2[Accel.ind2 % Accel.vs2.Length] = vector3_1;
       ++Accel.ind2;
       if (Accel.ind2 >= Accel.vs2.Length)
@@ -128,18 +136,24 @@ namespace myTube.Helpers
       foreach (Vector3 v in Accel.vs)
         Accel.v += v;
       Accel.v /= (float) Accel.vs.Length;
+     
       if ((double) Math.Abs(Accel.v.Z) >= 0.85000002384185791)
         return;
+
       float num = MyMath.Between(Accel.landscapeThresh * 0.8f, Accel.landscapeThresh, Math.Abs(Accel.v.Z / 0.85f));
-      if ((double) Accel.v.X < -(double) num && Accel.Orient != 1)
+     
+      if ((double) Accel.v.X < -(double) num 
+        && Accel.Orient != SimpleOrientation.Rotated90DegreesCounterclockwise)
         Accel.Orient = Accel.changed((SimpleOrientation) 1);
-      else if ((double) Accel.v.X > (double) num && Accel.Orient != 3)
+      else if ((double) Accel.v.X > (double) num 
+                && Accel.Orient != SimpleOrientation.Rotated270DegreesCounterclockwise)
       {
         Accel.Orient = Accel.changed((SimpleOrientation) 3);
       }
       else
       {
-        if (Accel.Orient == null || (double) Accel.v.X <= -(double) Accel.portraitThresh || (double) Accel.v.X >= (double) Accel.portraitThresh || (double) Accel.v.Y >= -0.4)
+        if (Accel.Orient == null || (double) Accel.v.X <= -(double) Accel.portraitThresh 
+                    || (double) Accel.v.X >= (double) Accel.portraitThresh || (double) Accel.v.Y >= -0.4)
           return;
         Accel.Orient = Accel.changed((SimpleOrientation) 0);
       }
@@ -149,18 +163,33 @@ namespace myTube.Helpers
     {
       // ISSUE: object of a compiler-generated type is created
       // ISSUE: variable of a compiler-generated type
-      Accel.\u003C\u003Ec__DisplayClass30_0 cDisplayClass300 = new Accel.\u003C\u003Ec__DisplayClass30_0();
+      var cDisplayClass300 = new Accel.DisplayClass30_0();
       // ISSUE: reference to a compiler-generated field
       cDisplayClass300.o = o;
       if (!Accel.locked && Accel.running && Accel.Dispatcher != null && Accel.OrientChanged != null)
       {
         // ISSUE: reference to a compiler-generated field
         Helper.Write((object) nameof (Accel), (object) ("Orientation changed to " + (object) cDisplayClass300.o));
-        // ISSUE: method pointer
-        Accel.Dispatcher.RunAsync((CoreDispatcherPriority) 1, new DispatchedHandler((object) cDisplayClass300, __methodptr(\u003Cchanged\u003Eb__0)));
-      }
+
+                // ISSUE: method pointer
+                //Accel.Dispatcher.RunAsync((CoreDispatcherPriority) 1, 
+                //    new DispatchedHandler((object) cDisplayClass300,
+                //    __methodptr(\u003Cchanged\u003Eb__0)));
+                //await 
+                Accel.Dispatcher.RunAsync(CoreDispatcherPriority.High, () 
+                    => accel_ReadingChanged(null, null));
+            }
       // ISSUE: reference to a compiler-generated field
       return cDisplayClass300.o;
     }
-  }
+
+        private class DisplayClass30_0
+        {
+            internal SimpleOrientation o;
+
+            public DisplayClass30_0()
+            {
+            }
+        }
+    }
 }

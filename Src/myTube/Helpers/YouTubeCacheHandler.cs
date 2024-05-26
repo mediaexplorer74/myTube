@@ -48,7 +48,10 @@ namespace myTube.Helpers
           return;
         YouTubeCacheHandler tubeCacheHandler = this;
         StorageFolder folder = tubeCacheHandler.folder;
-        StorageFolder folderAsync = await this.local.CreateFolderAsync("YouTubeCache", (CreationCollisionOption) 3);
+
+        StorageFolder folderAsync = 
+                    await this.local.CreateFolderAsync("YouTubeCache", CreationCollisionOption.OpenIfExists);
+
         tubeCacheHandler.folder = folderAsync;
         tubeCacheHandler = (YouTubeCacheHandler) null;
       }
@@ -142,7 +145,10 @@ namespace myTube.Helpers
       group = this.toPathName(group);
       try
       {
-        await FileIO.WriteTextAsync((IStorageFile) await groupFolder.CreateFileAsync("groupCacheInfo.json", (CreationCollisionOption) 1), DataObject.ToJson((object) info));
+        await FileIO.WriteTextAsync(
+            (IStorageFile) await groupFolder.CreateFileAsync
+            ("groupCacheInfo.json", CreationCollisionOption.ReplaceExisting), 
+            DataObject.ToJson((object) info));
       }
       catch
       {
@@ -170,7 +176,7 @@ namespace myTube.Helpers
     {
       // ISSUE: object of a compiler-generated type is created
       // ISSUE: variable of a compiler-generated type
-      YouTubeCacheHandler.\u003C\u003Ec__DisplayClass23_2 cDisplayClass232 = new YouTubeCacheHandler.\u003C\u003Ec__DisplayClass23_2();
+      var cDisplayClass232 = new YouTubeCacheHandler.DisplayClass23_2();
       // ISSUE: reference to a compiler-generated field
       cDisplayClass232.group = group;
       Stopwatch watch = new Stopwatch();
@@ -189,14 +195,14 @@ namespace myTube.Helpers
       {
         // ISSUE: object of a compiler-generated type is created
         // ISSUE: variable of a compiler-generated type
-        YouTubeCacheHandler.\u003C\u003Ec__DisplayClass23_1 cDisplayClass231 = new YouTubeCacheHandler.\u003C\u003Ec__DisplayClass23_1();
+        var cDisplayClass231 = new YouTubeCacheHandler.DisplayClass23_1();
         // ISSUE: reference to a compiler-generated field
-        cDisplayClass231.CS\u0024\u003C\u003E8__locals1 = cDisplayClass232;
+        cDisplayClass231.u003E8_locals1 = cDisplayClass232;
         // ISSUE: reference to a compiler-generated field
         GroupCacheInfo info = cDisplayClass231.info;
         // ISSUE: reference to a compiler-generated field
         // ISSUE: reference to a compiler-generated field
-        GroupCacheInfo groupInfo = await this.getGroupInfo(cDisplayClass231.CS\u0024\u003C\u003E8__locals1.group);
+        GroupCacheInfo groupInfo = await this.getGroupInfo(cDisplayClass231.u003E8_locals1.group);
         // ISSUE: reference to a compiler-generated field
         cDisplayClass231.info = groupInfo;
         // ISSUE: reference to a compiler-generated field
@@ -204,9 +210,9 @@ namespace myTube.Helpers
         {
           // ISSUE: object of a compiler-generated type is created
           // ISSUE: variable of a compiler-generated type
-          YouTubeCacheHandler.\u003C\u003Ec__DisplayClass23_3 cDisplayClass233 = new YouTubeCacheHandler.\u003C\u003Ec__DisplayClass23_3();
+          var cDisplayClass233 = new YouTubeCacheHandler.DisplayClass23_3();
           // ISSUE: reference to a compiler-generated field
-          cDisplayClass233.CS\u0024\u003C\u003E8__locals2 = cDisplayClass231;
+          cDisplayClass233.u003E8_locals2 = cDisplayClass231;
           IReadOnlyList<StorageFile> filesAsync = await g.GetFilesAsync();
           // ISSUE: reference to a compiler-generated field
           cDisplayClass233.files2 = new List<StorageFile>();
@@ -216,9 +222,9 @@ namespace myTube.Helpers
           {
             // ISSUE: object of a compiler-generated type is created
             // ISSUE: variable of a compiler-generated type
-            YouTubeCacheHandler.\u003C\u003Ec__DisplayClass23_0 cDisplayClass230 = new YouTubeCacheHandler.\u003C\u003Ec__DisplayClass23_0();
+            var  cDisplayClass230 = new YouTubeCacheHandler.DisplayClass23_0();
             // ISSUE: reference to a compiler-generated field
-            cDisplayClass230.CS\u0024\u003C\u003E8__locals3 = cDisplayClass233;
+            cDisplayClass230.u003E8_locals3 = cDisplayClass233;
             // ISSUE: reference to a compiler-generated field
             cDisplayClass230.f = storageFile;
             // ISSUE: reference to a compiler-generated field
@@ -237,13 +243,15 @@ namespace myTube.Helpers
               }
               try
               {
-                // ISSUE: method pointer
-                fileTasks.Enqueue(ThreadPool.RunAsync(new WorkItemHandler((object) cDisplayClass230, __methodptr(\u003CcleanGroup\u003Eb__0))));
+                    //TODO
+                    //fileTasks.Enqueue(ThreadPool.RunAsync(new WorkItemHandler((object) cDisplayClass230, 
+                    //    __methodptr(\u003CcleanGroup\u003Eb__0))));
+                    await Task.Run(() => this.cleanGroup(null));
               }
               catch
               {
               }
-              cDisplayClass230 = (YouTubeCacheHandler.\u003C\u003Ec__DisplayClass23_0) null;
+              cDisplayClass230 = (YouTubeCacheHandler.DisplayClass23_0) null;
             }
           }
           while (fileTasks.Count > 0)
@@ -256,6 +264,7 @@ namespace myTube.Helpers
             {
             }
           }
+
           // ISSUE: reference to a compiler-generated field
           for (int index = 1; index < cDisplayClass233.files2.Count; ++index)
           {
@@ -281,17 +290,19 @@ namespace myTube.Helpers
               }
             }
           }
+
           List<IAsyncAction> iasyncActionList = new List<IAsyncAction>();
           // ISSUE: reference to a compiler-generated field
           // ISSUE: reference to a compiler-generated field
           // ISSUE: reference to a compiler-generated field
-          if (cDisplayClass233.count > cDisplayClass233.CS\u0024\u003C\u003E8__locals2.info.MaxItems)
+          if (cDisplayClass233.count > cDisplayClass233.u003E8_locals2.info.MaxItems)
           {
             // ISSUE: reference to a compiler-generated field
             // ISSUE: reference to a compiler-generated field
             // ISSUE: reference to a compiler-generated field
             // ISSUE: reference to a compiler-generated field
-            for (; cDisplayClass233.count > cDisplayClass233.CS\u0024\u003C\u003E8__locals2.info.MaxItems; --cDisplayClass233.count)
+            for (; cDisplayClass233.count > cDisplayClass233.u003E8_locals2.info.MaxItems; 
+                            --cDisplayClass233.count)
             {
               // ISSUE: reference to a compiler-generated field
               if (cDisplayClass233.files2.Count > 0)
@@ -303,7 +314,7 @@ namespace myTube.Helpers
                   // ISSUE: reference to a compiler-generated field
                   // ISSUE: reference to a compiler-generated field
                   // ISSUE: reference to a compiler-generated field
-                  ++cDisplayClass233.CS\u0024\u003C\u003E8__locals2.CS\u0024\u003C\u003E8__locals1.deleted;
+                  ++cDisplayClass233.u003E8_locals2.u003E8_locals1.deleted;
                 }
                 catch
                 {
@@ -332,15 +343,20 @@ namespace myTube.Helpers
             {
             }
           }
-          cDisplayClass233 = (YouTubeCacheHandler.\u003C\u003Ec__DisplayClass23_3) null;
+          cDisplayClass233 = (YouTubeCacheHandler.DisplayClass23_3) null;
         }
-        cDisplayClass231 = (YouTubeCacheHandler.\u003C\u003Ec__DisplayClass23_1) null;
+        cDisplayClass231 = (YouTubeCacheHandler.DisplayClass23_1) null;
       }
+
       watch.Stop();
+      
       // ISSUE: reference to a compiler-generated field
       // ISSUE: reference to a compiler-generated field
       // ISSUE: reference to a compiler-generated field
-      Helper.Write((object) cDisplayClass232.Tag, (object) ("Finished cleaning cache for " + cDisplayClass232.group + " in " + (object) watch.Elapsed.TotalSeconds + " seconds, deleted " + (object) cDisplayClass232.deleted + " files"));
+      Helper.Write((object) cDisplayClass232.Tag, (object) ("Finished cleaning cache for " 
+          + cDisplayClass232.group + 
+          " in " + (object) watch.Elapsed.TotalSeconds + " seconds, deleted "
+          + (object) cDisplayClass232.deleted + " files"));
     }
 
     private string toFileName(string name)
@@ -393,7 +409,9 @@ namespace myTube.Helpers
           {
           }
         }
-        if (!(info != (GroupCacheInfo) null) || !(DateTimeOffset.UtcNow - file.DateCreated > info.MaxAge) && !(file.DateCreated > DateTimeOffset.UtcNow))
+        if (!(info != (GroupCacheInfo) null) 
+                    || !(DateTimeOffset.UtcNow - file.DateCreated > info.MaxAge) 
+                    && !(file.DateCreated > DateTimeOffset.UtcNow))
           return DataObject.ToObject<CacheInfo>(await FileIO.ReadTextAsync((IStorageFile) file));
         try
         {
@@ -433,9 +451,11 @@ namespace myTube.Helpers
       if (this.saving)
         return;
       this.saving = true;
-      // ISSUE: method pointer
-      await ThreadPool.RunAsync(new WorkItemHandler((object) this, __methodptr(\u003CstartSaving\u003Eb__30_0)));
-    }
+            // TODO
+            //await ThreadPool.RunAsync(new WorkItemHandler((object) this,
+            //__methodptr(\u003CstartSaving\u003Eb__30_0)));
+            await Task.Run(() => this.startSaving());
+     }
 
     private async Task startSavingInternal()
     {
@@ -554,13 +574,14 @@ namespace myTube.Helpers
         {
           if (this.cleanGroups.Count > 0)
           {
-            // ISSUE: object of a compiler-generated type is created
-            // ISSUE: method pointer
-            cleanTasks.Enqueue(ThreadPool.RunAsync(new WorkItemHandler((object) new YouTubeCacheHandler.\u003C\u003Ec__DisplayClass32_0()
-            {
-              \u003C\u003E4__this = this,
-              g = this.cleanGroups.Dequeue()
-            }, __methodptr(\u003CrunCleaningTasks\u003Eb__0))));
+            //TODO
+            //cleanTasks.Enqueue(ThreadPool.RunAsync(new WorkItemHandler((object)
+            //    new YouTubeCacheHandler.DisplayClass32_0()
+            //{
+            //  //u003E4 = this,
+            //  g = this.cleanGroups.Dequeue()
+            //}, 
+            //runCleaningTasks)));
           }
         }
         catch
@@ -646,5 +667,58 @@ namespace myTube.Helpers
       }
       group2 = (string) null;
     }
-  }
+
+        private class DisplayClass23_2
+        {
+            internal string Tag;
+            internal string group;
+            internal int deleted;
+
+            public DisplayClass23_2()
+            {
+            }
+        }
+
+        private class DisplayClass23_1
+        {
+            internal DisplayClass23_2 u003E8_locals1;
+            internal GroupCacheInfo info;
+
+            public DisplayClass23_1()
+            {
+            }
+        }
+
+        private class DisplayClass23_3
+        {
+            internal DisplayClass23_1 u003E8_locals2;
+            internal List<StorageFile> files2;
+            internal int count;
+
+            public DisplayClass23_3()
+            {
+            }
+        }
+
+        private class DisplayClass23_0
+        {
+            internal DisplayClass23_3 u003E8_locals3;
+            internal StorageFile f;
+
+            public DisplayClass23_0()
+            {
+            }
+        }
+
+        private class DisplayClass32_0
+        {
+            internal static YouTubeCacheHandler u003E4;
+
+            public DisplayClass32_0()
+            {
+            }
+
+            public string g { get; set; }
+        }
+    }
 }

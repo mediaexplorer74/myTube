@@ -1,0 +1,176 @@
+﻿<UserControl 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:local="using:myTube" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    x:Name="userControl" 
+    x:Class="myTube.VideoContextMenu" 
+    mc:Ignorable="d"
+    HorizontalContentAlignment="Stretch" 
+    VerticalContentAlignment="Stretch">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <TransitionCollection x:Key="transitions" x:Name="transitions">
+                <EntranceThemeTransition FromVerticalOffset="80" FromHorizontalOffset="0"
+                                         IsStaggeringEnabled="False" />
+            </TransitionCollection>
+            <!--local:IconButtonEventCollection x:Key="buttons">
+                <local:IconButtonEvent Text="This is the world!" />
+                <local:IconButtonEvent Symbol="Flag" Text="Just look at this flag!" />
+                <local:IconButtonEvent Symbol="Save" Text="God save the Queen!" />
+            </local:IconButtonEventCollection-->
+            <DataTemplate x:Key="itemsTemplate1">
+                
+            <!--ContentControl Margin="0,9,5,0,9,5">
+                        <Template>
+                            <StaticResource ResourceKey="StandardPointerContent" />
+                        </Template>
+                        <Content>
+                            <Border>
+                                <Background>
+                                    <ThemeResource ResourceKey="AccentBrush" />
+                                </Background>
+                                <Child>
+                                    <Grid VerticalAlignment="Center" Margin="19,9,5,19,9,5">
+                                        <Children>
+                                            <UIElementCollection>
+                                                <SymbolIcon HorizontalAlignment="Left">
+                                                    <Symbol>
+                                                        <Binding Path="Symbol" />
+                                                    </Symbol>
+                                                </SymbolIcon>
+                                                <TextBlock Margin="37,0,0,0" VerticalAlignment="Center" FontFamily="Global User Interface">
+                          <FontSize>
+                            <StaticResource ResourceKey="ImportantFontSize" />
+                          </FontSize>
+                          <Text>
+                            <Binding Path="Text" />
+                          </Text>
+                                                </TextBlock>
+                                            </UIElementCollection>
+                                        </Children>
+                                    </Grid>
+                                </Child>
+                            </Border>
+                        </Content>
+                    </ContentControl-->
+               
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+    <!--Background>
+        <Null />
+    </Background-->
+    <!--HorizontalAlignment>
+        <Binding Path="HorizontalContentAlignment" ElementName="userControl" />
+    </HorizontalAlignment-->
+    <!--VerticalAlignment>
+        <Binding Path="VerticalContentAlignment" ElementName="userControl" />
+    </VerticalAlignment-->
+    <!--Grid.RowDefinitions>            
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions-->
+
+     <ListView x:Name="itemsControl">
+          <ListView.ItemTemplate>
+                <!--Fake datatemplate - Redo it-->
+                                               <!--x:DataType="local:IconButtonEventCollection"-->
+                    <DataTemplate x:Name="SingleLineDataTemplate">
+                    <StackPanel Orientation="Horizontal" Height="44" 
+                                Padding="12">
+                        <Image Source="Placeholder.png" Height="16" Width="16" VerticalAlignment="Center"/>
+                        <TextBlock Text="TTTTT" 
+                                   VerticalAlignment="Center"
+                                   Style="{ThemeResource BaseTextBlockStyle}" 
+                                   Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
+                                   Margin="12,0,0,0"/>
+                    </StackPanel>
+                </DataTemplate>
+                <!--Button x:Name="closeButton" HorizontalAlignment="Right"-->
+                <!--Visibility>
+                    <Binding Path="CancelButtonEnabled" ElementName="userControl">
+                        <Converter>
+                            <StaticResource ResourceKey="BoolToVisibility" />
+                        </Converter>
+                    </Binding>
+                </Visibility-->
+                <!--Template>
+                    <StaticResource ResourceKey="StandardPointerContent" />
+                </Template-->
+                <!--Content>
+                    <TextBlock Text="╳" Margin="9,5,9,5,9,5,9,5" FontSize="19">
+                        <Foreground>
+                            <ThemeResource ResourceKey="AccentBrush" />
+                        </Foreground>   
+                    </TextBlock>
+                </Content-->
+            <!--/Button-->
+        
+            <!--Rectangle x:Name="backgroundRec" RowSpan="2" IsHitTestVisible="True" 
+                       CacheMode="BitmapCache" Fill="Black" Opacity="0" /-->
+        
+            <!--ContentControl Row="2" HorizontalAlignment="Center">
+                <Template>
+                    <StaticResource ResourceKey="StandardPointerContent" />
+                </Template>
+                <Visibility>
+                    <Binding Path="SelectButtonEnabled" ElementName="userControl">
+                        <Converter>
+                            <StaticResource ResourceKey="BoolToVisibility" />
+                        </Converter>
+                    </Binding>
+                </Visibility>
+                <Transitions>
+                    <TransitionCollection>
+                        <AddDeleteThemeTransition />
+                    </TransitionCollection>
+                </Transitions>
+                <Content>
+                    <Grid Margin="9,5,9,5,9,5,19">
+                        <Children>
+                            <UIElementCollection>
+                                <Ellipse>
+                                    <Fill>
+                                        <ThemeResource ResourceKey="AccentBrush" />
+                                    </Fill>
+                                </Ellipse>
+                                <SymbolIcon Margin="14,75,14,75,14,75,14,75" Symbol="Bullets"
+                                            Foreground="White" />
+                            </UIElementCollection>
+                        </Children>
+                    </Grid>
+                </Content>
+            </ContentControl-->
+            <!--ScrollViewer Row="1" VerticalAlignment="Center">
+                <Content>
+                    <ItemsControl x:Name="itemsControl" VerticalAlignment="Stretch" Margin="19,0,19,0" 
+                                  Foreground="White">
+                        <ItemTemplate>
+                            <StaticResource ResourceKey="itemsTemplate1" />
+                        </ItemTemplate>
+                        <ItemsSource>
+                            <Binding Path="ItemsSource" ElementName="userControl" />
+                        </ItemsSource>
+                        <ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Template>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <ChildrenTransitions>
+                                            <StaticResource ResourceKey="transitions" />
+                                        </ChildrenTransitions>
+                                    </StackPanel>
+                                </Template>
+                            </ItemsPanelTemplate>
+                        </ItemsPanel>
+                    </ItemsControl>
+                </Content>
+            </ScrollViewer-->
+           </ListView.ItemTemplate>
+       </ListView>
+    </Grid>
+</UserControl>

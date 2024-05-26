@@ -128,9 +128,11 @@
     </Compile>
     <Compile Include="ClientAndFirstLoadTask.cs" />
     <Compile Include="ColorSchemes.cs" />
+    <Compile Include="ControlDirection.cs" />
     <Compile Include="Converters\NumberWithNewLinesConverter.cs" />
     <Compile Include="CustomFrame.cs" />
     <Compile Include="DefaultPage.cs" />
+    <Compile Include="DownloaderPanel.cs" />
     <Compile Include="ExceptionClient.cs" />
     <Compile Include="FlipStyle.cs" />
     <Compile Include="GlobalAppObjects\GlobalObjects.cs" />
@@ -178,6 +180,9 @@
     </Compile>
     <Compile Include="Tiles\VideoTile.xaml.cs">
       <DependentUpon>VideoTile.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VideoContextMenu.xaml.cs">
+      <DependentUpon>VideoContextMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="VideoList.xaml.cs">
       <DependentUpon>VideoList.xaml</DependentUpon>
@@ -317,6 +322,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Tiles\VideoTile.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VideoContextMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

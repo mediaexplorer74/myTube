@@ -2,7 +2,8 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
       xmlns:local="using:myTube" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      x:Name="loadingCommentsString" x:Class="myTube.VideoPage">
+      x:Name="loadingCommentsString" 
+      x:Class="myTube.VideoPage">
     
     <Page.Resources>
         <ResourceDictionary>
@@ -34,12 +35,12 @@
                 </Template-->
             </ItemsPanelTemplate>
                 
-            <x:String x:Key="loadingCommentsString">loading comments</x:String>
-            <x:String x:Key="noCommentsString">no comments have been posted on this video</x:String>
+            <x:String x:Key="loadingCommentsString1">loading comments</x:String>
+            <x:String x:Key="noCommentsString1">no comments have been posted on this video</x:String>
 
             <!--Symbol="Download"-->
-                <local:IconButtonInfo x:Key="saveButtonInfo" x:Name="saveButtonInfo">
-                <!--local:Text>
+                <!--local:IconButtonInfo x:Key="saveButtonInfo" x:Name="saveButtonInfo">
+                <local:Text>
                     <Binding Path="Values" ConverterParameter="common.save/save">
                         <Converter>
                             <StaticResource ResourceKey="LowerConverter" />
@@ -48,18 +49,18 @@
                             <StaticResource ResourceKey="Strings" />
                         </Source>
                     </Binding>
-                </local:Text-->
-            </local:IconButtonInfo>
+                </local:Text>
+            </local:IconButtonInfo-->
 
             <!--Symbol="Cancel" Text="cancel" -->
-                <local:IconButtonInfo x:Key="cancelButtonInfo" x:Name="cancelButtonInfo" />
+                <!--local:IconButtonInfo x:Key="cancelButtonInfo" x:Name="cancelButtonInfo" /-->
 
             <!--Symbol="Delete"  Text="delete"-->
-                <local:IconButtonInfo x:Key="deletelButtonInfo" x:Name="deletelButtonInfo"   />
+                <!--local:IconButtonInfo x:Key="deletelButtonInfo" x:Name="deletelButtonInfo"   /-->
 
             <!--Symbol="Save"-->
-                <local:IconButtonInfo x:Key="manageButtonInfo" x:Name="manageButtonInfo">
-                <!--local:Text>
+                <!--local:IconButtonInfo x:Key="manageButtonInfo" x:Name="manageButtonInfo">
+                <local:Text>
                     <Binding Path="Values" ConverterParameter="common.manage/manage">
                         <Converter>
                             <StaticResource ResourceKey="LowerConverter" />
@@ -68,8 +69,8 @@
                             <StaticResource ResourceKey="Strings" />
                         </Source>
                     </Binding>
-                </local:Text-->
-            </local:IconButtonInfo>
+                </local:Text>
+            </local:IconButtonInfo-->
         </ResourceDictionary>
     </Page.Resources>
     
