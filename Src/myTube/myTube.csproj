@@ -132,11 +132,27 @@
     <Compile Include="CustomFrame.cs" />
     <Compile Include="DefaultPage.cs" />
     <Compile Include="ExceptionClient.cs" />
+    <Compile Include="FlipStyle.cs" />
     <Compile Include="GlobalAppObjects\GlobalObjects.cs" />
+    <Compile Include="Helpers\Accel.cs" />
+    <Compile Include="Helpers\ClientAndFirstLoadTask.cs" />
+    <Compile Include="Helpers\InputPaneHelper.cs" />
+    <Compile Include="Helpers\ISelectableThumbnail.cs" />
+    <Compile Include="Helpers\ISortableThumbnail`1.cs" />
+    <Compile Include="Helpers\IVideoContainer.cs" />
+    <Compile Include="Helpers\OrientChangedEventArgs.cs" />
+    <Compile Include="Helpers\OrientChangedEventHandler.cs" />
+    <Compile Include="Helpers\SortTappedEventArgs`1.cs" />
+    <Compile Include="Helpers\VideoDepth.cs" />
+    <Compile Include="Helpers\YouTubeCacheHandler.cs" />
     <Compile Include="HistoryPage.cs" />
     <Compile Include="IconButtonEvent.cs" />
+    <Compile Include="IconButtonEventArgs.cs" />
+    <Compile Include="IconButtonEventCollection.cs" />
     <Compile Include="IconButtonInfo.cs" />
     <Compile Include="LikesPage.cs" />
+    <Compile Include="ListState.cs" />
+    <Compile Include="ListStrings.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -150,11 +166,25 @@
     <Compile Include="MessageDialogs\PollDataClient.cs" />
     <Compile Include="MessageDialogs\PollView.cs" />
     <Compile Include="MessageDialogs\RecentMessages.cs" />
+    <Compile Include="MyMath.cs" />
+    <Compile Include="OnScrollingStoppedEventArgs.cs" />
+    <Compile Include="OnSelectedPageChangedEventArgs.cs" />
+    <Compile Include="OverCanvas.cs" />
+    <Compile Include="OverCanvasWidthType.cs" />
     <Compile Include="Popups\StringClient.cs" />
+    <Compile Include="RoundDirection.cs" />
     <Compile Include="TestPage.xaml.cs">
       <DependentUpon>TestPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VideoPage.cs" />
+    <Compile Include="Tiles\VideoTile.xaml.cs">
+      <DependentUpon>VideoTile.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VideoList.xaml.cs">
+      <DependentUpon>VideoList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VideoPage.xaml.cs">
+      <DependentUpon>VideoPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MiniPlayerType.cs" />
     <Compile Include="PageInfo.cs" />
     <Compile Include="PageInfoCollection.cs" />
@@ -192,7 +222,7 @@
     <Compile Include="UploaderPage.cs" />
     <Compile Include="UserHome.cs" />
     <Compile Include="Vector3.cs" />
-    <Compile Include="VideoList.cs" />
+    <Compile Include="VideoList1.cs" />
     <Compile Include="VideoPlayer.cs" />
     <Compile Include="WatchLaterPage.cs" />
     <Compile Include="YouTubeEntryCollection.cs" />
@@ -283,6 +313,18 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="TestPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Tiles\VideoTile.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VideoList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VideoPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

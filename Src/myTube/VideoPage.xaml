@@ -1,0 +1,225 @@
+﻿<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+      xmlns:local="using:myTube" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      x:Name="loadingCommentsString" x:Class="myTube.VideoPage">
+    
+    <Page.Resources>
+        <ResourceDictionary>
+            <!--DataTemplate x:Key="CommentsTemplate">
+                <Template>
+                    <local:CommentThread Margin="0,0,0,19" />
+                </Template>
+            </DataTemplate>
+            <DataTemplate x:Key="CommentsTemplate2">
+                <Template>
+                    <Border Margin="0,0,0,19">
+                        <Child>
+                            <local:CommentControl Margin="0,0,0,0" />
+                        </Child>
+                    </Border>
+                </Template>
+            </DataTemplate-->
+            
+            <ItemsPanelTemplate x:Key="CommentsPanelTemplate">
+                <!--Template>
+                    <ItemsStackPanel CacheLength="0" VerticalScrollBarVisibility="Disabled" ItemsUpdatingScrollMode="KeepScrollOffset">
+                        <ChildrenTransitions>
+                            <TransitionCollection>
+                                <EntranceThemeTransition FromVerticalOffset="28" FromHorizontalOffset="0" IsStaggeringEnabled="False" />
+                                <RepositionThemeTransition />
+                            </TransitionCollection>
+                        </ChildrenTransitions>
+                    </ItemsStackPanel>
+                </Template-->
+            </ItemsPanelTemplate>
+                
+            <x:String x:Key="loadingCommentsString">loading comments</x:String>
+            <x:String x:Key="noCommentsString">no comments have been posted on this video</x:String>
+
+            <!--Symbol="Download"-->
+                <local:IconButtonInfo x:Key="saveButtonInfo" x:Name="saveButtonInfo">
+                <!--local:Text>
+                    <Binding Path="Values" ConverterParameter="common.save/save">
+                        <Converter>
+                            <StaticResource ResourceKey="LowerConverter" />
+                        </Converter>
+                        <Source>
+                            <StaticResource ResourceKey="Strings" />
+                        </Source>
+                    </Binding>
+                </local:Text-->
+            </local:IconButtonInfo>
+
+            <!--Symbol="Cancel" Text="cancel" -->
+                <local:IconButtonInfo x:Key="cancelButtonInfo" x:Name="cancelButtonInfo" />
+
+            <!--Symbol="Delete"  Text="delete"-->
+                <local:IconButtonInfo x:Key="deletelButtonInfo" x:Name="deletelButtonInfo"   />
+
+            <!--Symbol="Save"-->
+                <local:IconButtonInfo x:Key="manageButtonInfo" x:Name="manageButtonInfo">
+                <!--local:Text>
+                    <Binding Path="Values" ConverterParameter="common.manage/manage">
+                        <Converter>
+                            <StaticResource ResourceKey="LowerConverter" />
+                        </Converter>
+                        <Source>
+                            <StaticResource ResourceKey="Strings" />
+                        </Source>
+                    </Binding>
+                </local:Text-->
+            </local:IconButtonInfo>
+        </ResourceDictionary>
+    </Page.Resources>
+    
+    <Grid>
+        <ScrollViewer Name="scrollViewer">
+            <!--Style>
+                <StaticResource ResourceKey="OverCanvasScrollViewer" />
+            </Style-->
+            <!--VisualStateGroups>
+                <VisualStateGroupCollection>
+                    <VisualStateGroup>
+                        <States>
+                            <VisualStateCollection>
+                                <VisualState x:Name="Default" />
+                                <VisualState x:Name="Large">
+                                    <DeferredStoryboard>
+                                        <Storyboard>
+                                            <Children>
+                                                <TimelineCollection>
+                                                    <DoubleAnimation Duration="0" TargetName="detailsScroll" TargetProperty="(local:OverCanvas.OverCanvasWidth)" To="0,57" />
+                                                </TimelineCollection>
+                                            </Children>
+                                        </Storyboard>
+                                    </DeferredStoryboard>
+                                </VisualState>
+                                <VisualState x:Name="SmallTablet">
+                                    <DeferredStoryboard>
+                                        <Storyboard>
+                                            <Children>
+                                                <TimelineCollection>
+                                                    <DoubleAnimation Duration="0" TargetName="detailsScroll" TargetProperty="(local:OverCanvas.OverCanvasWidth)" To="0,5" />
+                                                </TimelineCollection>
+                                            </Children>
+                                        </Storyboard>
+                                    </DeferredStoryboard>
+                                </VisualState>
+                            </VisualStateCollection>
+                        </States>
+                    </VisualStateGroup>
+                </VisualStateGroupCollection>
+            </VisualStateGroups-->
+            
+            <Grid>
+                <!--local:OverCanvas x:ConnectionId="1" x:Name="overCanvas" ArrangeStyle="Pivot">
+                    <ListView>
+                            <ScrollViewer x:Name="detailsScroll" OverCanvasWidth="0,6125" OverCanvasMaxWidth="5000" OverCanvasWidthType="Star" HorizontalScrollMode="Disabled" ZoomMode="Disabled">
+                                <local:OverCanvasTitle>
+                                    <Binding Path="Values" ConverterParameter="videos.details.watch/watch">
+                                        <Converter>
+                                            <StaticResource ResourceKey="LowerConverter" />
+                                        </Converter>
+                                        <Source>
+                                            <StaticResource ResourceKey="Strings" />
+                                        </Source>
+                                    </Binding>
+                                </local:OverCanvasTitle>
+                                <Grid>
+                                    <local:VideoDetails x:Name="details">
+                                        <Margin>
+                                            <Binding Path="DefaultMargin" Mode="OneWay">
+                                                <Source>
+                                                    <StaticResource ResourceKey="GlobalAppObjects" />
+                                                </Source>
+                                            </Binding>
+                                        </Margin>
+                                    </local:VideoDetails>
+                                </Grid>
+                            </ScrollViewer>
+                        
+                            <local:CommentsList x:Name="commentsList1" OverCanvasWidth="-360" OverCanvasWidthType="Pixel">
+                                <local:OverCanvasTitle>
+                                    <Binding Path="Values" ConverterParameter="videos.comments.comments/comments">
+                                        <Converter>
+                                            <StaticResource ResourceKey="LowerConverter" />
+                                        </Converter>
+                                        <Source>
+                                            <StaticResource ResourceKey="Strings" />
+                                        </Source>
+                                    </Binding>
+                                </local:OverCanvasTitle>
+                            </local:CommentsList>
+                        
+                            <local:VideoList x:Name="related" LoadOnScroll="True">
+                                <local:OverCanvasTitle>
+                                    <Binding Path="Values" ConverterParameter="videos.lists.suggested/suggested">
+                                        <Converter>
+                                            <StaticResource ResourceKey="LowerConverter" />
+                                        </Converter>
+                                        <Source>
+                                            <StaticResource ResourceKey="Strings" />
+                                        </Source>
+                                    </Binding>
+                                </local:OverCanvasTitle>
+                            </local:VideoList>
+                        </ListView>
+                  </local:OverCanvas-->
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar x:Name="appBar">
+
+            <AppBarButton  x:Name="saveButton" Visibility="Collapsed" Label="{Binding Text}" Icon="{Binding Symbol}">
+                <AppBarButton.DataContext>
+                    <StaticResource ResourceKey="saveButtonInfo" />
+                </AppBarButton.DataContext>          
+            </AppBarButton>
+            
+            <AppBarButton x:Name="addToButton" Visibility="Collapsed" Icon="Add">
+                <AppBarButton.Label>
+                    <!--AppBarButton.Label.Binding Path="Values" ConverterParameter="video.details.addto/add to">
+                        <Converter>
+                            <StaticResource ResourceKey="LowerConverter" />
+                        </Converter>
+                        <Source>
+                            <StaticResource ResourceKey="Strings" />
+                        </Source>
+                    </AppBarButton.Label.Binding-->
+                    Add to
+                </AppBarButton.Label>
+            </AppBarButton>
+            
+            <AppBarButton x:Name="shareButton" Visibility="Collapsed" Icon="ReShare">
+                <AppBarButton.Label>
+                    <!--Binding Path="Values" ConverterParameter="common.share/share">
+                        <AppBarButton.Converter>
+                            <StaticResource ResourceKey="LowerConverter" />
+                        </AppBarButton.Converter>
+                        <Source>
+                            <StaticResource ResourceKey="Strings" />
+                        </Source>
+                    </Binding-->
+                    ReShare
+                </AppBarButton.Label>
+            </AppBarButton>
+
+            <CommandBar.SecondaryCommands>
+                
+                    <AppBarButton x:Name="settingsButton" Icon="Setting" Label="Settings">
+                       
+                    </AppBarButton>
+                    <AppBarButton x:Name="homeButton" Icon="Home" Label="Home">
+                        
+                    </AppBarButton>
+              
+            </CommandBar.SecondaryCommands>
+
+        </CommandBar>
+        
+    </Page.BottomAppBar>
+
+</Page>

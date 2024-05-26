@@ -1,0 +1,67 @@
+﻿<UserControl 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:local="using:myTube.Tiles" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    x:Class="myTube.Tiles.VideoTile" 
+    RequestedTheme="Dark">
+        <Grid>
+            <!--RowDefinitions>
+                <RowDefinitionCollection>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </RowDefinitionCollection>
+            </RowDefinitions-->
+            
+            <ListView>
+                           <!--RowSpan="10"-->
+                <Viewbox VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill">                
+                            <Image HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center" 
+                                   Stretch="UniformToFill" 
+                                   Opacity="1" 
+                                   RenderTransformOrigin="0.5,0.5">
+                                <!--Source>
+                                    <Binding Path="Thumbnail" />
+                                </Source-->
+                                <!--RenderTransform>
+                                    <ScaleTransform ScaleX="1,35" ScaleY="1,35" />
+                                </RenderTransform-->
+                            </Image>                        
+                    </Viewbox>
+                
+                    <Grid Opacity="1" Row="1">
+                       
+                                <Rectangle>
+                                    <!--Fill>
+                                        <ThemeResource ResourceKey="CardBackground" />
+                                    </Fill-->
+                                </Rectangle>
+                <!--Margin="19,9,5,19,47"-->
+                    <TextBlock Foreground="White" HorizontalAlignment="Left" 
+                               TextTrimming="CharacterEllipsis" 
+                               VerticalAlignment="Stretch" FontSize="38"
+                               MaxLines="2" TextWrapping="Wrap" FontWeight="SemiBold">
+                  <!--Text>
+                    <Binding Path="Title" />
+                  </Text-->
+                                </TextBlock>
+                        
+                                <TextBlock 
+                                           HorizontalAlignment="Right" 
+                                           VerticalAlignment="Bottom" 
+                                           FontSize="27" 
+                                           TextTrimming="CharacterEllipsis" 
+                                           Foreground="White">
+                  <!--Text>
+                    <Binding Path="AuthorDisplayName" />
+                  </Text-->
+                                </TextBlock>
+                           
+                        
+                    </Grid>
+                </ListView>
+            
+        </Grid>
+</UserControl>

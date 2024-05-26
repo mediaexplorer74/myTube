@@ -4,7 +4,7 @@ using RykenTube;
 
 namespace myTube
 {
-    internal class VideoList
+    internal class VideoList1
     {
         internal VideoListClient Client;
     }
