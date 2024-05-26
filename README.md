@@ -1,4 +1,4 @@
-# myTube - myTube 3.9 "remake" (RnD)
+# myTube 3.9 - myTube 2.x + 3.x "synthez"
 ![](Images/logo.png)
 
 ## Screenshots
