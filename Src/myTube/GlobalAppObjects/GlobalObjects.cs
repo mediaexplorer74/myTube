@@ -40,30 +40,76 @@ namespace myTube.GlobalAppObjects
       }
     }
 
-    public TransferManager TransferManager => this.transferManager;
+    public TransferManager TransferManager
+    {
+        get
+        {
+            return this.transferManager;
+        }
+    }
 
-    public UploadsManager UploadsManager => this.uploadsManager;
+    public UploadsManager UploadsManager
+    {
+        get
+        {
+            return this.uploadsManager;
+        }
+    }
 
-    public string PackageName => Package.Current.Id.Name;
+    public string PackageName
+    {
+        get
+        {
+            return Package.Current.Id.Name;
+        }
+    }
 
-    public string PackageFamilyName => Package.Current.Id.FamilyName;
+    public string PackageFamilyName
+    {
+        get
+        {
+            return Package.Current.Id.FamilyName;
+        }
+    }
 
     public Version Version
     {
       get
       {
         PackageVersion version = Package.Current.Id.Version;
-        return new Version((int) version.Major, (int) version.Minor, (int) version.Build, (int) version.Revision);
+        return new Version(
+            (int) version.Major, 
+            (int) version.Minor, 
+            (int) version.Build, 
+            (int) version.Revision);
       }
     }
 
-    public DateTime CurrentDate => DateTime.Now;
+        public DateTime CurrentDate
+        {
+            get
+            {
+                return DateTime.Now;
+            }
+        }
 
-    public RoamingHistory<YouTubeEntry, YouTubeEntryClient> History => this.history;
+        public RoamingHistory<YouTubeEntry, YouTubeEntryClient> History
+        {
+            get
+            {
+                return this.history;
+            }
+        }
 
-    public Thickness DefaultMargin => this.defaultMargin;
+        public Thickness DefaultMargin
+        {
+            get
+            {
+                return this.defaultMargin;
+            }
+        }
 
-    public Task<bool> InitializedTask => this.tcs.Task;
+        public Task<bool> InitializedTask => this.tcs.Task;
 
     public GlobalObjects()
     {
@@ -71,7 +117,10 @@ namespace myTube.GlobalAppObjects
       this.defaultMargin = new Thickness(0.0, 9.5, 0.0, 0.0);
     }
 
-    public async Task Initialize() => await this.init();
+    public async Task Initialize()
+    {
+        await this.init();
+    }
 
     private async Task init()
     {
@@ -89,13 +138,16 @@ namespace myTube.GlobalAppObjects
       UploadsManager uploadsManager2 = await UploadsManager.Load();
       globalObjects.uploadsManager = uploadsManager2;
       globalObjects = (GlobalObjects) null;
+
       await this.uploadsManager.Clean();
+
       Helper.Write((object) nameof (GlobalObjects), (object) "Loaded transfer manager");
       try
       {
         globalObjects = this;
         RoamingHistory<YouTubeEntry, YouTubeEntryClient> history = globalObjects.history;
-        RoamingHistory<YouTubeEntry, YouTubeEntryClient> roamingHistory = await RoamingHistory<YouTubeEntry, YouTubeEntryClient>.Load();
+        RoamingHistory<YouTubeEntry, YouTubeEntryClient> roamingHistory 
+                    = await RoamingHistory<YouTubeEntry, YouTubeEntryClient>.Load();
         globalObjects.history = roamingHistory;
         globalObjects = (GlobalObjects) null;
       }

@@ -1,6 +1,6 @@
 ﻿//myTube.MessageDialogs.MessageView
 
-namespace myTube.MessageDialogs
+namespace myTube
 {
     internal class ChannelPage
     {

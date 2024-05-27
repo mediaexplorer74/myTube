@@ -173,7 +173,7 @@ namespace myTube
         {
             if (YouTube.IsSignedIn)
             {
-                //(Application.Current as App).RootFrame.Navigate(typeof(ChannelPage), (object)0);
+                (Application.Current as App).RootFrame.Navigate(typeof(ChannelPage), (object)0);
             }
             else
             {
@@ -186,13 +186,13 @@ namespace myTube
           {
             if (YouTube.UserInfo != null)
             {
-                //DefaultPage.Current.Frame.Navigate(typeof(PlaylistPage),
-                //    (object)YouTube.UserInfo.FavoritesPlaylist);
+                DefaultPage.Current.Frame.Navigate(typeof(PlaylistPage),
+                    (object)YouTube.UserInfo.FavoritesPlaylist);
             }
             else
             {
-                //DefaultPage.Current.Frame.Navigate(typeof(PlaylistPage),
-                //    (object)("FL" + UserInfo.RemoveUCFromID(SharedSettings.CurrentAccount.UserID)));
+                DefaultPage.Current.Frame.Navigate(typeof(PlaylistPage),
+                    (object)("FL" + UserInfo.RemoveUCFromID(SharedSettings.CurrentAccount.UserID)));
             }
           }
           else

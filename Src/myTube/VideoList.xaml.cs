@@ -49,6 +49,12 @@ namespace myTube
             = DependencyProperty.Register(nameof(ThumbPadding), typeof(Thickness), typeof(VideoList),
                 new PropertyMetadata((object)new Thickness(0.0, 0.0, 19.0, 19.0)));
 
+        //Experimental
+        //public static DependencyProperty VideoThumbTemplateProperty
+        //    = DependencyProperty.Register(nameof(ThumbPadding), typeof(Thickness), typeof(VideoList),
+        //       new PropertyMetadata((object)null,
+        //            new PropertyChangedCallback(VideoList.OnLoadVideosFuncChanged)));
+
         public static DependencyProperty EntriesProperty 
             = DependencyProperty.Register(nameof(Entries), typeof(ObservableCollection<YouTubeEntry>), 
                 typeof(VideoList), new PropertyMetadata((object)null,
@@ -102,17 +108,7 @@ namespace myTube
         private bool isSelecting;
         private Dictionary<YouTubeEntry, bool> selected;
 
-        // TEMP
-        private ListStrings listStrings;
-        private ListView ItemList;
-        private ScrollViewer scroll;
-        private List<IconButtonEvent> contextMenuCollection;
-        private IconButtonEvent playIcon;
-        private IconButtonEvent deleteButton;
-        private IconButtonEvent watchLaterIcon;
-        private IconButtonEvent pinIcon;
-        private IconButtonEvent saveIcon;
-
+      
         private static void OnEntriesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             VideoList videoList = d as VideoList;
@@ -133,10 +129,14 @@ namespace myTube
         {
             await Task.Delay(100);
 
-            //if (((Collection<YouTubeEntry>)this.Entries).Count > 0)
-            //    ((UIElement)this.loadingText).Visibility = (Visibility)1;
-            //else
-            //    ((UIElement)this.loadingText).Visibility = (Visibility)0;
+            if (this.Entries.Count > 0)
+            {
+                this.loadingText.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                this.loadingText.Visibility = Visibility.Visible;
+            }
         }
 
         private static void OnSortVideosFuncChanged(
@@ -231,6 +231,13 @@ namespace myTube
             set => ((DependencyObject)this).SetValue(VideoList.ThumbPaddingProperty, (object)value);
         }
 
+        //Experimental
+        //public Thickness VideoThumbTemplate
+        //{
+        //    get => (Thickness)((DependencyObject)this).GetValue(VideoList.VideoThumbTemplateProperty);
+        //    set => ((DependencyObject)this).SetValue(VideoList.VideoThumbTemplateProperty, (object)value);
+        //}
+
         public VideoListClient Client
         {
             get => (VideoListClient)((DependencyObject)this).GetValue(VideoList.ClientProperty);
@@ -316,7 +323,7 @@ namespace myTube
                 => this.VideoList_DataContextChanged(sender as FrameworkElement, args 
                 as DataContextChangedEventArgs);
 
-            ((FrameworkElement)this.ItemList).DataContext = (object)this;
+            this.ItemList.DataContext = this;
 
             this.SizeChanged += this.VideoList_SizeChanged;
 
@@ -337,7 +344,13 @@ namespace myTube
             this.EndSort();
         }
 
-        public bool AuthorizedToLoad => !this.DependsOnSignIn || this.IsSignedIn;
+        public bool AuthorizedToLoad
+        {
+            get
+            {
+                return !this.DependsOnSignIn || this.IsSignedIn;
+            }
+        }
 
         private void VideoList_Loaded(object sender, RoutedEventArgs e)
         {
@@ -360,11 +373,9 @@ namespace myTube
             Panel itemsPanelRoot;
             Panel panel = itemsPanelRoot = this.ItemList.ItemsPanelRoot;
 
-            //WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>,
-            //    EventRegistrationToken>(((FrameworkElement)panel).add_LayoutUpdated), 
-            //    new Action<EventRegistrationToken>(((FrameworkElement)panel).remove_LayoutUpdated), 
-            //    new EventHandler<object>(this.panel_LayoutUpdated));
-            panel.LayoutUpdated += (sender, args) => this.panel_LayoutUpdated(sender as FrameworkElement, args as object);
+            
+            panel.LayoutUpdated += (sender, args) 
+                => this.panel_LayoutUpdated(sender as FrameworkElement, args as object);
 
             foreach (UIElement child1 in (IEnumerable<UIElement>)itemsPanelRoot.Children)
             {
@@ -417,10 +428,11 @@ namespace myTube
                 itemsPanelRoot.LayoutUpdated += this.panel_LayoutUpdated;
 
 
-
                 foreach (UIElement child1 in (IEnumerable<UIElement>)itemsPanelRoot.Children)
                 {
-                    foreach (FrameworkElement child2 in Helper.FindChildren<FrameworkElement>((DependencyObject)(child1 as FrameworkElement), 10))
+                    foreach (FrameworkElement child2 
+                        in Helper.FindChildren<FrameworkElement>((DependencyObject)(
+                        child1 as FrameworkElement), 10))
                     {
                         if (child2 is ISortableThumbnail<YouTubeEntry>)
                         {
@@ -500,15 +512,15 @@ namespace myTube
                 return;
             int index2 = -1;
             
-            //switch (e.Direction)
-            //{
-            //    case ControlDirection.Up:
-            //        index2 = index1 - 1;
-            //        break;
-            //    case ControlDirection.Down:
-            //        index2 = index1 + 1;
-            //        break;
-            //}
+            switch (e.Direction)
+            {
+                case ControlDirection.Up:
+                    index2 = index1 - 1;
+                    break;
+                case ControlDirection.Down:
+                    index2 = index1 + 1;
+                    break;
+            }
 
             if (index2 < 0 || index2 >= ((Collection<YouTubeEntry>)this.Entries).Count)
                 return;
@@ -567,14 +579,15 @@ namespace myTube
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            return finalSize;//((FrameworkElement)this).ArrangeOverride(finalSize);
+            return finalSize;
         }
 
         protected override Size MeasureOverride(Size availableSize)
         {
+
             if (!double.IsInfinity(availableSize.Width) && !double.IsInfinity(availableSize.Height))
-                this.AdjustPanelSize(availableSize);
-            return availableSize;//((FrameworkElement)this).MeasureOverride(availableSize);
+              this.AdjustPanelSize(availableSize);
+            return availableSize;
         }
 
         private void AdjustPanelSize(Size size)
@@ -749,21 +762,23 @@ namespace myTube
                         {
                             int num = await this.clearingTcs.Task ? 1 : 0;
                         }
-                        catch
+                        catch (Exception ex)
                         {
+                            System.Diagnostics.Debug.WriteLine(ex.Message);
                         }
                     }
                     int num1 = await App.Instance.WindowActivatedTask ? 1 : 0;
+
                     foreach (YouTubeEntry youTubeEntry in vids)
                     {
-                        if (((Collection<YouTubeEntry>)this.Entries).Count == 0 || this.SortVideosFunc == null)
-                            ((Collection<YouTubeEntry>)this.Entries).Add(youTubeEntry);
+                        if (this.Entries.Count == 0 || this.SortVideosFunc == null)
+                            this.Entries.Add(youTubeEntry);
                         else if (this.SortVideosFunc != null)
                         {
                             bool flag = false;
-                            for (int index = 0; index < ((Collection<YouTubeEntry>)this.Entries).Count; ++index)
+                            for (int index = 0; index < this.Entries.Count; ++index)
                             {
-                                if (this.SortVideosFunc(youTubeEntry, ((Collection<YouTubeEntry>)this.Entries)[index]))
+                                if (this.SortVideosFunc(youTubeEntry, this.Entries[index]))
                                 {
                                     ((Collection<YouTubeEntry>)this.Entries).Insert(index, youTubeEntry);
                                     flag = true;
@@ -771,30 +786,34 @@ namespace myTube
                                 }
                             }
                             if (!flag)
-                                ((Collection<YouTubeEntry>)this.Entries).Add(youTubeEntry);
+                                this.Entries.Add(youTubeEntry);
                         }
                         else
-                            ((Collection<YouTubeEntry>)this.Entries).Add(youTubeEntry);
+                            this.Entries.Add(youTubeEntry);
                     }
                     this.page = origPageAdded;
+
                     if (vids.Length >= 0 && this.VideosLoaded != null)
                         this.VideosLoaded((object)this, vids);
+
                     if (((Collection<YouTubeEntry>)this.Entries).Count == 0)
                         this.listStrings.State = ListState.NoItems;
                     else if (!this.isSorting && !this.isSelecting)
                     {
-                        await ((FrameworkElement)this).WaitForLayoutUpdateAsync();
+                        await this.WaitForLayoutUpdateAsync();
 
                         await Task.Delay(500);
 
-                        if (this.loaded && vids.Length != 0 && this.scroll.ScrollableHeight < this.scroll.ViewportHeight)
+                        if (this.loaded && vids.Length != 0 
+                            && this.scroll.ScrollableHeight < this.scroll.ViewportHeight)
                             this.Load();
                     }
                     vids = (YouTubeEntry[])null;
                 }
                 catch (Exception ex)
                 {
-                    this.listStrings.State = ((Collection<YouTubeEntry>)this.Entries).Count != 0 ? ListState.NoItems : ListState.NoItems;
+                    this.listStrings.State = ((Collection<YouTubeEntry>)this.Entries).Count != 0 
+                        ? ListState.NoItems : ListState.NoItems;
                     if (this.LoadFailed == null)
                         return;
                     this.LoadFailed((object)this, ex);
@@ -976,7 +995,8 @@ namespace myTube
                             {
                                 case TransferManager.State.None:
                                     c.Symbol = (Symbol)57605;
-                                    c.Text = (App.Strings["common.save", "save"] + " (" + App.Strings["common.highestquality", "highest quality"] + ")").ToLower();
+                                    c.Text = (App.Strings["common.save", "save"] + " (" 
+                                        + App.Strings["common.highestquality", "highest quality"] + ")").ToLower();
                                     break;
                                 case TransferManager.State.Downloading:
                                     c.Symbol = (Symbol)57610;
@@ -1045,15 +1065,16 @@ namespace myTube
             menu.SelectedElement = thumb;
             menu.SelectTapped += (EventHandler)((s, e) =>
             {
-                //TODO
-                //DefaultPage.Current.ClosePopup();
+                DefaultPage.Current.ClosePopup();
                 list.beginSelect(thumb.DataContext as YouTubeEntry);
             });
             if (menu.ItemsSource.Count > 0)
             {
                 ((UIElement)thumb).CancelDirectManipulations();
-                //TODO
-                //DefaultPage.Current.ShowPopup(p, showAt, new Point(0.0, -10.0), FadeType.Half, hideAppBar: false);
+                
+                DefaultPage.Current.ShowPopup(p, showAt, new Point(0.0, -10.0), 
+                    FadeType.Half, 
+                    hideAppBar: false);
             }
             p.IsLightDismissEnabled = false;
         }
@@ -1147,12 +1168,15 @@ namespace myTube
                     int num = await YouTube.WatchLater(dataContext.ID, 
                         Settings.WatchLater.AddVideosTo == PlaylistPosition.End ? -1 : 0) ? 1 : 0;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
                 }
             }
+
             if (!(e.OriginalSender is IEnumerable<YouTubeEntry> originalSender2))
                 return;
+
             foreach (YouTubeEntry youTubeEntry in originalSender2)
             {
                 try
@@ -1160,8 +1184,9 @@ namespace myTube
                     int num = await YouTube.WatchLater(youTubeEntry.ID, 
                         Settings.WatchLater.AddVideosTo == PlaylistPosition.End ? -1 : 0) ? 1 : 0;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
                 }
             }
         }
@@ -1193,11 +1218,12 @@ namespace myTube
                                 {
                                     DownloadOperation downloadOperation = 
                                         await App.GlobalObjects.TransferManager.StartTransfer(ent, 
-                                        info, info.HighestQuality(YouTubeQuality.HD), (Progress<DownloadOperation>)null);
+                                        info, info.HighestQuality(YouTubeQuality.HD), 
+                                        (Progress<DownloadOperation>)null);
                                 }
                             }
                         }
-                        catch
+                        catch (Exception ex)
                         {
                         }
                     }
@@ -1244,7 +1270,7 @@ namespace myTube
                                 }
                             }
                         }
-                        catch
+                        catch (Exception ex)
                         {
                         }
                     }
@@ -1269,10 +1295,16 @@ namespace myTube
                     VideoTile tileElement = videoTile;
                     await Task.Delay(100);
 
-                    RenderTargetBitmap wb = await DefaultPage.Current.RenderElementAsync((FrameworkElement)tileElement, 0.40000000596046448);
+                    RenderTargetBitmap wb = 
+                        await DefaultPage.Current.RenderElementAsync((FrameworkElement)tileElement, 
+                        0.40000000596046448);
+
                     ((FrameworkElement)tileElement).Width = 691.0;
 
-                    RenderTargetBitmap wb2 = await DefaultPage.Current.RenderElementAsync((FrameworkElement)tileElement, 0.40000000596046448);
+                    RenderTargetBitmap wb2 = 
+                        await DefaultPage.Current.RenderElementAsync((FrameworkElement)tileElement, 
+                        0.40000000596046448);
+
                     ((FrameworkElement)tileElement).Width = 336.0;
                     Image image1 = new Image();
                     image1.Source = (ImageSource)wb;
@@ -1296,9 +1328,6 @@ namespace myTube
                     {
                         SecondaryTile secondaryTile = tile;
 
-                        //This assumes that secondaryTile is a SecondaryTile object
-                        //and that tile_VisualElementsRequested is a method in your code-behind
-                        //that handles the VisualElementsRequested event.
                         secondaryTile.VisualElementsRequested += tile_VisualElementsRequested;
 
                         await TileHelper.UpdateSecondaryTile(ent);
@@ -1335,16 +1364,16 @@ namespace myTube
                     e.Close();
                     if (num == 0)
                     {
-                        int index = ((Collection<YouTubeEntry>)this.Entries).IndexOf(ent);
+                        int index = this.Entries.IndexOf(ent);
                         if (index != -1)
-                            ((Collection<YouTubeEntry>)this.Entries).Remove(ent);
+                            this.Entries.Remove(ent);
                         try
                         {
                             await new YouTubeEntryClient().Delete(ent.ID);
                         }
                         catch
                         {
-                            ((Collection<YouTubeEntry>)this.Entries).Insert(index, ent);
+                            this.Entries.Insert(index, ent);
                         }
                     }
                 }
@@ -1366,9 +1395,9 @@ namespace myTube
             {
                 if (ent.Author == YouTube.UserInfo.ID)
                 {
-                    int index = ((Collection<YouTubeEntry>)this.Entries).IndexOf(ent);
+                    int index = this.Entries.IndexOf(ent);
                     if (index != -1)
-                        ((Collection<YouTubeEntry>)this.Entries).Remove(ent);
+                        this.Entries.Remove(ent);
                     try
                     {
                         await new YouTubeEntryClient().Delete(ent.ID);
@@ -1376,7 +1405,7 @@ namespace myTube
                     catch
                     {
                         if (index != 1)
-                            ((Collection<YouTubeEntry>)this.Entries).Insert(index, ent);
+                            this.Entries.Insert(index, ent);
                     }
                 }
             }
@@ -1387,13 +1416,13 @@ namespace myTube
             if (!this.isSelecting)
                 return;
             List<YouTubeEntry> entries = this.endSelect();
-            ((UIElement)this.acceptSelectedButton).Visibility = Visibility.Collapsed;
-            ((UIElement)this.cancelSelectedButton).Visibility = Visibility.Collapsed;
+            this.acceptSelectedButton.Visibility = Visibility.Collapsed;
+            this.cancelSelectedButton.Visibility = Visibility.Collapsed;
             if (entries.Count <= 0)
                 return;
             VideoContextMenu videoContextMenu1 = new VideoContextMenu();
-            ((FrameworkElement)videoContextMenu1).DataContext = (object)entries;
-            ((FrameworkElement)videoContextMenu1).RequestedTheme = App.Theme;
+            videoContextMenu1.DataContext = (object)entries;
+            videoContextMenu1.RequestedTheme = App.Theme;
             videoContextMenu1.CancelButtonEnabled = true;
             VideoContextMenu menu = videoContextMenu1;
             menu.SelectedElement = (FrameworkElement)this;
@@ -1403,32 +1432,31 @@ namespace myTube
             videoContextMenu.ItemsSource = (List<IconButtonEvent>)multiselectCollection;
             videoContextMenu = (VideoContextMenu)null;
 
-            //TODO
-            menu.CancelTapped += (EventHandler)((s, args) => DefaultPage.Current.ClosePopup());
+            menu.CancelTapped += (EventHandler)((s, args) 
+                => DefaultPage.Current.ClosePopup());
 
             Popup popup1 = new Popup();
-            popup1.Child = (UIElement)menu;
+            popup1.Child = menu;
             Popup popup2 = popup1;
             DefaultPage.SetPopupArrangeMethod((DependencyObject)popup2, (Func<Point>)(() =>
             {
-                ((UIElement)this).UpdateLayout();
-                Rect bounds = ((FrameworkElement)this).GetBounds(Window.Current.Content);
-                ((FrameworkElement)menu).Width = (Math.Min(bounds.Width, 380.0));
-                ((FrameworkElement)menu).Height = (Math.Min(bounds.Height, 380.0));
-                return new Point(bounds.Right - ((FrameworkElement)menu).Width, bounds.Bottom 
-                    - ((FrameworkElement)menu).Height);
+                this.UpdateLayout();
+                Rect bounds = this.GetBounds(Window.Current.Content);
+                menu.Width = (Math.Min(bounds.Width, 380.0));
+                menu.Height = (Math.Min(bounds.Height, 380.0));
+                return new Point(bounds.Right - menu.Width, bounds.Bottom - menu.Height);
             }));
 
-            //TODO
-            int num = 1;//await DefaultPage.Current.ShowPopup(popup2, new Point(), new Point(0.0, -40.0)) ? 1 : 0;
-            ((UIElement)this.cancelSelectedButton).Visibility = ((Visibility)1);
+        
+            int num = await DefaultPage.Current.ShowPopup(popup2, new Point(), new Point(0.0, -40.0)) ? 1 : 0;
+            this.cancelSelectedButton.Visibility = ((Visibility)1);
         }
 
         private void cancelSortButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             this.endSelect();
-            //TODO
-            //DefaultPage.Current.ClosePopup();
+     
+            DefaultPage.Current.ClosePopup();
 
             ((UIElement)this.cancelSelectedButton).Visibility = Visibility.Collapsed;
             ((UIElement)this.acceptSelectedButton).Visibility = Visibility.Collapsed;
@@ -1450,9 +1478,10 @@ namespace myTube
                 });
 
             //TODO
-            //DefaultPage.Current.VideoPlayer.SetTypeConstructor(
-            //    new OfflinePlaylistClient(WebUtility.UrlEncode(((object)xelement).ToString()), 15).GetTypeConstructor());
-            //DefaultPage.Current.VideoPlayer.OpenVideo(entry, Settings.Quality);
+            DefaultPage.Current.VideoPlayer.SetTypeConstructor(
+                new OfflinePlaylistClient(WebUtility.UrlEncode(((object)xelement).ToString()), 15)
+                .GetTypeConstructor());
+            DefaultPage.Current.VideoPlayer.OpenVideo(entry, Settings.Quality);
             e.Close();
         }
       

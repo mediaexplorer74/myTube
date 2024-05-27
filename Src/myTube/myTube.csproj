@@ -128,12 +128,21 @@
     </Compile>
     <Compile Include="ClientAndFirstLoadTask.cs" />
     <Compile Include="ColorSchemes.cs" />
+    <Compile Include="CommentsList.xaml.cs">
+      <DependentUpon>CommentsList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ControlDirection.cs" />
     <Compile Include="Converters\AllCapsConverter.cs" />
     <Compile Include="Converters\BoolInverter.cs" />
     <Compile Include="Converters\BoolToVisibility.cs" />
     <Compile Include="Converters\NumberWithNewLinesConverter.cs" />
+    <Compile Include="Converters\StringToVisibiltyConverter.cs" />
     <Compile Include="CustomFrame.cs" />
+    <Compile Include="CustomMath\Curve.cs" />
+    <Compile Include="CustomMath\CurvePoint.cs" />
+    <Compile Include="CustomSlider.xaml.cs">
+      <DependentUpon>CustomSlider.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Debug\CommentListTestPage.xaml.cs">
       <DependentUpon>CommentListTestPage.xaml</DependentUpon>
     </Compile>
@@ -149,6 +158,7 @@
     <Compile Include="FadeType.cs" />
     <Compile Include="FlipStyle.cs" />
     <Compile Include="GlobalAppObjects\GlobalObjects.cs" />
+    <Compile Include="HardwareButtons.cs" />
     <Compile Include="Helpers\Accel.cs" />
     <Compile Include="Helpers\ClientAndFirstLoadTask.cs" />
     <Compile Include="Helpers\InputPaneHelper.cs" />
@@ -161,10 +171,14 @@
     <Compile Include="Helpers\VideoDepth.cs" />
     <Compile Include="Helpers\YouTubeCacheHandler.cs" />
     <Compile Include="HistoryPage.cs" />
+    <Compile Include="HomePage.cs" />
     <Compile Include="IconButtonEvent.cs" />
     <Compile Include="IconButtonEventArgs.cs" />
     <Compile Include="IconButtonEventCollection.cs" />
     <Compile Include="IconButtonInfo.cs" />
+    <Compile Include="IconTextButton.xaml.cs">
+      <DependentUpon>IconTextButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LeftRightControl.cs" />
     <Compile Include="LikesPage.cs" />
     <Compile Include="ListState.cs" />
@@ -172,8 +186,10 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MediaEndedEventArgs.cs" />
+    <Compile Include="MediaRunningChangedEventArgs.cs" />
     <Compile Include="MessageClient.cs" />
-    <Compile Include="MessageDialogs\ChannelPage.cs" />
+    <Compile Include="ChannelPage.cs" />
     <Compile Include="MessageDialogs\CommentsView.cs" />
     <Compile Include="MessageDialogs\CommentThumb.cs" />
     <Compile Include="MessageDialogs\MessageNotification.cs" />
@@ -193,10 +209,15 @@
     <Compile Include="PlayerControls.xaml.cs">
       <DependentUpon>PlayerControls.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PlayerControlsState.cs" />
+    <Compile Include="PlaylistOffsetEventHandler.cs" />
+    <Compile Include="PlaylistPage.cs" />
     <Compile Include="Popups\StringClient.cs" />
     <Compile Include="QualityButtonInfo.cs" />
     <Compile Include="QualityButtonInfoCollection.cs" />
     <Compile Include="RoundDirection.cs" />
+    <Compile Include="SearchPage.cs" />
+    <Compile Include="SliderValueChangedEventArgs.cs" />
     <Compile Include="TestPage.xaml.cs">
       <DependentUpon>TestPage.xaml</DependentUpon>
     </Compile>
@@ -336,6 +357,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CommentsList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomSlider.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Debug\CommentListTestPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -345,6 +374,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DefaultPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IconTextButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -417,6 +450,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="groupCacheInfo.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="JSON\Regions.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

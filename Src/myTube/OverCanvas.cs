@@ -20,13 +20,16 @@ namespace myTube
   {
     public static readonly DependencyProperty ArrangeStyleProperty 
             = DependencyProperty.Register(nameof (ArrangeStyle), typeof (ArrangeStyle), typeof (OverCanvas), 
-                new PropertyMetadata((object) ArrangeStyle.Panorama, new PropertyChangedCallback(OverCanvas.OnArrangeStyeChanged)));
+                new PropertyMetadata((object) ArrangeStyle.Panorama, 
+                    new PropertyChangedCallback(OverCanvas.OnArrangeStyeChanged)));
     public static readonly DependencyProperty FlipStyleProperty 
             = DependencyProperty.Register(nameof (FlipStyle), typeof (FlipStyle), typeof (OverCanvas),
-                new PropertyMetadata((object) FlipStyle.Classic, new PropertyChangedCallback(OverCanvas.OnFlipStyleChanged)));
+                new PropertyMetadata((object) FlipStyle.Classic, 
+                    new PropertyChangedCallback(OverCanvas.OnFlipStyleChanged)));
     public static readonly DependencyProperty OverCanvasWidthProperty 
             = DependencyProperty.RegisterAttached("OverCanvasWidth", typeof (double), typeof (UIElement), 
-                new PropertyMetadata((object) double.NaN, new PropertyChangedCallback(OverCanvas.OnOverCanvasWidthChanged)));
+                new PropertyMetadata((object) double.NaN, 
+                    new PropertyChangedCallback(OverCanvas.OnOverCanvasWidthChanged)));
     public static readonly DependencyProperty ScrolledToOrAdjacentProperty 
             = DependencyProperty.RegisterAttached("ScrolledToOrAdjacent", typeof (Action), typeof (UIElement), 
                 new PropertyMetadata((object) null));
@@ -44,49 +47,62 @@ namespace myTube
                 new PropertyMetadata((object) null));
     public static readonly DependencyProperty ScrollViewerProperty 
             = DependencyProperty.Register("ScrollViewer", typeof (ScrollViewer), typeof (OverCanvas), 
-                new PropertyMetadata((object) null, new PropertyChangedCallback(OverCanvas.OnScrollViewerChanged)));
+                new PropertyMetadata((object) null, 
+                    new PropertyChangedCallback(OverCanvas.OnScrollViewerChanged)));
     public static readonly DependencyProperty OverCanvasTitleProperty 
             = DependencyProperty.RegisterAttached("OverCanvasTitle", typeof (string), typeof (UIElement), 
                 new PropertyMetadata((object) "page"));
     public static readonly DependencyProperty OverCanvasWidthTypeProperty 
-            = DependencyProperty.RegisterAttached("OverCanvasWidthType", typeof (OverCanvasWidthType), typeof (UIElement),
+            = DependencyProperty.RegisterAttached("OverCanvasWidthType", 
+                typeof (OverCanvasWidthType), typeof (UIElement),
                 new PropertyMetadata((object) OverCanvasWidthType.Pixel));
     public static readonly DependencyProperty PageTitlesProperty 
-            = DependencyProperty.Register(nameof (PageTitles), typeof (string[]), typeof (OverCanvas), 
+            = DependencyProperty.Register(nameof (PageTitles),
+                typeof (string[]), typeof (OverCanvas), 
                 new PropertyMetadata((object) new string[0]));
     public static readonly DependencyProperty SelectedPageProperty 
             = DependencyProperty.Register(nameof (SelectedPage), typeof (int), typeof (OverCanvas), 
-                new PropertyMetadata((object) -2, new PropertyChangedCallback(OverCanvas.OnSelectedPagePropertyChanged)));
+                new PropertyMetadata((object) -2, 
+                    new PropertyChangedCallback(OverCanvas.OnSelectedPagePropertyChanged)));
     public static readonly DependencyProperty SelectedIndexProperty 
             = DependencyProperty.Register(nameof (SelectedIndex), typeof (int), typeof (OverCanvas),
-                new PropertyMetadata((object) 0, new PropertyChangedCallback(OverCanvas.OnSelectedIndexPropertyChanged)));
+                new PropertyMetadata((object) 0, 
+                    new PropertyChangedCallback(OverCanvas.OnSelectedIndexPropertyChanged)));
     public static readonly DependencyProperty ShownProperty 
             = DependencyProperty.Register(nameof (Shown), typeof (bool), typeof (OverCanvas), 
-                new PropertyMetadata((object) true, new PropertyChangedCallback(OverCanvas.OnShownPropertyChanged)));
+                new PropertyMetadata((object) true,
+                    new PropertyChangedCallback(OverCanvas.OnShownPropertyChanged)));
     public static readonly DependencyProperty VerticalOffsetHelperProperty 
             = DependencyProperty.Register("VerticalOffsetHelper", typeof (double), typeof (OverCanvas),
-                new PropertyMetadata((object) 0, new PropertyChangedCallback(OverCanvas.OnVerticalOffsetHelperPropertyChanged)));
+                new PropertyMetadata((object) 0,
+                    new PropertyChangedCallback(OverCanvas.OnVerticalOffsetHelperPropertyChanged)));
     public static readonly DependencyProperty HorizontalOffsetHelperProperty 
             = DependencyProperty.Register("HorizontalOffsetHelper", typeof (double), typeof (OverCanvas), 
-                new PropertyMetadata((object) 0, new PropertyChangedCallback(OverCanvas.OnHorizontalOffsetHelperPropertyChanged)));
+                new PropertyMetadata((object) 0, 
+                    new PropertyChangedCallback(OverCanvas.OnHorizontalOffsetHelperPropertyChanged)));
     public static readonly DependencyProperty TitleBackgroundBrushProperty 
             = DependencyProperty.Register(nameof (TitleBackgroundBrush), typeof (Brush), typeof (OverCanvas), 
-                new PropertyMetadata((object) null, new PropertyChangedCallback(OverCanvas.OnTitleBackgroundBrushPropertyChanged)));
+                new PropertyMetadata((object) null, 
+                    new PropertyChangedCallback(OverCanvas.OnTitleBackgroundBrushPropertyChanged)));
     public static readonly DependencyProperty TitleForegroundBrushProperty 
             = DependencyProperty.Register(nameof (TitleForegroundBrush), typeof (Brush), typeof (OverCanvas), 
                 new PropertyMetadata((object) null));
     public static readonly DependencyProperty OverCanvasShownProperty 
-            = DependencyProperty.RegisterAttached("OverCanvasShown", typeof (bool), typeof (UIElement), 
-                new PropertyMetadata((object) true, new PropertyChangedCallback(OverCanvas.OverCanvasShownPropertyChanged)));
+            = DependencyProperty.RegisterAttached("OverCanvasShown", 
+                typeof (bool), typeof (UIElement), 
+                new PropertyMetadata((object) true, 
+                    new PropertyChangedCallback(OverCanvas.OverCanvasShownPropertyChanged)));
     public static readonly DependencyProperty SignedInProperty 
             = DependencyProperty.Register(nameof (SignedIn), typeof (bool), typeof (OverCanvas), 
-                new PropertyMetadata((object) null, new PropertyChangedCallback(OverCanvas.OnSignedInPropertyChanged)));
+                new PropertyMetadata((object) null, 
+                    new PropertyChangedCallback(OverCanvas.OnSignedInPropertyChanged)));
     public static readonly DependencyProperty BannerReadyProperty 
             = DependencyProperty.Register(nameof (BannerReady), typeof (bool), typeof (OverCanvas), 
                 new PropertyMetadata((object) false));
     public static readonly DependencyProperty OverCanvasPageProperty 
             = DependencyProperty.Register("OverCanvasPage", typeof (int), typeof (UIElement), 
-                new PropertyMetadata((object) 0, new PropertyChangedCallback(OverCanvas.OverCanvasPagePropertyChanged)));
+                new PropertyMetadata((object) 0, 
+                    new PropertyChangedCallback(OverCanvas.OverCanvasPagePropertyChanged)));
     public static readonly DependencyProperty TitleVisibilityProperty
             = DependencyProperty.Register("TitleVisiblity", typeof (Visibility), typeof (OverCanvas), 
                 new PropertyMetadata((object) (Visibility) 1));
@@ -277,7 +293,7 @@ namespace myTube
         oldValue.SizeChanged -= oc.newScroll_SizeChanged;
 
         Helper.Write((object) "Removed old ScrollViewer events on OverCanvas");
-        Debug.WriteLine("Removed old ScrollViewer events on OverCanvas");
+        System.Diagnostics.Debug.WriteLine("Removed old ScrollViewer events on OverCanvas");
       }
 
       if (oc.waitForScrollLayoutUpdate)
@@ -316,13 +332,15 @@ namespace myTube
         }
       }
       oc.invalidateAfterArrange = true;
+
       Helper.Write((object) nameof (OverCanvas), 
           (object) "Added new ScrollViewer events to OverCanvas");
     }
 
     private void newScroll_GotFocus(object sender, RoutedEventArgs e)
     {
-      ScrollViewer scrollViewer = (ScrollViewer) ((DependencyObject) this).GetValue(OverCanvas.ScrollViewerProperty);
+      ScrollViewer scrollViewer = 
+                (ScrollViewer) ((DependencyObject) this).GetValue(OverCanvas.ScrollViewerProperty);
     }
 
     public bool IsScrolling => this.isScrolling;
@@ -349,32 +367,28 @@ namespace myTube
 
     private void newScroll_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
     {
-      // ISSUE: object of a compiler-generated type is created
-      // ISSUE: variable of a compiler-generated type
-      var cDisplayClass490 = new OverCanvas.DisplayClass49_0();
-      // ISSUE: reference to a compiler-generated field
-      cDisplayClass490.u003E4 = this;
-      // ISSUE: reference to a compiler-generated field
-      cDisplayClass490.s = sender as ScrollViewer;
-      // ISSUE: reference to a compiler-generated field
-      if (cDisplayClass490.s == null || !e.IsIntermediate)
+      ScrollViewerDisplayClass CScrollViewerDisplayClass = new OverCanvas.ScrollViewerDisplayClass();
+      CScrollViewerDisplayClass.item = this;
+      CScrollViewerDisplayClass.s = sender as ScrollViewer;
+      if (CScrollViewerDisplayClass.s == null || !e.IsIntermediate)
         return;
-      // ISSUE: reference to a compiler-generated field
-      double num = this.lastOffset - cDisplayClass490.s.HorizontalOffset;
-      // ISSUE: reference to a compiler-generated field
-      this.lastOffset = cDisplayClass490.s.HorizontalOffset;
-      // ISSUE: reference to a compiler-generated field
-      if (cDisplayClass490.s.HorizontalSnapPointsType != SnapPointsType.MandatorySingle 
+      
+      double num = this.lastOffset - CScrollViewerDisplayClass.s.HorizontalOffset;
+      this.lastOffset = CScrollViewerDisplayClass.s.HorizontalOffset;
+      
+      if (CScrollViewerDisplayClass.s.HorizontalSnapPointsType != SnapPointsType.MandatorySingle 
                 && !this.resettingSnapPoints && Math.Abs(num) < 2.5)
       {
         this.resettingSnapPoints = true;
         
-        // ISSUE: method pointer
-        //ThreadPoolTimer.CreateTimer(new TimerElapsedHandler((object) cDisplayClass490, 
-        //    __methodptr(CnewScroll_ViewChanged_u003Eb__0)), TimeSpan.FromMilliseconds(200.0));
-      }
-      // ISSUE: reference to a compiler-generated field
-      this.SetIndexBasedOnScroll(cDisplayClass490.s.HorizontalOffset);
+       
+        ThreadPoolTimer timer = ThreadPoolTimer.CreateTimer(async (timer1) =>
+        {
+            //RnD
+            //await CScrollViewerDisplayClass.s.ViewChanged(CScrollViewerDisplayClass.s, e);//CnewScroll_ViewChanged_u003Eb__0();
+        }, TimeSpan.FromMilliseconds(200.0));
+       }
+       this.SetIndexBasedOnScroll(CScrollViewerDisplayClass.s.HorizontalOffset);
     }
 
     public static bool GetOverCanvasShown(DependencyObject obj) 
@@ -1238,12 +1252,12 @@ namespace myTube
             }   
         }*/
 
-        private class DisplayClass49_0
+        private class ScrollViewerDisplayClass
         {
-            internal OverCanvas u003E4;
+            internal OverCanvas item;
             internal ScrollViewer s;
 
-            public DisplayClass49_0()
+            public ScrollViewerDisplayClass()
             {
             }
         }

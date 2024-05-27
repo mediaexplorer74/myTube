@@ -1,0 +1,87 @@
+﻿<UserControl 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:local="using:myTube" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    mc:Ignorable="d" 
+    x:Name="userControl"
+    x:Class="myTube.IconTextButton">
+    
+    <!--FontSize>
+        <StaticResource ResourceKey="SmallFontSize" />
+    </FontSize-->
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <local:StringToVisibiltyConverter x:Key="StringToVisibiltyConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+        
+        <Grid  x:Name="layoutRoot">
+            <Grid.Background>
+                <Binding Path="Background" ElementName="userControl" />
+            </Grid.Background>
+            <!--Grid.VisualStateGroups>
+                <VisualStateGroupCollection>
+                    <VisualStateGroup>
+                        <States>
+                            <VisualStateCollection>
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="PointerUp">
+                                    <DeferredStoryboard>
+                                        <Storyboard>
+                                            <Children>
+                                                <TimelineCollection>
+                                                    <PointerUpThemeAnimation TargetName="layoutRoot" />
+                                                </TimelineCollection>
+                                            </Children>
+                                        </Storyboard>
+                                    </DeferredStoryboard>
+                                </VisualState>
+                                <VisualState x:Name="PointerDown">
+                                    <DeferredStoryboard>
+                                        <Storyboard>
+                                            <Children>
+                                                <TimelineCollection>
+                                                    <PointerDownThemeAnimation TargetName="layoutRoot" />
+                                                </TimelineCollection>
+                                            </Children>
+                                        </Storyboard>
+                                    </DeferredStoryboard>
+                                </VisualState>
+                            </VisualStateCollection>
+                        </States>
+                    </VisualStateGroup>
+                </VisualStateGroupCollection>
+            </Grid.VisualStateGroups-->
+            <Grid.RowDefinitions>
+                   <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                
+            </Grid.RowDefinitions>
+            
+            <ListView>
+                    <!--SymbolIcon>
+                       <SymbolIcon.Symbol>
+                            <Binding Path="Symbol" ElementName="userControl" />
+                        </SymbolIcon.Symbol>
+                    </SymbolIcon-->
+                    <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,3"
+                          >
+            <!--Visibility>
+              <Binding Path="Text" ElementName="userControl">
+                <Converter>
+                  <StaticResource ResourceKey="StringToVisibiltyConverter" />
+                </Converter>
+              </Binding>
+            </Visibility-->
+            <!--TextBlock.Text>
+              <Binding Path="Text" ElementName="userControl" />
+            </TextBlock.Text-->
+           </TextBlock>
+               
+          </ListView>
+        </Grid>
+</UserControl>
+

@@ -5,6 +5,7 @@ namespace myTube
 {
     public enum ThumbnailStyle
     {
-        New
+        New,
+        Classic
     }
 }

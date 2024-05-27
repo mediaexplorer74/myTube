@@ -1,6 +1,4 @@
-﻿using RykenTube;
-using System;
-using System.CodeDom.Compiler;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,18 +13,15 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
+
 namespace myTube
 {
-
-    public sealed partial class TestPage : Page
+    public sealed partial class CommentsList : UserControl
     {
-        public TestPage()
+        public CommentsList()
         {
             this.InitializeComponent();
-            this.NavigationCacheMode = NavigationCacheMode.Enabled;
-
-            this.videoList.Client = (VideoListClient)new FeedClient(YouTubeFeed.Popular, 
-                Category.All, YouTubeTime.Today, /*40*/2);
         }
     }
 }

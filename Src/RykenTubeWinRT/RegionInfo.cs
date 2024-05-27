@@ -167,9 +167,14 @@ namespace RykenTube
       {
         bool flag1 = false;
         bool flag2 = false;
+        string countryCode = "";
+
         try
         {
-          string countryCode = r1.CountryCode;
+            if (r1 != null)
+                countryCode = r1.CountryCode;
+            else
+                flag1 = true;
         }
         catch
         {
@@ -177,12 +182,16 @@ namespace RykenTube
         }
         try
         {
-          string countryCode = r2.CountryCode;
+            if (r2 != null)
+                countryCode = r2.CountryCode;
+            else
+                flag2 = true;
         }
         catch
         {
           flag2 = true;
         }
+
         if (flag1 & flag2)
           return true;
         return !(flag1 | flag2) && r1.CountryName == r2.CountryName && r1.CountryCode == r2.CountryCode;
@@ -190,14 +199,18 @@ namespace RykenTube
       catch
       {
         YouTube.Write((object) nameof (RegionInfo), (object) "Error comparing region info");
+        System.Diagnostics.Debug.WriteLine(nameof(RegionInfo), " Error comparing region info");
         return false;
       }
     }
 
     public static bool operator !=(RegionInfo r1, RegionInfo r2) => !(r1 == r2);
 
-    public override bool Equals(object obj) => (object) (obj as RegionInfo) != null && this == obj as RegionInfo;
+        public override bool Equals(object obj)
+        {
+            return (object)(obj as RegionInfo) != null && this == obj as RegionInfo;
+        }
 
-    public override string ToString() => this.CountryName;
+        public override string ToString() => this.CountryName;
   }
 }

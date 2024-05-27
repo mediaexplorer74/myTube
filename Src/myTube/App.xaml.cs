@@ -35,7 +35,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Store;
 using Windows.Graphics.Display;
 using Windows.Media.Playback;
-using Windows.Phone.UI.Input;
+using myTube.Debug;
 using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.Storage;
 using Windows.System;
@@ -58,7 +58,7 @@ namespace myTube
     {
         private const string Tag = "App";
         public const string ExceptionFileName = "exception.json";
-        public const string SupportEmail = "rykenproductions@outlook.com";
+        public const string SupportEmail = "mediaexplorer74@hotmail.com";//"rykenproductions@outlook.com";
         private static readonly EasClientDeviceInformation deviceInfo = new EasClientDeviceInformation();
         private TransitionCollection transitions;
         private CustomFrame rootFrame;
@@ -66,10 +66,10 @@ namespace myTube
         private static TimeSpan startTime;
         private static GlobalObjects gObjects;
         private static List<string> apiKeys = new List<string>();
-        //public List<ColorSchemes> AddedSchemes = new List<ColorSchemes>();
-        //private ColorSchemes curentScheme;
+        public List<ColorSchemes> AddedSchemes = new List<ColorSchemes>();
+        private ColorSchemes curentScheme;
         private Dictionary<string, Dictionary<string, SolidColorBrush>> themeCollection;
-        //private static ThumbnailDispatcher thumbnailDispatcher = new ThumbnailDispatcher();
+        private static ThumbnailDispatcher thumbnailDispatcher = new ThumbnailDispatcher();
         private static TaskDispatcher taskDispatcher = new TaskDispatcher();
         private GlobalObjects globalObjects;
         private bool backgroundAudio;
@@ -89,9 +89,7 @@ namespace myTube
         private bool initialized;
         private static TileArgs launchTile;
         private PageInfoCollection pageInfoCollection;
-        private static object u003E9__135_0;
-        private static ThumbnailDispatcher thumbnailDispatcher;
-        private ColorSchemes curentScheme;
+        
 
         public App()
         {
@@ -103,12 +101,7 @@ namespace myTube
 
             Helper.Write((object)nameof(App), (object)"Initialized component");
 
-            //TODO: handlers for unhandled exceptions
-            //WindowsRuntimeMarshal.AddEventHandler<UnhandledExceptionEventHandler>(
-            //    new Func<UnhandledExceptionEventHandler, EventRegistrationToken>(((Application)this)
-            //    .add_UnhandledException), 
-            //    new Action<EventRegistrationToken>(((Application)this).remove_UnhandledException), 
-            //    new UnhandledExceptionEventHandler(this.App_UnhandledException));
+            // add handler for unhandled exceptions            
             Application.Current.UnhandledException += this.App_UnhandledException;
 
 
@@ -146,14 +139,14 @@ namespace myTube
             YouTube.APIKey = App.apiKeys[0];
 
             Helper.Write((object)nameof(App), (object)"Set up RykenTube constants");
-            Debug.WriteLine(nameof(App), "Set up RykenTube constants");
+            System.Diagnostics.Debug.WriteLine(nameof(App), "Set up RykenTube constants");
 
             YouTube.init();
             TileHelper.Platform = App.PlatformType;
             this.themeCollection = new Dictionary<string, Dictionary<string, SolidColorBrush>>();
             
             Helper.Write((object)"App constructor completed");
-            Debug.WriteLine(nameof(App), "App constructor completed");
+            System.Diagnostics.Debug.WriteLine(nameof(App), "App constructor completed");
 
             //
 
@@ -164,7 +157,7 @@ namespace myTube
         {
             
             Helper.Write((object)nameof(OnLaunched), (object)"Started");
-            Debug.WriteLine(nameof(OnLaunched), "Launch Started...");
+            System.Diagnostics.Debug.WriteLine(nameof(OnLaunched), "Launch Started...");
 
             TaskScheduler.UnobservedTaskException += 
                 new EventHandler<UnobservedTaskExceptionEventArgs>(this.TaskScheduler_UnobservedTaskException);
@@ -182,25 +175,22 @@ namespace myTube
             this.initialSetup();
 
             Helper.Write((object)nameof(OnLaunched), (object)"Finished");
-            Debug.WriteLine(nameof(OnLaunched), "Launch Finished");
+            System.Diagnostics.Debug.WriteLine(nameof(OnLaunched), "Launch Finished");
 
             Frame rootFrame = Window.Current.Content as Frame;
 
-            // Не повторяйте инициализацию приложения, если в окне уже имеется содержимое,
-            // только обеспечьте активность окна
             if (rootFrame == null)
             {
-                // Создание фрейма, который станет контекстом навигации, и переход к первой странице
                 rootFrame = new Frame();
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    //TODO: Загрузить состояние из ранее приостановленного приложения
+                    //
                 }
 
-                // Размещение фрейма в текущем окне
+       
                 Window.Current.Content = rootFrame;
             }
 
@@ -208,9 +198,7 @@ namespace myTube
             {
                 if (rootFrame.Content == null)
                 {
-                    // Если стек навигации не восстанавливается для перехода к первой странице,
-                    // настройка новой страницы путем передачи необходимой информации в качестве параметра
-                    // навигации
+                 
                     //rootFrame.Navigate(typeof(MainPage), e.Arguments);
                     rootFrame.Navigate(typeof(TestPage), e.Arguments);
                 }
@@ -219,11 +207,7 @@ namespace myTube
             }
         }
 
-        /// <summary>
-        /// Вызывается в случае сбоя навигации на определенную страницу
-        /// </summary>
-        /// <param name="sender">Фрейм, для которого произошел сбой навигации</param>
-        /// <param name="e">Сведения о сбое навигации</param>
+      
         void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
@@ -292,6 +276,7 @@ namespace myTube
 
         public static string OperatingSystem => App.deviceInfo.OperatingSystem;
 
+        
         public static GlobalObjects GlobalObjects
         {
             get
@@ -302,12 +287,14 @@ namespace myTube
                 return App.gObjects;
             }
         }
+        
 
         public static Strings Strings
         {
             get
             {
-                return ((IDictionary<object, object>)Application.Current.Resources)[(object)nameof(Strings)] as Strings;
+                return ((IDictionary<object, object>)Application.Current.Resources)
+                    [(object)nameof(Strings)] as Strings;
             }
         }
 
@@ -315,7 +302,7 @@ namespace myTube
         {
             get
             {
-                return ElementTheme.Dark;//Settings.Theme == ElementTheme.Dark ? ElementTheme.Light : ElementTheme.Dark;
+                return Settings.Theme == ElementTheme.Dark ? ElementTheme.Light : ElementTheme.Dark;
             }
         }
 
@@ -323,7 +310,7 @@ namespace myTube
         {
             get
             {
-                return default;//Settings.Theme;
+                return Settings.Theme;
             }
         }
 
@@ -376,7 +363,9 @@ namespace myTube
             {
                 try
                 {
-                    return false;//Settings.UserMode < UserMode.Owner && string.IsNullOrWhiteSpace(Settings.ProductKey) && !Settings.WasPaidFor && CurrentApp.LicenseInformation.IsTrial;
+                    return Settings.UserMode < UserMode.Owner 
+                        && string.IsNullOrWhiteSpace(Settings.ProductKey)
+                        && !Settings.WasPaidFor && CurrentApp.LicenseInformation.IsTrial;
                 }
                 catch
                 {
@@ -397,7 +386,9 @@ namespace myTube
 
         private async Task createLogStream()
         {
-            this.logWriter = new StreamWriter(await WindowsRuntimeStorageExtensions.OpenStreamForWriteAsync((IStorageFile)await ApplicationData.Current.LocalFolder.CreateFileAsync("log.txt", (CreationCollisionOption)1)))
+            this.logWriter = new StreamWriter(await WindowsRuntimeStorageExtensions.OpenStreamForWriteAsync(
+                (IStorageFile)await ApplicationData.Current.LocalFolder.CreateFileAsync("log.txt",
+                (CreationCollisionOption)1)))
             {
                 AutoFlush = true
             };
@@ -429,11 +420,14 @@ namespace myTube
             if (this.initialThemeSetup)
                 return;
             this.initialThemeSetup = true;
-            //this.AddThemeToDictionary(ColorSchemes.Default);
+            
+            //RnD
+            this.AddThemeToDictionary(ColorSchemes.Default);
+            
             string key = "PhoneAccentBrush";
 
             //RnD
-            ResourceDictionary themeDictionary1 = default;//this.GetThemeDictionary("Classic");
+            ResourceDictionary themeDictionary1 = this.GetThemeDictionary("Classic");
 
             if (!((IDictionary<object, object>)themeDictionary1).ContainsKey((object)"AccentBrush")
                     && !((IDictionary<object, object>)themeDictionary1).ContainsKey((object)"MenuBackground"))
@@ -445,7 +439,7 @@ namespace myTube
             }
 
             //RnD
-            ResourceDictionary themeDictionary2 = default;//this.GetThemeDictionary("Accent");
+            ResourceDictionary themeDictionary2 = this.GetThemeDictionary("Accent");
             if (themeDictionary2 != null
                     && !((IDictionary<object, object>)themeDictionary2).ContainsKey((object)"AccentBrush")
                     && !((IDictionary<object, object>)themeDictionary2).ContainsKey((object)"MenuForegroundBrush"))
@@ -455,9 +449,11 @@ namespace myTube
                 ((IDictionary<object, object>)themeDictionary2).Add((object)"MenuForegroundBrush",
                     ((IDictionary<object, object>)this.Resources)[(object)key]);
             }
-            //this.AddThemeToDictionary(ColorSchemes.Accent);
-            //this.AddThemeToDictionary(ColorSchemes.Classic);
-            //this.AddThemeToDictionary(ColorSchemes.YouTube);
+
+            //RnD
+            this.AddThemeToDictionary(ColorSchemes.Accent);
+            this.AddThemeToDictionary(ColorSchemes.Classic);
+            this.AddThemeToDictionary(ColorSchemes.YouTube);
         }
 
         public void ApplyTheme(ColorSchemes scheme)
@@ -470,8 +466,10 @@ namespace myTube
             Dictionary<string, SolidColorBrush> customThemeDictionary1 = this.GetCustomThemeDictionary(name);
             this.ApplyTheme(this.GetCustomThemeDictionary("Light"), (ApplicationTheme)0);
             this.ApplyTheme(this.GetCustomThemeDictionary("Dark"), (ApplicationTheme)1);
-            Dictionary<string, SolidColorBrush> customThemeDictionary2 = this.GetCustomThemeDictionary(name + (object)(ApplicationTheme)1);
-            Dictionary<string, SolidColorBrush> customThemeDictionary3 = this.GetCustomThemeDictionary(name + (object)(ApplicationTheme)0);
+            Dictionary<string, SolidColorBrush> customThemeDictionary2 = 
+                this.GetCustomThemeDictionary(name + (object)(ApplicationTheme)1);
+            Dictionary<string, SolidColorBrush> customThemeDictionary3 = 
+                this.GetCustomThemeDictionary(name + (object)(ApplicationTheme)0);
             if (customThemeDictionary1 != null)
             {
                 this.ApplyTheme(customThemeDictionary1, (ApplicationTheme)0);
@@ -517,21 +515,29 @@ namespace myTube
 
         private void AddThemeToDictionary(ColorSchemes scheme)
         {
-            /*if (this.AddedSchemes.Contains(scheme))
+            if (this.AddedSchemes.Contains(scheme))
                 return;
             this.AddedSchemes.Add(scheme);
             string name = scheme == ColorSchemes.Default ? "" : scheme.ToString();
             ResourceDictionary themeDictionary;
             ResourceDictionary dict1 = themeDictionary = this.GetThemeDictionary(name);
+
             if (dict1 != null)
                 this.AddThemeToDictionary(name, dict1);
-            ResourceDictionary dict2 = this.GetThemeDictionary(name + (object)(ApplicationTheme)1) ?? themeDictionary;
+
+            ResourceDictionary dict2 = this.GetThemeDictionary(name + (object)(ApplicationTheme)1)
+                ?? themeDictionary;
+
             if (dict2 != null)
                 this.AddThemeToDictionary(name + (object)(ApplicationTheme)1, dict2);
-            ResourceDictionary dict3 = this.GetThemeDictionary(name + (object)(ApplicationTheme)0) ?? themeDictionary;
+
+            ResourceDictionary dict3 = this.GetThemeDictionary(name + (object)(ApplicationTheme)0) 
+                ?? themeDictionary;
+
             if (dict3 == null)
                 return;
-            this.AddThemeToDictionary(name + (object)(ApplicationTheme)0, dict3);*/
+
+            this.AddThemeToDictionary(name + (object)(ApplicationTheme)0, dict3);
         }
 
         private void AddThemeToDictionary(string name, ResourceDictionary dict)
@@ -574,10 +580,13 @@ namespace myTube
         private async void App_Resuming(object sender, object e)
         {
             Helper.Write((object)nameof(App_Resuming), (object)"Resuming");
-            /*App.CheckMessages(45.0);
+            App.CheckMessages(45.0);
+            
             PlayerControls.UpdateBackgroundAudioState();
+            
             if (PlayerControls.BackgroundAudio)
                 DefaultPage.Current.VideoPlayer.RegisterBackgroundEvent();
+            
             if (this.backgroundAudio)
             {
                 this.backgroundAudio = false;
@@ -588,21 +597,19 @@ namespace myTube
             {
                 await App.GlobalObjects.History.Update();
             }
-            catch
+            catch (Exception ex)
             {
             }
-            */
+            
         }
 
         private async void App_UnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
         {
             Exception exception = e.Exception;
             e.Handled = true;
-            // ISSUE: object of a compiler-generated type is created
-            // ISSUE: variable of a compiler-generated type
+         
             var cDisplayClass910 = new App.DisplayClass91_0();
-            // ISSUE: reference to a compiler-generated field
-            cDisplayClass910.u003E4 = this;
+            cDisplayClass910.item = this;
             try
             {
                 if (Settings.UserMode != UserMode.Owner)
@@ -625,60 +632,81 @@ namespace myTube
             }
             if (this.globalObjects == null)
                 return;
-            // ISSUE: reference to a compiler-generated field
-            cDisplayClass910.data = new ExceptionData(exception);
-            // ISSUE: reference to a compiler-generated field
-            cDisplayClass910.data.Versions.Add(this.globalObjects.Version.ToString());
-            // ISSUE: reference to a compiler-generated field
-            cDisplayClass910.data.Devices.Add(App.FullDeviceName);
-            // ISSUE: reference to a compiler-generated field
-            cDisplayClass910.data.EventHandlerMessage = e.Message;
-            // ISSUE: reference to a compiler-generated field
-            cDisplayClass910.data.CausedCrash = true;
-            // ISSUE: reference to a compiler-generated field
-            cDisplayClass910.data.AppName = "myTube";
-            // ISSUE: reference to a compiler-generated field
-            Settings.UnhandledException = DataObject.ToJson((object)cDisplayClass910.data);
-            // ISSUE: reference to a compiler-generated field
+           
+            cDisplayClass910.exception = new ExceptionData(exception);
+       
+            cDisplayClass910.exception.Versions.Add(this.globalObjects.Version.ToString());
+          
+            cDisplayClass910.exception.Devices.Add(App.FullDeviceName);
+        
+            cDisplayClass910.exception.EventHandlerMessage = e.Message;
+        
+            cDisplayClass910.exception.CausedCrash = true;
+           
+            cDisplayClass910.exception.AppName = "myTube";
+          
+            Settings.UnhandledException = DataObject.ToJson((object)cDisplayClass910.exception);
+          
             cDisplayClass910.exceptionMessage = 
                 "Oops, looks like we've run into an internal error the developer hasn't looked out for.\n\n" +
                 "Would you like to report it?\n\n" +
                 "Please include any information about how you came across this error in the report.";
+           
             if (Settings.UserMode >= UserMode.Owner)
             {
-                // ISSUE: reference to a compiler-generated field
-                // ISSUE: reference to a compiler-generated field
-                cDisplayClass910.exceptionMessage = cDisplayClass910.exceptionMessage + "\n\n" + exception.ToString();
+                cDisplayClass910.exceptionMessage = cDisplayClass910.exceptionMessage
+                    + "\n\n" + exception.ToString();
             }
-          // ISSUE: method pointer
-          //((DependencyObject)this.RootFrame).Dispatcher.RunAsync((CoreDispatcherPriority)0, new DispatchedHandler((object)cDisplayClass910, __methodptr(\u003CApp_UnhandledException\u003Eb__0)));
+
+            //await this.RootFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            //{
+            //this.App_UnhandledException(this, 
+            //    new System.UnhandledExceptionEventArgs(cDisplayClass910.exception.CausedCrash, false));
+            //});
+            ContentDialog SimplePopup = new ContentDialog()
+            {
+                Title = "Error / Exception occurs",
+                Content = exception.ToString(),
+                CloseButtonText = "Ok"
+            };
+            await SimplePopup.ShowAsync();
+
         }
 
         private void YouTube_SignedOut(object sender, EventArgs e)
         {
-            if (((IDictionary<string, object>)ApplicationData.Current.RoamingSettings.Values).ContainsKey("refreshToken"))
-                ((IDictionary<string, object>)ApplicationData.Current.RoamingSettings.Values).Remove("refreshToken");
+            if (((IDictionary<string, object>)ApplicationData.Current.RoamingSettings.Values)
+                .ContainsKey("refreshToken"))
+                ((IDictionary<string, object>)ApplicationData.Current.RoamingSettings.Values)
+                    .Remove("refreshToken");
+
             SharedSettings.CurrentAccount = (SignInInfo)null;
             Settings.Save();
         }
 
         public static async Task CheckSignIn(double minutes, bool callAwait = true)
         {
-            if (!YouTube.Initialized || YouTube.CurrentlySigningIn || DateTime.Now - App.signedInAt < TimeSpan.FromMinutes(minutes) || SharedSettings.CurrentAccount == null)
+            if (!YouTube.Initialized || YouTube.CurrentlySigningIn 
+                || DateTime.Now - App.signedInAt < TimeSpan.FromMinutes(minutes) 
+                || SharedSettings.CurrentAccount == null)
                 return;
             if (App.trySignIn)
             {
                 App.trySignIn = false;
                 Helper.Write((object)"Signing back into YouTube as the time period has passed");
+                System.Diagnostics.Debug.WriteLine("Signing back into YouTube as the time period has passed");
+
                 if (callAwait)
                 {
                     try
                     {
-                        UserInfo userInfo = await YouTube.RefreshSignIn(SharedSettings.CurrentAccount.RefreshToken, SharedSettings.CurrentAccount.UserID);
+                        UserInfo userInfo = await YouTube.RefreshSignIn(
+                            SharedSettings.CurrentAccount.RefreshToken, SharedSettings.CurrentAccount.UserID);
                     }
                     catch (Exception ex)
                     {
                         Helper.Write((object)nameof(App), (object)("Sign in exception: " + (object)ex));
+                        System.Diagnostics.Debug.WriteLine("Sign in exception: " + ex.Message);
                     }
                     App.trySignIn = true;
                 }
@@ -686,15 +714,19 @@ namespace myTube
                 {
                     try
                     {
-                        YouTube.RefreshSignIn(SharedSettings.CurrentAccount.RefreshToken, SharedSettings.CurrentAccount.UserID);
+                        YouTube.RefreshSignIn(SharedSettings.CurrentAccount.RefreshToken, 
+                            SharedSettings.CurrentAccount.UserID);
                     }
-                    catch
+                    catch (Exception ex)
                     {
                     }
                 }
             }
             else
+            {
                 Helper.Write((object)"Will not attempt tp sign in, as the app is already attempting to sign in");
+                System.Diagnostics.Debug.WriteLine("Will not attempt tp sign in, as the app is already attempting to sign in");
+            }
         }
 
         private async void YouTube_SignedIn(object sender, EventArgs e)
@@ -703,7 +735,11 @@ namespace myTube
             Helper.Write((object)"Signed in");
             App.signedInAt = DateTime.Now;
             ((IDictionary<string, object>)ApplicationData.Current.RoamingSettings.Values)["refreshToken"] = (object)YouTube.RefreshToken;
-            SharedSettings.CurrentAccount = YouTube.UserInfo == null || !SharedSettings.Accounts.HasAccount(YouTube.UserInfo.ID) || !YouTube.WasRefreshSignIn ? SharedSettings.Accounts.AddAccount(YouTube.UserInfo, YouTube.RefreshToken, YouTube.Scope) : SharedSettings.Accounts.AddAccount(YouTube.UserInfo, YouTube.RefreshToken, (string)null);
+            SharedSettings.CurrentAccount = YouTube.UserInfo == null 
+                || !SharedSettings.Accounts.HasAccount(YouTube.UserInfo.ID) 
+                || !YouTube.WasRefreshSignIn ? SharedSettings.Accounts.AddAccount(
+                    YouTube.UserInfo, YouTube.RefreshToken, YouTube.Scope) 
+                : SharedSettings.Accounts.AddAccount(YouTube.UserInfo, YouTube.RefreshToken, (string)null);
             Settings.Save();
             YouTube.GetSubscriptions();
         }
@@ -713,6 +749,7 @@ namespace myTube
             if (DateTime.Now - App.cipherTime < TimeSpan.FromMinutes(minutes))
             {
                 Helper.Write((object)nameof(UpdateCipher), (object)"Too soon to update the cipher");
+                System.Diagnostics.Debug.WriteLine(nameof(UpdateCipher), "Too soon to update the cipher");
                 return "Too soon";
             }
             try
@@ -735,7 +772,10 @@ namespace myTube
             HttpClient cl = new HttpClient();
             try
             {
-                YouTube.DecipherAlgorithm = await cl.GetStringAsync("http://rykenapps.com/UploadService/myTube/newcipher.txt?randtime=" + (object)DateTime.Now.Ticks);
+                YouTube.DecipherAlgorithm = 
+                    await cl.GetStringAsync("http://rykenapps.com/UploadService/myTube/newcipher.txt?randtime="
+                    + (object)DateTime.Now.Ticks);
+
                 App.cipherTime = DateTime.Now;
                 Settings.Cipher = YouTube.DecipherAlgorithm;
                 cl.Dispose();
@@ -744,6 +784,7 @@ namespace myTube
             catch (Exception ex)
             {
                 Helper.Write((object)("Error getting cipher: \n" + (object)ex));
+                System.Diagnostics.Debug.WriteLine("Error getting cipher: \n" + ex.Message);
                 return "Unable to get cipher";
             }
             finally
@@ -758,17 +799,23 @@ namespace myTube
                 return;
             try
             {
-                // ISSUE: object of a compiler-generated type is created
-                // ISSUE: variable of a compiler-generated type
+               
                 var displayClass1020 = new App.DisplayClass102_0();
+               
                 App.lastCheckedMessaged = DateTime.Now;
+                
                 Helper.Write((object)"Checking for messages");
-                // ISSUE: reference to a compiler-generated field
+                System.Diagnostics.Debug.WriteLine("Checking for messages");
+                
                 displayClass1020.messCli = new MessageClient();
-                // ISSUE: method pointer
-                //await ((DependencyObject)App.Instance.RootFrame).Dispatcher.RunAsync((CoreDispatcherPriority)0, new DispatchedHandler((object)displayClass1020, __methodptr(\u003CCheckMessages\u003Eb__0)));
+
+
+                await App.Instance.RootFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    App.CheckMessages(10.0);
+                });
             }
-            catch
+            catch (Exception ex)
             {
             }
         }
@@ -796,7 +843,7 @@ namespace myTube
 
             Popup popup1 = new Popup();
             popup1.Child = ((UIElement)Element1);
-            ((FrameworkElement)popup1).RequestedTheme = App.Theme;
+            popup1.RequestedTheme = App.Theme;
             Popup popup2 = popup1;
             PlaneProjection Element2 = new PlaneProjection();
             Element2.RotationX = -45.0;
@@ -804,14 +851,15 @@ namespace myTube
             Storyboard closeAnimation = Ani.Animation(Ani.DoubleAni((DependencyObject)Element1, 
                 "Opacity", 0.0, 0.1, (EasingFunctionBase)null, 0.0));
 
-            //Task<bool> task = DefaultPage.Current.ShowPopup(popup2, position, new Point(0.0, 0.0),
-            //    lightDismissed: false, closeAnimation: closeAnimation);
+            //Experimental
+            Task<bool> task = DefaultPage.Current.ShowPopup(popup2, position, new Point(0.0, 0.0),
+                                             lightDismissed: false, closeAnimation: closeAnimation);
 
             Ani.Begin((DependencyObject)Element2, "RotationX", 0.0, 0.35, 
                 (EasingFunctionBase)Ani.Ease((EasingMode)0, 6.0));
 
             Helper.Write((object)"  -Awaiting popup");
-            int num = 0;//await task ? 1 : 0;
+            int num = await task ? 1 : 0;
             Helper.Write((object)"      -Popup awaited");
         }
 
@@ -845,23 +893,39 @@ namespace myTube
             return true;
         }
 
-        public Task<bool> WindowActivatedTask => this.windowActivatedTask.Task;
+        public Task<bool> WindowActivatedTask
+        {
+            get
+            {
+                return this.windowActivatedTask.Task;
+            }
+        }
 
         private async Task initialSetup()
         {
             string Tag = nameof(initialSetup);
             Helper.Write((object)Tag, (object)"Initial setup");
-            this.globalObjects = App.GlobalObjects;
+
+            //RnD (try to set app permissions...)
+            this.globalObjects = default;//App.GlobalObjects;
+
             YouTubeEntry.DefaultThumbnailQuality = ThumbnailQuality.SD;
+
             long num = (long)(MemoryManager.AppMemoryUsageLimit / 1048576UL);
+
             if ((ulong)num < 500UL)
                 YouTubeEntry.DefaultThumbnailQuality = ThumbnailQuality.High;
+
             if ((ulong)num < 200UL)
                 YouTubeEntry.DefaultThumbnailQuality = ThumbnailQuality.Med;
-            if (!Settings.WasPaidFor && !App.IsTrial)
+            
+            //if (!Settings.WasPaidFor && !App.IsTrial)
                 Settings.WasPaidFor = true;
+
             YouTube.CacheHandler = (ICacheHandler)new YouTubeCacheHandler();
+            
             this.ApplyTheme(Settings.ColorCheme);
+
             if (Settings.UserMode == UserMode.Beta)
                 Settings.AutoShowDevMessages = true;
             try
@@ -871,10 +935,16 @@ namespace myTube
             catch (Exception ex)
             {
                 Helper.Write((object)Tag, (object)("Exception setting up background tasks: \n" + ex.ToString()));
+                System.Diagnostics.Debug.WriteLine("InitialSetup", "Exception setting up background tasks: \n"
+                    + ex.ToString());
+
             }
-            // ISSUE: method pointer
-            //ThreadPool.RunAsync(new WorkItemHandler((object)this, __methodptr(\u003CinitialSetup\u003Eb__112_1)));
+            
+            // Experimental 
+            //await Task.Run(() => this.initialSetup());
+
             Helper.Write((object)"InitialSetup", (object)"Starting");
+
             if (this.rootFrame == null)
             {
                 //await StatusBar.GetForCurrentView().HideAsync();
@@ -885,30 +955,27 @@ namespace myTube
                 Window.Current.Activate();
 
                 Helper.Write((object)"InitialSetup", (object)"Created DefaultPage");
-                this.rootFrame = defaultPage.Current.Frame; //?
+                System.Diagnostics.Debug.WriteLine("InitialSetup", "Created DefaultPage");
+
+                this.rootFrame = defaultPage.Frame; 
                 this.rootFrame.CacheSize = 4;
                 CustomFrame rootFrame = this.rootFrame;
 
-                //WindowsRuntimeMarshal.AddEventHandler<NavigatedEventHandler>(
-                //    new Func<NavigatedEventHandler, EventRegistrationToken>(((Frame)rootFrame).add_Navigated), 
-                //    new Action<EventRegistrationToken>(((Frame)rootFrame).remove_Navigated), 
-                //    new NavigatedEventHandler(this.RootFrame_FirstNavigated));
+                rootFrame.Navigated += this.RootFrame_FirstNavigated;
 
                 Helper.Write((object)"InitialSetup", (object)"Completed window setup");
+                System.Diagnostics.Debug.WriteLine("InitialSetup", "Completed window setup");
+
                 Window current1 = Window.Current;
-                
-                //WindowsRuntimeMarshal.AddEventHandler<WindowActivatedEventHandler>(
-                //    new Func<WindowActivatedEventHandler, EventRegistrationToken>(current1.add_Activated), 
-                //    new Action<EventRegistrationToken>(current1.remove_Activated), 
-                //    new WindowActivatedEventHandler(this.Current_Activated));
+
+                Window.Current.Activated += this.Current_Activated;
+
                 current1.Activated += this.Current_Activated;
                 current1.Activated -= this.Current_Activated;
 
                 Window current2 = Window.Current;
-                //WindowsRuntimeMarshal.AddEventHandler<WindowClosedEventHandler>(
-                //    new Func<WindowClosedEventHandler, EventRegistrationToken>(current2.add_Closed), 
-                //    new Action<EventRegistrationToken>(current2.remove_Closed), 
-                //    new WindowClosedEventHandler(this.Current_Closed));
+                
+                current2.Closed += this.Current_Closed;
 
                 current2.Closed += this.Current_Closed;
                 current2.Closed -= this.Current_Closed;
@@ -936,20 +1003,22 @@ namespace myTube
                             loadOrigPage = false;
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         loadOrigPage = true;
-                        if (Debugger.IsAttached)
-                            Debugger.Break();
+                        //if (Debugger.IsAttached)
+                        //    Debugger.Break();
                     }
                 }
                 Helper.Write((object)"InitialSetup", (object)"Finished default setup");
+                System.Diagnostics.Debug.WriteLine("InitialSetup", "Finished default setup");
             }
             if (this.activationArgs != null)
             {
                 if (this.activationArgs.Kind == ActivationKind.Protocol)
                 {
                     Helper.Write((object)"Launching from protocol activation");
+                    System.Diagnostics.Debug.WriteLine("InitialSetup", "Launching from protocol activation");
                     ProtocolActivatedEventArgs activationArgs = this.activationArgs as ProtocolActivatedEventArgs;
                     Uri uri = activationArgs.Uri;
                     string originalString = activationArgs.Uri.OriginalString;
@@ -961,13 +1030,13 @@ namespace myTube
                         switch (urlType.Type)
                         {
                             case YouTubeURLType.Video:
-                                //this.rootFrame.Navigate(typeof(VideoPage), (object)urlType.ID);
+                                this.rootFrame.Navigate(typeof(VideoPage), (object)urlType.ID);
                                 break;
                             case YouTubeURLType.Playlist:
-                                //this.rootFrame.Navigate(typeof(PlaylistPage), (object)urlType.ID);
+                                this.rootFrame.Navigate(typeof(PlaylistPage), (object)urlType.ID);
                                 break;
                             case YouTubeURLType.Channel:
-                                //this.rootFrame.Navigate(typeof(ChannelPage), (object)urlType.ID);
+                                this.rootFrame.Navigate(typeof(ChannelPage), (object)urlType.ID);
                                 break;
                             default:
                                 loadOrigPage = true;
@@ -978,27 +1047,27 @@ namespace myTube
                             if (((ContentControl)this.rootFrame).Content != null)
                                 this.rootFrame.ClearBackStackAtNavigate();
                             this.pageInfoCollection = new PageInfoCollection();
-                            //this.pageInfoCollection.AddPage(new PageInfo(typeof(HomePage), (object)null));
+                            this.pageInfoCollection.AddPage(new PageInfo(typeof(HomePage), (object)null));
                         }
                     }
                     else if (originalString.IndexOf("mytube:videoID=") == 0)
                     {
-                        //this.rootFrame.Navigate(typeof(VideoPage), (object)originalString.Replace("mytube:videoID=", ""));
+                        this.rootFrame.Navigate(typeof(VideoPage), (object)originalString.Replace("mytube:videoID=", ""));
                         loadOrigPage = false;
                     }
                     else if (urlConstructor.BaseAddress.Contains("Video") && urlConstructor.ContainsKey("ID"))
                     {
                         loadOrigPage = false;
                         this.rootFrame.ClearBackStackAtNavigate();
-                        //this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
-                        //this.rootFrame.Navigate(typeof(VideoPage), (object)urlConstructor["ID"]);
+                        this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
+                        this.rootFrame.Navigate(typeof(VideoPage), (object)urlConstructor["ID"]);
                     }
                     else if (urlConstructor.BaseAddress.Contains("Search") && urlConstructor.ContainsKey("Term"))
                     {
                         loadOrigPage = false;
                         this.rootFrame.ClearBackStackAtNavigate();
-                        //this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
-                        //this.rootFrame.Navigate(typeof(SearchPage), (object)urlConstructor["Term"]);
+                        this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
+                        this.rootFrame.Navigate(typeof(SearchPage), (object)urlConstructor["Term"]);
                     }
                     else if (urlConstructor.BaseAddress.Contains("vnd.youtube:"))
                     {
@@ -1006,20 +1075,20 @@ namespace myTube
                         YouTubeURLInfo urlType = YouTubeURLHelper.GetUrlType(str);
                         loadOrigPage = false;
                         this.rootFrame.ClearBackStackAtNavigate();
-                        //this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
+                        this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
                         switch (urlType.Type)
                         {
                             case YouTubeURLType.None:
-                                //this.rootFrame.Navigate(typeof(VideoPage), (object)str);
+                                this.rootFrame.Navigate(typeof(VideoPage), (object)str);
                                 break;
                             case YouTubeURLType.Video:
-                                //this.rootFrame.Navigate(typeof(VideoPage), (object)urlType.ID);
+                                this.rootFrame.Navigate(typeof(VideoPage), (object)urlType.ID);
                                 break;
                             case YouTubeURLType.Playlist:
-                                //this.rootFrame.Navigate(typeof(PlaylistPage), (object)urlType.ID);
+                                this.rootFrame.Navigate(typeof(PlaylistPage), (object)urlType.ID);
                                 break;
                             case YouTubeURLType.Channel:
-                                //this.rootFrame.Navigate(typeof(ChannelPage), (object)urlType.ID);
+                                this.rootFrame.Navigate(typeof(ChannelPage), (object)urlType.ID);
                                 break;
                         }
                     }
@@ -1036,21 +1105,25 @@ namespace myTube
                     //        (IStorageFile)Enumerable.FirstOrDefault<StorageFile>(
                     //            (IEnumerable<StorageFile>)activationArgs.Files));
                     //else
-                    //    this.rootFrame.Navigate(typeof(UploaderPage), (object)Enumerable.FirstOrDefault<StorageFile>((IEnumerable<StorageFile>)activationArgs.Files));
+                    //    this.rootFrame.Navigate(typeof(UploaderPage),
+                    //    (object)Enumerable.FirstOrDefault<StorageFile>(
+                    //    (IEnumerable<StorageFile>)activationArgs.Files));
                 }
                 else if (this.activationArgs.Kind == ActivationKind.ShareTarget)
                 {
                     ShareTargetActivatedEventArgs activationArgs = this.activationArgs as ShareTargetActivatedEventArgs;
                     if (activationArgs.ShareOperation.Data.Contains(StandardDataFormats.StorageItems))
                     {
-                        foreach (IStorageItem istorageItem in (IEnumerable<IStorageItem>)await activationArgs.ShareOperation.Data.GetStorageItemsAsync())
+                        foreach (IStorageItem istorageItem in 
+                            (IEnumerable<IStorageItem>)await activationArgs.ShareOperation.Data.GetStorageItemsAsync())
                         {
                             if (istorageItem is IStorageFile)
                             {
                                 loadOrigPage = false;
                                 //if (this.rootFrame.CurrentSourcePageType == typeof(UploaderPage))
                                 //{
-                                //    (((ContentControl)this.rootFrame).Content as UploaderPage).SelectFile(istorageItem as IStorageFile);
+                                //    (((ContentControl)this.rootFrame).Content as UploaderPage)
+                                //    .SelectFile(istorageItem as IStorageFile);
                                 //}
                                 //else
                                 //{
@@ -1062,20 +1135,28 @@ namespace myTube
                     }
                 }
                 Helper.Write((object)"InitialSetup", (object)"Finished activation args setup");
+                System.Diagnostics.Debug.WriteLine("InitialSetup", "Finished activation args setup");
             }
-            if (((ContentControl)this.rootFrame).Content == null & loadOrigPage && !this.initialized && App.launchTile == null)
+            if (((ContentControl)this.rootFrame).Content == null & loadOrigPage 
+                && !this.initialized && App.launchTile == null)
             {
                 Helper.Write((object)"InitialSetup", (object)"Creating default page");
-                //this.rootFrame.Navigate(typeof(HomePage));
+                System.Diagnostics.Debug.WriteLine("InitialSetup", "Creating default page");
+                this.rootFrame.Navigate(typeof(HomePage));
+                
                 Helper.Write((object)"InitialSetup", (object)"Navigated to homepage");
+                System.Diagnostics.Debug.WriteLine("InitialSetup", "Navigated to homepage");
             }
             else if (App.launchTile != null)
             {
                 this.rootFrame.ClearBackStackAtNavigate();
-                //if (Type.GetType(App.launchTile.PageType) != typeof(HomePage))
-                //    this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
+                if (Type.GetType(App.launchTile.PageType) != typeof(HomePage))
+                    this.rootFrame.AddToBackStackAtNavigate(typeof(HomePage), (object)null);
+
                 this.rootFrame.Navigate(Type.GetType(App.launchTile.PageType), (object)App.launchTile.Param);
+
                 Helper.Write((object)"InitialSetup", (object)"Navigated to launchTile page");
+                System.Diagnostics.Debug.WriteLine("InitialSetup", "Navigated to launchTile page");
             }
             SignInInfo currentAccount = SharedSettings.CurrentAccount;
             this.initialized = true;
@@ -1109,7 +1190,6 @@ namespace myTube
         }
 
         //ToDo: Popup
-
         private async void YouTube_ErrorReported(YouTubeError e)
         {
             // ISSUE: object of a compiler-generated type is created
@@ -1122,10 +1202,11 @@ namespace myTube
             if (Settings.UserMode < UserMode.Owner || Window.Current == null
                 || Window.Current.Content == null)
                 return;
-            // ISSUE: method pointer
-            //await ((DependencyObject)Window.Current.Content).Dispatcher.RunAsync(
-            //    (CoreDispatcherPriority)(- 1), new DispatchedHandler((object)displayClass1150, 
-            //    __methodptr(\u003CYouTube_ErrorReported\u003Eb__0)));
+            
+            await Window.Current.Content.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+            {
+                this.YouTube_ErrorReported(displayClass1150.e);
+            });
         }
 
         private string writeOutDict(Dictionary<string, object> dict)
@@ -1241,12 +1322,12 @@ namespace myTube
         }
 
 
-        private void TaskScheduler_UnobservedTaskException(
+        private async void TaskScheduler_UnobservedTaskException(
           object sender,
           UnobservedTaskExceptionEventArgs e)
         {
             e.SetObserved();
-            foreach (Exception innerException in e.Exception.InnerExceptions)
+            foreach (AggregateException innerException in e.Exception.InnerExceptions)
             {
                 // ISSUE: object of a compiler-generated type is created
                 // ISSUE: variable of a compiler-generated type
@@ -1276,7 +1357,7 @@ namespace myTube
                 // ISSUE: reference to a compiler-generated field
                 displayClass1300.data = new ExceptionData(innerException);
                 // ISSUE: reference to a compiler-generated field
-                displayClass1300.data.Versions.Add(this.globalObjects.Version.ToString());
+                displayClass1300.data.Versions.Add("v3.9");
                 // ISSUE: reference to a compiler-generated field
                 displayClass1300.data.Devices.Add(App.FullDeviceName);
                 // ISSUE: reference to a compiler-generated field
@@ -1292,14 +1373,21 @@ namespace myTube
                     "Oops, looks like we've run into an internal error the developer hasn't looked out for.\n\n" +
                     "Would you like to report it?\n\n" +
                     "Please include any information about how you came across this error in the report.";
+
                 if (Settings.UserMode >= UserMode.Owner)
                 {
                     string str2 = str1 + "\n\n" + innerException.ToString();
                 }
-              // ISSUE: method pointer
-              //((DependencyObject)this.RootFrame).Dispatcher.RunAsync((CoreDispatcherPriority)0, 
-              //    new DispatchedHandler((object)displayClass1300,
-              //    __methodptr(\u003CTaskScheduler_UnobservedTaskException\u003Eb__0)));
+
+                //((DependencyObject)this.RootFrame).Dispatcher.RunAsync((CoreDispatcherPriority)0, 
+                //    new DispatchedHandler((object)displayClass1300,
+                //    __methodptr(\u003CTaskScheduler_UnobservedTaskException\u003Eb__0)));
+                await this.RootFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    this.TaskScheduler_UnobservedTaskException(this, 
+                        new UnobservedTaskExceptionEventArgs(innerException));
+                });
+
             }
         }
 
@@ -1836,8 +1924,8 @@ namespace myTube
 
         private class DisplayClass91_0
         {
-            internal App u003E4;
-            internal ExceptionData data;
+            internal App item;
+            internal ExceptionData exception;
             internal string exceptionMessage;
 
             public DisplayClass91_0()

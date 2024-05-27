@@ -578,7 +578,7 @@ namespace myTube.Helpers
             //cleanTasks.Enqueue(ThreadPool.RunAsync(new WorkItemHandler((object)
             //    new YouTubeCacheHandler.DisplayClass32_0()
             //{
-            //  //u003E4 = this,
+            //  //item = this,
             //  g = this.cleanGroups.Dequeue()
             //}, 
             //runCleaningTasks)));

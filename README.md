@@ -13,7 +13,7 @@ So, myTube reconstruction is very important thing :)
 ## My 2 cents
 - Appx Decomp.
 - Fast code/architecture research
-- WP8 -> W10M code rebase/refactoring - approx. 20% 
+- WP8 -> W10M code rebase/refactoring - approx. 25% 
 - App builded with minimal UI yet
 - Min. Win. os build temporary set at 16299 (not at 14393) for future debug deals
 

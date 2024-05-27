@@ -6,31 +6,16 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     x:Name="userControl" 
     x:Class="myTube.VideoList">
-    
-    <Grid>
-        <!--"control experimental" /-->
-            <ContentControl x:Name="cancelSelectedButton" Visibility="Collapsed"/>
-            <ContentControl x:Name="acceptSelectedButton" Visibility="Collapsed"/>
-    </Grid>
-</UserControl>
-    
- <!-- TODO
- <UserControl 
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-    xmlns:local="using:myTube" 
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    x:Name="userControl" 
-    x:Class="myTube.VideoList">
+
+
     <UserControl.Resources>
         <ResourceDictionary>
             <local:ListStrings x:Name="listStrings" Default="we're waiting..." 
-                               SignIn="please sign in" Loading="loading videos" 
-                               NoItems="there are no videos in this list" />
+                           SignIn="please sign in" Loading="loading videos" 
+                           NoItems="there are no videos in this list" />
             <local:IconButtonEventCollection x:Name="contextMenuCollection">
-                <local:IconButtonEvent x:ConnectionId="1" x:Name="playIcon" Symbol="Play">
-                    <local:Text>
+                <local:IconButtonEvent x:Name="playIcon" Symbol="Play" Text="play">
+                    <!--local:Text>
                         <Binding Path="Values" ConverterParameter="common.play/play">
                             <Converter>
                                 <StaticResource ResourceKey="LowerConverter" />
@@ -39,11 +24,11 @@
                                 <StaticResource ResourceKey="Strings" />
                             </Source>
                         </Binding>
-                    </local:Text>
+                    </local:Text-->
                 </local:IconButtonEvent>
-                
-                <local:IconButtonEvent x:ConnectionId="2" x:Name="deleteButton" Symbol="Delete">
-                    <local:Text>
+
+                <local:IconButtonEvent x:Name="deleteButton" Symbol="Delete" Text="delete">
+                    <!--local:Text>
                         <Binding Path="Values" ConverterParameter="common.delete/delete">
                             <Converter>
                                 <StaticResource ResourceKey="LowerConverter" />
@@ -52,11 +37,11 @@
                                 <StaticResource ResourceKey="Strings" />
                             </Source>
                         </Binding>
-                    </local:Text>
+                    </local:Text-->
                 </local:IconButtonEvent>
-                
-                <local:IconButtonEvent x:ConnectionId="3" x:Name="watchLaterIcon" Symbol="Memo">
-                    <local:Text>
+
+                <local:IconButtonEvent x:Name="watchLaterIcon" Symbol="Memo" Text="watch later'">
+                    <!--local:Text>
                         <Binding Path="Values" ConverterParameter="videos.lists.watchlater/watch later">
                             <Converter>
                                 <StaticResource ResourceKey="LowerConverter" />
@@ -65,155 +50,172 @@
                                 <StaticResource ResourceKey="Strings" />
                             </Source>
                         </Binding>
-                    </local:Text>
+                    </local:Text-->
                 </local:IconButtonEvent>
                 
-                <local:IconButtonEvent x:ConnectionId="4" x:Name="pinIcon" Symbol="Pin"
-                                       Text="pin" />
-                <local:IconButtonEvent x:ConnectionId="5" x:Name="saveIcon" Symbol="Save"
-                                       Text="save (highest quality)" />
+                <local:IconButtonEvent x:Name="pinIcon" Symbol="Pin" Text="pin" />
+                
+                <local:IconButtonEvent x:Name="saveIcon" Symbol="Save" Text="save (highest quality)" />
             </local:IconButtonEventCollection>
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
+
+
+
     <ScrollViewer>
         <Grid>
-            <Children>
-                <UIElementCollection>
-                    <ScrollViewer x:Name="scroll" ZoomMode="Disabled" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled">
-                        <Content>
-                            <Grid>
-                                <Margin>
-                                    <Binding Path="DefaultMargin" Mode="OneWay">
-                                        <Source>
+            <ListView>
+                <ScrollViewer x:Name="scroll" ZoomMode="Disabled" 
+                                  HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled">
+                    <ScrollViewer.Content>
+                        <Grid>
+                            <Grid.Margin>
+                                <Binding Path="DefaultMargin" Mode="OneWay">
+                                    <!--Source>
                                             <StaticResource ResourceKey="GlobalAppObjects" />
-                                        </Source>
-                                    </Binding>
-                                </Margin>
-                                <Children>
-                                    <UIElementCollection>
-                                        <TextBlock x:Name="loadingText" TextWrapping="Wrap" Margin="0,0,47,5,0" IsHitTestVisible="True" FontWeight="SemiLight">
-                      <Foreground>
-                        <ThemeResource ResourceKey="SubtleBrush" />
-                      </Foreground>
-                      <FontSize>
-                        <StaticResource ResourceKey="LoadingFontSize" />
-                      </FontSize>
-                      <Text>
-                        <Binding Path="Current" Mode="OneWay">
-                          <Source>
-                            <StaticResource ResourceKey="listStrings" />
-                          </Source>
-                        </Binding>
-                      </Text>
-                      <Transitions>
-                        <TransitionCollection>
-                          <AddDeleteThemeTransition />
-                        </TransitionCollection>
-                      </Transitions>
-                                        </TextBlock>
-                                        <ItemsControl x:Name="ItemList" VerticalScrollBarVisibility="Visible">
-                                            <Margin>
-                                                <Binding Path="ListPadding" ElementName="userControl" />
-                                            </Margin>
-                                            <ItemsSource>
-                                                <Binding Path="Entries" />
-                                            </ItemsSource>
-                                            <ItemTemplate>
-                                                <Binding Path="VideoThumbTemplate">
-                                                    <Source>
-                                                        <StaticResource ResourceKey="GlobalAppObjects" />
-                                                    </Source>
-                                                </Binding>
-                                            </ItemTemplate>
-                                            <ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <Template>
-                                                        <ItemsWrapGrid x:Name="wrapPanel" ItemHeight="не число" Margin="0,0,0,38" Orientation="Horizontal" CacheLength="3">
-                                                            <ChildrenTransitions>
-                                                                <TransitionCollection>
-                                                                    <EntranceThemeTransition FromHorizontalOffset="0" FromVerticalOffset="28" IsStaggeringEnabled="False" />
-                                                                    <RepositionThemeTransition />
-                                                                </TransitionCollection>
-                                                            </ChildrenTransitions>
-                                                        </ItemsWrapGrid>
-                                                    </Template>
-                                                </ItemsPanelTemplate>
-                                            </ItemsPanel>
-                                        </ItemsControl>
-                                    </UIElementCollection>
-                                </Children>
-                            </Grid>
-                        </Content>
-                    </ScrollViewer>
-                    <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="19,19,19,19">
-                        <ChildrenTransitions>
+                                        </Source-->
+                                </Binding>
+                            </Grid.Margin>
+
+                            <Grid.Children>
+                                <ListView>
+                                    <TextBlock x:Name="loadingText" TextWrapping="Wrap" Margin="0,0,47,5" 
+                                                   IsHitTestVisible="True" FontWeight="SemiLight">
+                                        <!--TextBlock.Foreground>
+                                            <ThemeResource ResourceKey="SubtleBrush" />
+                                        </TextBlock.Foreground>
+                                        <TextBlock.FontSize>
+                                            <StaticResource ResourceKey="LoadingFontSize" />
+                                        </TextBlock.FontSize-->
+                                        <TextBlock.Text>
+                                            
+                                            <!--Path="Current"-->
+                                                <Binding Mode="OneWay">
+                                                <Binding.Source>
+                                                    <StaticResource ResourceKey="listStrings" />
+                                                </Binding.Source>
+                                            </Binding>
+                                        </TextBlock.Text>
+                                        <TextBlock.Transitions>
+                                            <TransitionCollection>
+                                                <AddDeleteThemeTransition />
+                                            </TransitionCollection>
+                                        </TextBlock.Transitions>
+                                    </TextBlock>
+
+
+                                    <ItemsControl x:Name="ItemList">
+                                        
+                                        <ItemsControl.Margin>
+                                            <Binding Path="ListPadding" ElementName="userControl" />
+                                        </ItemsControl.Margin>
+                                        
+                                        <ItemsControl.ItemsSource>
+                                            <Binding Path="Entries" />
+                                        </ItemsControl.ItemsSource>
+                                        
+                                        <!--ItemsControl.ItemTemplate>
+                                            <Binding Path="VideoThumbTemplate">
+                                                <Binding.Source>
+                                                    <StaticResource ResourceKey="GlobalAppObjects" />
+                                                </Binding.Source>
+                                            </Binding>
+                                        </ItemsControl.ItemTemplate-->
+
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                 <ItemsWrapGrid x:Name="wrapPanel"
+                                                                   ItemHeight="20" 
+                                                                   Margin="0,0,0,38" 
+                                                                   Orientation="Horizontal" CacheLength="3">                                                       
+                                                            <!--TransitionCollection>
+                                                                <EntranceThemeTransition 
+                                                                    FromHorizontalOffset="0" 
+                                                                    FromVerticalOffset="28" 
+                                                                    IsStaggeringEnabled="False" />
+                                                                <RepositionThemeTransition />
+                                                            </TransitionCollection-->                                                     
+                                                    </ItemsWrapGrid>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                    </ItemsControl>
+                                </ListView>
+                            </Grid.Children>
+                        </Grid>
+                    </ScrollViewer.Content>
+                </ScrollViewer>
+
+                <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="19,19,19,19">
+                        <Grid.ChildrenTransitions>
                             <TransitionCollection>
                                 <RepositionThemeTransition />
                             </TransitionCollection>
-                        </ChildrenTransitions>
-                        <ColumnDefinitions>
-                            <ColumnDefinitionCollection>
+                        </Grid.ChildrenTransitions>
+                        
+                        <Grid.ColumnDefinitions>
+                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </ColumnDefinitionCollection>
-                        </ColumnDefinitions>
-                        <Children>
-                            <UIElementCollection>
-                                <ContentControl x:ConnectionId="6" x:Name="cancelSelectedButton" Column="0" Visibility="Collapsed">
-                                    <Template>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Grid.Children>
+                            <ListView>
+                                <ContentControl x:Name="cancelSelectedButton" 
+                                                 Visibility="Collapsed">
+                                     <!--ContentControl.Template>
                                         <StaticResource ResourceKey="StandardPointerWithZoom" />
-                                    </Template>
-                                    <Transitions>
+                                    </ContentControl.Template-->
+                                    <ContentControl.Transitions>
                                         <TransitionCollection>
                                             <AddDeleteThemeTransition />
                                         </TransitionCollection>
-                                    </Transitions>
-                                    <Content>
+                                    </ContentControl.Transitions>
+                                     <ContentControl.Content>
                                         <Grid Width="47,5" Height="47,5" Margin="19,0,19,0">
-                                            <Children>
-                                                <UIElementCollection>
+                                            <Grid.Children>
+                                                <ListView>
                                                     <Ellipse Stroke="White" StrokeThickness="0">
-                                                        <Fill>
-                                                            <ThemeResource ResourceKey="AccentBrush" />
-                                                        </Fill>
+                                                      <Ellipse.Fill>
+                                                            <ThemeResource 
+                                                                ResourceKey="AppBarBackgroundThemeBrush" />
+                                                        </Ellipse.Fill>
                                                     </Ellipse>
                                                     <SymbolIcon Symbol="Cancel" Foreground="White" />
-                                                </UIElementCollection>
-                                            </Children>
+                                                </ListView>
+                                            </Grid.Children>
                                         </Grid>
-                                    </Content>
+                                    </ContentControl.Content>
                                 </ContentControl>
-                                <ContentControl x:ConnectionId="7" x:Name="acceptSelectedButton" Column="1" Visibility="Collapsed">
-                                    <Template>
+                                <ContentControl x:Name="acceptSelectedButton" Visibility="Collapsed">
+                                    <!--ContentControl.Template>
                                         <StaticResource ResourceKey="StandardPointerWithZoom" />
-                                    </Template>
-                                    <Transitions>
+                                    </ContentControl.Template-->
+                                      <ContentControl.Transitions>
                                         <TransitionCollection>
                                             <AddDeleteThemeTransition />
                                         </TransitionCollection>
-                                    </Transitions>
-                                    <Content>
+                                    </ContentControl.Transitions>
+                                     <ContentControl.Content>
                                         <Grid Width="76" Height="76">
-                                            <Children>
-                                                <UIElementCollection>
+                                            <Grid.Children>
+                                                <ListView>
                                                     <Ellipse Stroke="White" StrokeThickness="0">
-                                                        <Fill>
-                                                            <ThemeResource ResourceKey="AccentBrush" />
-                                                        </Fill>
+                                                        <Ellipse.Fill>
+                                                            <ThemeResource ResourceKey="AppBarBackgroundThemeBrush" />
+                                                        </Ellipse.Fill>
                                                     </Ellipse>
-                                                    <SymbolIcon x:Name="multiSelectSymbol" Symbol="Accept" Foreground="White" />
-                                                </UIElementCollection>
-                                            </Children>
+                                                    <SymbolIcon x:Name="multiSelectSymbol"
+                                                                Symbol="Accept" Foreground="White" />
+                                                </ListView>
+                                            </Grid.Children>
                                         </Grid>
-                                    </Content>
+                                    </ContentControl.Content>
                                 </ContentControl>
-                            </UIElementCollection>
-                        </Children>
+                            </ListView>
+                        </Grid.Children>
                     </Grid>
-                </UIElementCollection>
-            </Children>
+              </ListView>
         </Grid>
     </ScrollViewer>
 </UserControl>
-  -->
+    

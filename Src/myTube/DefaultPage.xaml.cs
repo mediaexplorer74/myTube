@@ -1,4 +1,5 @@
 ﻿// myTube.DefaultPage
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +24,7 @@ using Windows.Devices.Input;
 using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
 using Windows.Media.Transcoding;
-using Windows.Phone.UI.Input;
+//using Windows.Phone.UI.Input;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
@@ -186,16 +187,41 @@ namespace myTube
         private SymbolIcon backSymbol;
      */
 
+        public VideoPlayer Player
+        {
+            get
+            {
+                return this.player;
+            }
+        }
 
-        public VideoPlayer Player => this.player;
+        public OverCanvas OverCanvas
+        {
+            get
+            {
+                return this.overCanvas;
+            }
+        }
 
-        public OverCanvas OverCanvas => this.overCanvas;
+        public TimeSpan PlayerArrangeActiveTick
+        {
+            get
+            {
+                return App.DeviceFamily == DeviceFamily.Desktop
+                   ? TimeSpan.FromSeconds(1.0 / 120.0) 
+                   : TimeSpan.FromSeconds(1.0 / 30.0);
+            }
+        }
 
-        public TimeSpan PlayerArrangeActiveTick => App.DeviceFamily == DeviceFamily.Desktop 
-            ? TimeSpan.FromSeconds(1.0 / 120.0) : TimeSpan.FromSeconds(1.0 / 30.0);
-
-        public TimeSpan PlayerArrangeInactiveTick => App.DeviceFamily == DeviceFamily.Desktop 
-            ? TimeSpan.FromSeconds(0.5) : TimeSpan.FromSeconds(1.0);
+        public TimeSpan PlayerArrangeInactiveTick
+        {
+            get
+            {
+                return App.DeviceFamily == DeviceFamily.Desktop
+                   ? TimeSpan.FromSeconds(0.5) 
+                   : TimeSpan.FromSeconds(1.0);
+            }
+        }
 
         public static Storyboard GetPopupCloseAnimation(DependencyObject obj)
         {
@@ -248,7 +274,8 @@ namespace myTube
                 Storyboard storyboard = Ani.Begin((Timeline)Ani.DoubleAni((DependencyObject)page.titleGrid, 
                     "Opacity", 0.0, 0.25), page.player.MediaRunning
                     ? (Timeline)Ani.DoubleAni((DependencyObject)page.blackRec, "Opacity", 1.0, 0.25, 
-                    (EasingFunctionBase)Ani.Ease((EasingMode)2, 1.0), 0.25) : (Timeline)null);
+                                     (EasingFunctionBase)Ani.Ease((EasingMode)2, 1.0), 0.25)
+                    : (Timeline)null);
                 
                 int num;
 
@@ -354,11 +381,8 @@ namespace myTube
             Helper.Write((object)nameof(DefaultPage), (object)"Create TranslateTransforms");
             CustomFrame rootFrame1 = this.RootFrame;
 
-            WindowsRuntimeMarshal.AddEventHandler<NavigatedEventHandler>(new Func<NavigatedEventHandler, 
-                EventRegistrationToken>(((Windows.UI.Xaml.Controls.Frame)rootFrame1).add_Navigated), 
-                new Action<EventRegistrationToken>(((Windows.UI.Xaml.Controls.Frame)rootFrame1).remove_Navigated),
-                new NavigatedEventHandler(this.RootFrame_Navigated));
-           
+            ((Windows.UI.Xaml.Controls.Frame)rootFrame1).Navigated += this.RootFrame_Navigated;
+
 
             CustomFrame rootFrame2 = this.RootFrame;
            
@@ -367,12 +391,13 @@ namespace myTube
             this.RootFrame.NavigationCalled += new EventHandler<NavigationMode>(this.RootFrame_NavigationCalled);
             Button backButton = this.backButton;
            
-            WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(((ButtonBase)backButton).add_Click), new Action<EventRegistrationToken>(((ButtonBase)backButton).remove_Click), new RoutedEventHandler(this.backButton_Click));
            
-            WindowsRuntimeMarshal.AddEventHandler<SizeChangedEventHandler>(new Func<SizeChangedEventHandler, EventRegistrationToken>(((FrameworkElement)this).add_SizeChanged), new Action<EventRegistrationToken>(((FrameworkElement)this).remove_SizeChanged), new SizeChangedEventHandler(this.DefaultPage_SizeChanged));
-           
-            WindowsRuntimeMarshal.AddEventHandler<EventHandler<BackPressedEventArgs>>(new Func<EventHandler<BackPressedEventArgs>, EventRegistrationToken>(HardwareButtons.add_BackPressed), new Action<EventRegistrationToken>(HardwareButtons.remove_BackPressed), new EventHandler<BackPressedEventArgs>(this.HardwareButtons_BackPressed));
-           
+            ((ButtonBase)backButton).Click += this.backButton_Click;
+
+            ((FrameworkElement)this).SizeChanged += this.DefaultPage_SizeChanged;
+
+            HardwareButtons.BackPressed += this.HardwareButtons_BackPressed;
+
             ((UIElement)this).ManipulationMode = (ManipulationModes)3;
 
             Helper.Write((object)nameof(DefaultPage), 
@@ -380,49 +405,64 @@ namespace myTube
 
             YouTube.SignedIn += new EventHandler<SignedInEventArgs>(this.YouTube_SignedIn);
             YouTube.SignedOut += new EventHandler<SignedOutEventArgs>(this.YouTube_SignedOut);
-            WindowsRuntimeMarshal.AddEventHandler<ManipulationDeltaEventHandler>(new Func<ManipulationDeltaEventHandler, EventRegistrationToken>(((UIElement)this).add_ManipulationDelta), new Action<EventRegistrationToken>(((UIElement)this).remove_ManipulationDelta), new ManipulationDeltaEventHandler(this.DefaultPage_ManipulationDelta));
-            WindowsRuntimeMarshal.AddEventHandler<ManipulationStartedEventHandler>(new Func<ManipulationStartedEventHandler, EventRegistrationToken>(((UIElement)this).add_ManipulationStarted), new Action<EventRegistrationToken>(((UIElement)this).remove_ManipulationStarted), new ManipulationStartedEventHandler(this.DefaultPage_ManipulationStarted));
-            WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(((UIElement)this).add_Tapped), new Action<EventRegistrationToken>(((UIElement)this).remove_Tapped), new TappedEventHandler(this.DefaultPage_Tapped));
-            WindowsRuntimeMarshal.AddEventHandler<ManipulationCompletedEventHandler>(new Func<ManipulationCompletedEventHandler, EventRegistrationToken>(((UIElement)this).add_ManipulationCompleted), new Action<EventRegistrationToken>(((UIElement)this).remove_ManipulationCompleted), new ManipulationCompletedEventHandler(this.DefaultPage_ManipulationCompleted));
+
+            ((UIElement)this).ManipulationDelta += this.DefaultPage_ManipulationDelta;
+            ((UIElement)this).ManipulationStarted += this.DefaultPage_ManipulationStarted;
+            ((UIElement)this).Tapped += this.DefaultPage_Tapped;
+            ((UIElement)this).ManipulationCompleted += this.DefaultPage_ManipulationCompleted;
+
             CoreWindow coreWindow1 = Window.Current.CoreWindow;
-            
-            // ISSUE: method pointer
-            WindowsRuntimeMarshal.AddEventHandler<TypedEventHandler<CoreWindow, KeyEventArgs>>(new Func<TypedEventHandler<CoreWindow, KeyEventArgs>, EventRegistrationToken>(coreWindow1.add_KeyDown), new Action<EventRegistrationToken>(coreWindow1.remove_KeyDown), new TypedEventHandler<CoreWindow, KeyEventArgs>((object)this, __methodptr(CoreWindow_KeyDown)));
+
+            Window.Current.CoreWindow.KeyDown += this.CoreWindow_KeyDown;
+
             CoreWindow coreWindow2 = Window.Current.CoreWindow;
-            
-            // ISSUE: method pointer
-            WindowsRuntimeMarshal.AddEventHandler<TypedEventHandler<CoreWindow, KeyEventArgs>>(new Func<TypedEventHandler<CoreWindow, KeyEventArgs>, EventRegistrationToken>(coreWindow2.add_KeyUp), new Action<EventRegistrationToken>(coreWindow2.remove_KeyUp), new TypedEventHandler<CoreWindow, KeyEventArgs>((object)this, __methodptr(CoreWindow_KeyUp)));
+
+            Window.Current.CoreWindow.KeyUp += this.CoreWindow_KeyUp;
+
             CoreWindow coreWindow3 = Window.Current.CoreWindow;
-            // ISSUE: method pointer
-            WindowsRuntimeMarshal.AddEventHandler<TypedEventHandler<CoreWindow, PointerEventArgs>>(new Func<TypedEventHandler<CoreWindow, PointerEventArgs>, EventRegistrationToken>(coreWindow3.add_PointerPressed), new Action<EventRegistrationToken>(coreWindow3.remove_PointerPressed), new TypedEventHandler<CoreWindow, PointerEventArgs>((object)this, __methodptr(CoreWindow_PointerPressed)));
+            
+            Window.Current.CoreWindow.PointerPressed += this.CoreWindow_PointerPressed;
+
             CoreWindow coreWindow4 = Window.Current.CoreWindow;
-            // ISSUE: method pointer
-            WindowsRuntimeMarshal.AddEventHandler<TypedEventHandler<CoreWindow, PointerEventArgs>>(new Func<TypedEventHandler<CoreWindow, PointerEventArgs>, EventRegistrationToken>(coreWindow4.add_PointerEntered), new Action<EventRegistrationToken>(coreWindow4.remove_PointerEntered), new TypedEventHandler<CoreWindow, PointerEventArgs>((object)this, __methodptr(CoreWindow_PointerEntered)));
+
+            Window.Current.CoreWindow.PointerEntered += this.CoreWindow_PointerEntered;
+
+
             Window current = Window.Current;
-            WindowsRuntimeMarshal.AddEventHandler<WindowSizeChangedEventHandler>(new Func<WindowSizeChangedEventHandler, EventRegistrationToken>(current.add_SizeChanged), new Action<EventRegistrationToken>(current.remove_SizeChanged), new WindowSizeChangedEventHandler(this.Current_SizeChanged));
+            
+            current.SizeChanged += this.Current_SizeChanged;
+
             Helper.Write((object)nameof(DefaultPage), (object)"Created CoreWindow key and pointer events");
+            
             this.SetTheme(Settings.Theme);
             App.GlobalObjects.VideoThumbTemplate = Settings.Thunbnail != ThumbnailStyle.Classic 
                 ? (DataTemplate)((IDictionary<object, object>)Application.Current.Resources)[(object)"VideoThumbs2"]
                 : (DataTemplate)((IDictionary<object, object>)Application.Current.Resources)[(object)"VideoThumbs"];
             DependencyProperty bannerReadyProperty = DefaultPage.BannerReadyProperty;
             Binding binding2 = new Binding();
-            binding2.put_Path(new PropertyPath(nameof(BannerReady)));
-            binding2.put_FallbackValue((object)false);
-            binding2.put_TargetNullValue((object)false);
+            binding2.Path = (new PropertyPath(nameof(BannerReady)));
+            binding2.FallbackValue = ((object)false);
+            binding2.TargetNullValue = ((object)false);
             ((FrameworkElement)this).SetBinding(bannerReadyProperty, (BindingBase)binding2);
             DisplayInformation forCurrentView = DisplayInformation.GetForCurrentView();
-            // ISSUE: method pointer
-            WindowsRuntimeMarshal.AddEventHandler<TypedEventHandler<DisplayInformation, object>>(new Func<TypedEventHandler<DisplayInformation, object>, EventRegistrationToken>(forCurrentView.add_OrientationChanged), new Action<EventRegistrationToken>(forCurrentView.remove_OrientationChanged), new TypedEventHandler<DisplayInformation, object>((object)this, __methodptr(DefaultPage_OrientationChanged)));
+            
+         
+            forCurrentView.OrientationChanged += this.DefaultPage_OrientationChanged;
+
             CustomFrame rootFrame3 = this.RootFrame;
-            WindowsRuntimeMarshal.AddEventHandler<NavigatedEventHandler>(new Func<NavigatedEventHandler, EventRegistrationToken>(((Windows.UI.Xaml.Controls.Frame)rootFrame3).add_Navigated), new Action<EventRegistrationToken>(((Windows.UI.Xaml.Controls.Frame)rootFrame3).remove_Navigated), new NavigatedEventHandler(this.FirstNavi));
-            ((UIElement)this).put_RenderTransform((Transform)this.trans);
-            ((UIElement)this).put_RenderTransformOrigin(new Point(0.5, 0.5));
+
+            rootFrame3.Navigated += this.FirstNavi;
+
+
+            ((UIElement)this).RenderTransform = ((Transform)this.trans);
+            ((UIElement)this).RenderTransformOrigin = (new Point(0.5, 0.5));
             Helper.Write((object)nameof(DefaultPage), (object)"Created");
+            
             CoreDispatcher dispatcher = ((DependencyObject)this).Dispatcher;
-            // ISSUE: method pointer
-            WindowsRuntimeMarshal.AddEventHandler<TypedEventHandler<CoreDispatcher, AcceleratorKeyEventArgs>>(new Func<TypedEventHandler<CoreDispatcher, AcceleratorKeyEventArgs>, EventRegistrationToken>(dispatcher.add_AcceleratorKeyActivated), new Action<EventRegistrationToken>(dispatcher.remove_AcceleratorKeyActivated), new TypedEventHandler<CoreDispatcher, AcceleratorKeyEventArgs>((object)this, __methodptr(Dispatcher_AcceleratorKeyActivated)));
-            this.videoPlayerIndex = (uint)((IList<UIElement>)((Panel)this.LayoutRoot).Children).IndexOf((UIElement)this.player);
+            dispatcher.AcceleratorKeyActivated += this.Dispatcher_AcceleratorKeyActivated;
+
+            this.videoPlayerIndex = (uint)((IList<UIElement>)((Panel)this.LayoutRoot).Children).IndexOf(
+                (UIElement)this.player);
         }
 
         private void view_VisibleBoundsChanged(DefaultPage defaultPage, object e)
@@ -434,7 +474,9 @@ namespace myTube
           CoreDispatcher sender,
           AcceleratorKeyEventArgs args)
         {
-            if (args.EventType != null && args.EventType != 4 || args.VirtualKey != 13 || !args.KeyStatus.IsMenuKeyDown || !this.player.MediaRunning || this.overCanvas == null)
+            if (args.EventType != null && args.EventType != CoreAcceleratorKeyEventType.SystemKeyDown 
+                || args.VirtualKey != VirtualKey.MiddleButton || args.VirtualKey != VirtualKey.Enter
+                || !args.KeyStatus.IsMenuKeyDown || !this.player.MediaRunning || this.overCanvas == null)
                 return;
             this.ToggleFullscreen();
             this.player.Controls.UpdateFullscreenButton();
@@ -460,11 +502,15 @@ namespace myTube
             thickness1.Right = thickness2.Right = bounds.Right - visibleBounds.Right;
             if (!this.Shown || this.playerShown)
                 return;
-            ((FrameworkElement)this.RootFrame).put_Margin(thickness1);
-            ((FrameworkElement)this.titleGrid).put_Margin(thickness2);
+            ((FrameworkElement)this.RootFrame).Margin = thickness1;
+            ((FrameworkElement)this.titleGrid).Margin = thickness2;
         }
 
-        protected virtual Size MeasureOverride(Size availableSize) => ((FrameworkElement)this).MeasureOverride(availableSize);
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            //RnD
+            return availableSize;// ((FrameworkElement)this).MeasureOverride(availableSize);
+        }
 
         private void Current_SizeChanged(object sender, WindowSizeChangedEventArgs e)
         {
@@ -479,7 +525,7 @@ namespace myTube
 
         private void FirstNavi(object sender, NavigationEventArgs e)
         {
-            WindowsRuntimeMarshal.RemoveEventHandler<NavigatedEventHandler>(new Action<EventRegistrationToken>(((Windows.UI.Xaml.Controls.Frame)this.RootFrame).remove_Navigated), new NavigatedEventHandler(this.FirstNavi));
+            ((Windows.UI.Xaml.Controls.Frame)this.RootFrame).Navigated -= this.FirstNavi;
             this.SetOrientationType();
         }
 
@@ -489,14 +535,14 @@ namespace myTube
         {
             if (type == RotationType.Custom)
             {
-                DisplayInformation.put_AutoRotationPreferences((DisplayOrientations)2);
+                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
                 this.player.Controls.ControlsState = PlayerControlsState.Compact;
             }
             else
             {
                 if (type != RotationType.System)
                     return;
-                DisplayInformation.put_AutoRotationPreferences((DisplayOrientations)7);
+                DisplayInformation.AutoRotationPreferences = (DisplayOrientations)7;
                 this.player.Controls.ControlsState = PlayerControlsState.Default;
             }
         }
@@ -534,13 +580,15 @@ namespace myTube
         {
             // ISSUE: object of a compiler-generated type is created
             // ISSUE: variable of a compiler-generated type
-            DefaultPage.\u003C\u003Ec__DisplayClass86_0 cDisplayClass860 = new DefaultPage.\u003C\u003Ec__DisplayClass86_0();
+            var cDisplayClass860 = new DefaultPage.DisplayClass86_0();
             // ISSUE: reference to a compiler-generated field
-            cDisplayClass860.\u003C\u003E4__this = this;
+            cDisplayClass860.u003E4 = this;
             // ISSUE: reference to a compiler-generated field
             cDisplayClass860.or = or;
+
             if (this.currentPopup != null)
                 return;
+
             if (this.rotationLocked)
             {
                 // ISSUE: reference to a compiler-generated field
@@ -550,14 +598,19 @@ namespace myTube
             // ISSUE: reference to a compiler-generated field
             // ISSUE: reference to a compiler-generated field
             // ISSUE: reference to a compiler-generated field
-            if (Settings.RotationType != RotationType.Custom || cDisplayClass860.or != null && cDisplayClass860.or != 3 && cDisplayClass860.or != 1 || cDisplayClass860.or == this.lastSimpleOrientation)
+            if (Settings.RotationType != RotationType.Custom || cDisplayClass860.or != null 
+                && cDisplayClass860.or != (SimpleOrientation)3 && cDisplayClass860.or != (SimpleOrientation)1 
+                || cDisplayClass860.or == this.lastSimpleOrientation)
                 return;
             // ISSUE: reference to a compiler-generated field
             Helper.Write((object)nameof(DefaultPage), (object)("Rotating to " + (object)cDisplayClass860.or));
             // ISSUE: reference to a compiler-generated field
             this.lastSimpleOrientation = cDisplayClass860.or;
-            // ISSUE: method pointer
-            await ((DependencyObject)this).Dispatcher.RunAsync((CoreDispatcherPriority)1, new DispatchedHandler((object)cDisplayClass860, __methodptr(\u003CRotate\u003Eb__0)));
+
+            //TODO
+            //await ((DependencyObject)this).Dispatcher.RunAsync((CoreDispatcherPriority)1,
+            //new DispatchedHandler((object)cDisplayClass860, __methodptr(\u003CRotate\u003Eb__0)));
+            
         }
 
         private void setPlayerShown(bool res)
@@ -566,17 +619,17 @@ namespace myTube
             if (this.Shown && this.page != null && this.page.BottomAppBar != null)
             {
                 if (this.lastSimpleOrientation == null && !res)
-                    ((UIElement)this.page.BottomAppBar).put_Visibility((Visibility)0);
-                else if (((UIElement)this.page.BottomAppBar).Visibility != 1 & res)
+                    ((UIElement)this.page.BottomAppBar).Visibility = (Visibility)0;
+                else if (((UIElement)this.page.BottomAppBar).Visibility != (Visibility)1 & res)
                 {
                     this.appBarVis = ((UIElement)this.page.BottomAppBar).Visibility;
-                    ((UIElement)this.page.BottomAppBar).put_Visibility((Visibility)1);
+                    ((UIElement)this.page.BottomAppBar).Visibility = (Visibility)1;
                 }
                 else
                     this.appBarVis = (Visibility)0;
             }
-          ((UIElement)this.RootFrame).put_IsHitTestVisible(!res);
-            ((UIElement)this.titleGrid).put_IsHitTestVisible(!res && this.Shown);
+          ((UIElement)this.RootFrame).IsHitTestVisible = !res;
+            ((UIElement)this.titleGrid).IsHitTestVisible = !res && this.Shown;
             if (this.Shown)
             {
                 double opacity;
@@ -591,49 +644,53 @@ namespace myTube
                 }
                 if (res)
                 {
-                    Storyboard storyboard = Ani.Begin((Timeline)Ani.DoubleAni((DependencyObject)this.RootFrame, "Opacity", opacity, 0.4), (Timeline)Ani.DoubleAni((DependencyObject)this.titleGrid, "Opacity", opacity, 0.4));
-                    WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>, EventRegistrationToken>(((Timeline)storyboard).add_Completed), new Action<EventRegistrationToken>(((Timeline)storyboard).remove_Completed), (EventHandler<object>)((_param1, _param2) =>
+                    Storyboard storyboard = Ani.Begin((Timeline)Ani.DoubleAni((DependencyObject)this.RootFrame,
+                        "Opacity", opacity, 0.4), 
+                        (Timeline)Ani.DoubleAni((DependencyObject)this.titleGrid, "Opacity", opacity, 0.4));
+
+                    
+                    ((Timeline)storyboard).Completed += (s, e) =>
                     {
-                        ((UIElement)this.blackRec).put_Visibility((Visibility)0);
+                        ((UIElement)this.blackRec).Visibility = Visibility.Collapsed;
                         Ani.Begin((DependencyObject)this.blackRec, "Opacity", 1.0 - opacity, 0.2);
-                        Grid titleGrid = this.titleGrid;
-                        Visibility visibility1;
-                        ((UIElement)this.RootFrame).put_Visibility((Visibility)(int)(visibility1 = (Visibility)1));
-                        Visibility visibility2 = visibility1;
-                        ((UIElement)titleGrid).put_Visibility(visibility2);
-                    }));
+                        ((UIElement)this.RootFrame).Visibility = Visibility.Visible;
+                        ((UIElement)this.titleGrid).Visibility = Visibility.Visible;
+                    };
                 }
                 else
                 {
                     Grid titleGrid = this.titleGrid;
-                    Visibility visibility3;
-                    ((UIElement)this.RootFrame).put_Visibility((Visibility)(int)(visibility3 = (Visibility)0));
-                    Visibility visibility4 = visibility3;
-                    ((UIElement)titleGrid).put_Visibility(visibility4);
-                    Storyboard storyboard = Ani.Begin((Timeline)Ani.DoubleAni((DependencyObject)this.RootFrame, "Opacity", opacity, 0.4), (Timeline)Ani.DoubleAni((DependencyObject)this.titleGrid, "Opacity", opacity, 0.4), (Timeline)Ani.DoubleAni((DependencyObject)this.blackRec, "Opacity", 1.0 - opacity, 0.1));
-                    WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>, EventRegistrationToken>(((Timeline)storyboard).add_Completed), new Action<EventRegistrationToken>(((Timeline)storyboard).remove_Completed), (EventHandler<object>)((_param1, _param2) =>
+
+                    ((UIElement)this.RootFrame).Visibility = Visibility.Collapsed;
+                    ((UIElement)this.titleGrid).Visibility = Visibility.Collapsed;
+                    Storyboard storyboard = Ani.Begin(
+                        Ani.DoubleAni((DependencyObject)this.RootFrame, "Opacity", opacity, 0.4),
+                        Ani.DoubleAni((DependencyObject)this.titleGrid, "Opacity", opacity, 0.4),
+                        Ani.DoubleAni((DependencyObject)this.blackRec, "Opacity", 1.0 - opacity, 0.1));
+                    storyboard.Completed += (s, e) =>
                     {
                         if (!this.Shown)
                             return;
-                        ((UIElement)this.blackRec).put_Visibility((Visibility)1);
-                    }));
+                        ((UIElement)this.blackRec).Visibility = Visibility.Visible;
+                    };
                 }
             }
             else if (res)
             {
                 Grid titleGrid = this.titleGrid;
+
                 Visibility visibility5;
-                ((UIElement)this.RootFrame).put_Visibility((Visibility)(int)(visibility5 = (Visibility)1));
+                ((UIElement)this.RootFrame).Visibility = (Visibility)(int)(visibility5 = (Visibility.Collapsed));
                 Visibility visibility6 = visibility5;
-                ((UIElement)titleGrid).put_Visibility(visibility6);
+                ((UIElement)titleGrid).Visibility = visibility6;
             }
             else
             {
                 Grid titleGrid = this.titleGrid;
                 Visibility visibility7;
-                ((UIElement)this.RootFrame).put_Visibility((Visibility)(int)(visibility7 = (Visibility)0));
+                ((UIElement)this.RootFrame).Visibility = ((Visibility)(int)(visibility7 = (Visibility)0));
                 Visibility visibility8 = visibility7;
-                ((UIElement)titleGrid).put_Visibility(visibility8);
+                ((UIElement)titleGrid).Visibility = (visibility8);
             }
         }
 
@@ -642,19 +699,22 @@ namespace myTube
           double scale,
           RenderTargetBitmap ren = null)
         {
-            ((UIElement)this.renderingCanvas).put_Visibility((Visibility)0);
+            ((UIElement)this.renderingCanvas).Visibility = Visibility.Visible;
+
             Helper.Write((object)"Rendering RenderTargetBitmap in DefaultPage");
             Helper.WriteMemory("Memory before rendering element");
-            ((UIElement)el).put_Opacity(0.1);
+
+            ((UIElement)el).Opacity = 0.1;
             ((ICollection<UIElement>)((Panel)this.renderingCanvas).Children).Add((UIElement)el);
             await el.WaitForImagesToLoad(5000);
             if (ren == null)
                 ren = new RenderTargetBitmap();
-            ((UIElement)el).put_Opacity(1.0);
+            ((UIElement)el).Opacity = 1.0;
             await ren.RenderAsync((UIElement)el, (int)(el.ActualWidth * scale), (int)(el.ActualHeight * scale));
             ((ICollection<UIElement>)((Panel)this.renderingCanvas).Children).Remove((UIElement)el);
             Helper.WriteMemory("Memory after rendering element");
-            ((UIElement)this.renderingCanvas).put_Visibility((Visibility)1);
+
+            ((UIElement)this.renderingCanvas).Visibility = Visibility.Collapsed;
             return ren;
         }
 
@@ -671,7 +731,7 @@ namespace myTube
             }
             if (!args.CurrentPoint.Properties.IsXButton1Pressed)
                 return;
-            args.put_Handled(true);
+            args.Handled = true;
             this.GoBack();
         }
 
@@ -679,65 +739,70 @@ namespace myTube
         {
             if (args.Handled || FocusManager.GetFocusedElement() is TextBox)
                 return;
-            if ((args.VirtualKey == 32 || args.VirtualKey == 75) && !this.VideoPlayer.Hidden)
+            if ((args.VirtualKey == (VirtualKey)32 || args.VirtualKey == (VirtualKey)75) && !this.VideoPlayer.Hidden)
             {
-                if (this.VideoPlayer.MediaElement.CurrentState == 3)
+                if (this.VideoPlayer.MediaElement.CurrentState == MediaElementState.Playing)
                     this.VideoPlayer.MediaElement.Pause();
                 else
                     this.VideoPlayer.MediaElement.Play();
             }
-            if (!this.VideoPlayer.MediaRunning || this.VideoPlayer.Hidden || this.VideoPlayer.MediaElement.CurrentState != 3 && this.VideoPlayer.MediaElement.CurrentState != 4 && this.VideoPlayer.MediaElement.CurrentState != 2)
+            
+            if (!this.VideoPlayer.MediaRunning || this.VideoPlayer.Hidden 
+                || this.VideoPlayer.MediaElement.CurrentState != MediaElementState.Playing 
+                && this.VideoPlayer.MediaElement.CurrentState != MediaElementState.Paused 
+                && this.VideoPlayer.MediaElement.CurrentState != MediaElementState.Buffering)
                 return;
+
             TimeSpan timeSpan1 = this.VideoPlayer.MediaElement.Position;
             TimeSpan timeSpan2 = this.VideoPlayer.MediaElement.NaturalDuration.TimeSpan;
             bool flag = false;
             VirtualKey virtualKey = args.VirtualKey;
             switch (virtualKey - 48)
             {
-                case 0:
+                case (VirtualKey)0:
                     timeSpan1 = TimeSpan.Zero;
                     flag = true;
                     break;
-                case 1:
+                case (VirtualKey)1:
                     timeSpan1 = TimeSpan.FromSeconds(timeSpan2.TotalSeconds * 0.1);
                     flag = true;
                     break;
-                case 2:
+                case (VirtualKey)2:
                     timeSpan1 = TimeSpan.FromSeconds(timeSpan2.TotalSeconds * 0.2);
                     flag = true;
                     break;
-                case 3:
+                case (VirtualKey)3:
                     timeSpan1 = TimeSpan.FromSeconds(timeSpan2.TotalSeconds * 0.3);
                     flag = true;
                     break;
-                case 4:
+                case (VirtualKey)4:
                     timeSpan1 = TimeSpan.FromSeconds(timeSpan2.TotalSeconds * 0.4);
                     flag = true;
                     break;
-                case 5:
+                case (VirtualKey)5:
                     timeSpan1 = TimeSpan.FromSeconds(timeSpan2.TotalSeconds * 0.5);
                     flag = true;
                     break;
-                case 6:
+                case (VirtualKey)6:
                     timeSpan1 = TimeSpan.FromSeconds(timeSpan2.TotalSeconds * 0.6);
                     flag = true;
                     break;
-                case 7:
+                case (VirtualKey)7:
                     timeSpan1 = TimeSpan.FromSeconds(timeSpan2.TotalSeconds * 0.7);
                     flag = true;
                     break;
-                case 8:
+                case (VirtualKey)8:
                     timeSpan1 = TimeSpan.FromSeconds(timeSpan2.TotalSeconds * 0.8);
                     flag = true;
                     break;
-                case 9:
+                case (VirtualKey)9:
                     timeSpan1 = TimeSpan.FromSeconds(timeSpan2.TotalSeconds * 0.9);
                     flag = true;
                     break;
                 default:
-                    if (virtualKey != 74)
+                    if (virtualKey != (VirtualKey)74)
                     {
-                        if (virtualKey == 76)
+                        if (virtualKey == (VirtualKey)76)
                         {
                             timeSpan1 += TimeSpan.FromSeconds(10.0);
                             flag = true;
@@ -757,33 +822,34 @@ namespace myTube
             {
                 MediaElement audioElement = VideoPlayer.AudioElement;
                 TimeSpan timeSpan3;
-                this.VideoPlayer.MediaElement.put_Position(timeSpan3 = timeSpan1);
+                this.VideoPlayer.MediaElement.Position = timeSpan3 = timeSpan1;
                 TimeSpan timeSpan4 = timeSpan3;
-                audioElement.put_Position(timeSpan4);
+                audioElement.Position =(timeSpan4);
             }
             else
-                this.VideoPlayer.MediaElement.put_Position(timeSpan1);
+                this.VideoPlayer.MediaElement.Position = timeSpan1;
         }
 
         private async void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
         {
             if (args.KeyStatus.IsKeyReleased || args.Handled || FocusManager.GetFocusedElement() is TextBox)
                 return;
-            if (args.VirtualKey == 27 || args.VirtualKey == 166)
-                args.put_Handled(this.GoBack());
-            if (args.VirtualKey == 36 || args.VirtualKey == 172)
+            if (args.VirtualKey == (VirtualKey)27 || args.VirtualKey == (VirtualKey)166)
+                args.Handled = this.GoBack();
+            if (args.VirtualKey == (VirtualKey)36 || args.VirtualKey == (VirtualKey)172)
             {
-                this.RootFrame.Navigate(typeof(HomePage));
+                //TODO
+                //this.RootFrame.Navigate(typeof(HomePage));
                 this.RootFrame.ClearBackStackAtNavigate();
             }
             if (this.overCanvas == null || this.movingWithDpad || App.IsFullScreen)
                 return;
-            if (args.VirtualKey == 37)
+            if (args.VirtualKey == (VirtualKey)37)
             {
                 this.movingWithDpad = true;
                 this.overCanvas.ScrollToPage(this.overCanvas.SelectedPage - 1, false);
             }
-            else if (args.VirtualKey == 39)
+            else if (args.VirtualKey == (VirtualKey)39)
             {
                 this.movingWithDpad = true;
                 this.overCanvas.ScrollToPage(this.overCanvas.SelectedPage + 1, false);
@@ -799,16 +865,23 @@ namespace myTube
             if (this.leftRightTimer != null)
                 return;
             this.leftRightTimer = new DispatcherTimer();
-            this.leftRightTimer.put_Interval(TimeSpan.FromSeconds(0.5));
+            this.leftRightTimer.Interval = (TimeSpan.FromSeconds(0.5));
             DispatcherTimer leftRightTimer = this.leftRightTimer;
-            WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>, EventRegistrationToken>(leftRightTimer.add_Tick), new Action<EventRegistrationToken>(leftRightTimer.remove_Tick), new EventHandler<object>(this.leftRightTimer_Tick));
-            this.leftRightFadeIn.Add((Timeline)Ani.DoubleAni((DependencyObject)this.leftRight, "Opacity", 1.0, 0.1));
-            this.leftRightFadeOut.Add((Timeline)Ani.DoubleAni((DependencyObject)this.leftRight, "Opacity", 0.0, 0.1));
+
+            leftRightTimer.Tick += leftRightTimer_Tick;
+
+            this.leftRightFadeIn.Add((Timeline)Ani.DoubleAni((DependencyObject)this.leftRight, 
+                "Opacity", 1.0, 0.1));
+            this.leftRightFadeOut.Add((Timeline)Ani.DoubleAni((DependencyObject)this.leftRight, 
+                "Opacity", 0.0, 0.1));
             Storyboard leftRightFadeOut = this.leftRightFadeOut;
-            WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>, EventRegistrationToken>(((Timeline)leftRightFadeOut).add_Completed), new Action<EventRegistrationToken>(((Timeline)leftRightFadeOut).remove_Completed), (EventHandler<object>)((_param1, _param2) => ((UIElement)this.leftRight).put_Visibility((Visibility)1)));
+            leftRightFadeOut.Completed += (s, e) =>
+            {
+                this.leftRight.Visibility = Visibility.Visible;
+            };
         }
 
-        protected virtual void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
+        protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
         {
             if (this.overCanvas != null && !this.Shown && App.DeviceFamily == DeviceFamily.Desktop)
             {
@@ -817,18 +890,21 @@ namespace myTube
                 else
                     this.ExitFullscreenMode();
             }
-          ((Control)this).OnDoubleTapped(e);
+         
+            this.OnDoubleTapped(e);
         }
 
-        protected virtual void OnPointerMoved(PointerRoutedEventArgs e)
+        protected override void OnPointerMoved(PointerRoutedEventArgs e)
         {
-            if ((e.Pointer.PointerDeviceType == 2 || e.Pointer.PointerDeviceType == 1) && this.leftRight != null)
+            if ((e.Pointer.PointerDeviceType == PointerDeviceType.Mouse 
+                || e.Pointer.PointerDeviceType == PointerDeviceType.Pen) && this.leftRight != null)
             {
                 if (this.leftRight == null)
                     return;
                 this.makeLeftRightTimer();
                 PointerPoint currentPoint = e.GetCurrentPoint((UIElement)this.leftRight);
-                if (currentPoint.Position.X < 380.0 || currentPoint.Position.X > ((FrameworkElement)this).ActualWidth - 380.0)
+                if (currentPoint.Position.X < 380.0 
+                    || currentPoint.Position.X > ((FrameworkElement)this).ActualWidth - 380.0)
                 {
                     this.leftRightTimer.Stop();
                     if (!this.Shown)
@@ -856,7 +932,7 @@ namespace myTube
             }
             else
                 this.hideLeftRight();
-            if (e.Pointer.PointerDeviceType == 2)
+            if (e.Pointer.PointerDeviceType == PointerDeviceType.Mouse)
             {
                 if (!this.player.Hidden && ((FrameworkElement)this.player).ContainsPoint(e))
                 {
@@ -864,7 +940,8 @@ namespace myTube
                         this.player.ControlsShown = true;
                     if (this.player.ControlsWatch.IsRunning)
                         this.player.ControlsWatch.Restart();
-                    if (this.player.MediaElement.CurrentState == 3 || this.player.MediaElement.CurrentState == 4)
+                    if (this.player.MediaElement.CurrentState == MediaElementState.Playing 
+                        || this.player.MediaElement.CurrentState == MediaElementState.Paused)
                         this.createMouseShownTimer();
                 }
                 else if (!this.player.Controls.IsSeeking && this.player.ControlsShown)
@@ -873,7 +950,7 @@ namespace myTube
                     this.player.ControlsShown = false;
                 }
             }
-          ((Control)this).OnPointerMoved(e);
+          this.OnPointerMoved(e);
         }
 
         private void createMouseShownTimer()
@@ -881,7 +958,7 @@ namespace myTube
             if (this.mouseShownTimer != null)
                 return;
             this.mouseShownTimer = new DispatcherTimer();
-            this.mouseShownTimer.put_Interval(TimeSpan.FromSeconds(3.0));
+            this.mouseShownTimer.Interval = TimeSpan.FromSeconds(3.0);
         }
 
         private void mouseShownTimer_Tick(object sender, object e) => this.mouseShownTimer.Stop();
@@ -915,7 +992,7 @@ namespace myTube
 
         protected override void OnPointerEntered(PointerRoutedEventArgs e)
         {
-            ((Control)this).OnPointerEntered(e);
+            this.OnPointerEntered(e);
             if (this.currentPlayerElement == null 
                 || !this.player.ControlsShown || ((FrameworkElement)this.player).ContainsPoint(e))
                 return;
@@ -926,17 +1003,20 @@ namespace myTube
         {
             if (this.currentPlayerElement != null && this.currentPlayerElement != this.LayoutRoot)
                 this.player.ControlsShown = false;
-            ((Control)this).OnPointerWheelChanged(e);
+            this.OnPointerWheelChanged(e);
         }
 
         protected override void OnPointerPressed(PointerRoutedEventArgs e)
         {
-            ((Control)this).OnPointerPressed(e);
+            this.OnPointerPressed(e);
             if (((RoutedEventArgs)e).OriginalSource is TextBlock originalSource && originalSource.IsTextSelectionEnabled || ((RoutedEventArgs)e).OriginalSource is TextBox)
                 return;
             int num1 = this.player.ControlsShown ? 1 : 0;
-            PointerPoint currentPoint = e.GetCurrentPoint((UIElement)this);
-            if (!this.movingOvercanvas && this.overCanvas != null && !this.player.ControlsShown && e.Pointer.PointerDeviceType == 2)
+            PointerPoint currentPoint = e.GetCurrentPoint(this);
+            if (!this.movingOvercanvas && this.overCanvas != null 
+                && 
+                !this.player.ControlsShown 
+                && e.Pointer.PointerDeviceType == PointerDeviceType.Mouse)
             {
                 int num2 = currentPoint.Properties.IsLeftButtonPressed ? 1 : 0;
             }
@@ -945,7 +1025,7 @@ namespace myTube
 
         protected override void OnManipulationDelta(ManipulationDeltaRoutedEventArgs e)
         {
-            ((Control)this).OnManipulationDelta(e);
+            this.OnManipulationDelta(e);
             if (!this.movingOvercanvas)
                 return;
             this.overCanvas.Move(e.Delta.Translation.X);
@@ -953,7 +1033,7 @@ namespace myTube
 
         protected override void OnManipulationCompleted(ManipulationCompletedRoutedEventArgs e)
         {
-            ((Control)this).OnManipulationCompleted(e);
+            this.OnManipulationCompleted(e);
             if (!this.movingOvercanvas)
                 return;
             ((UIElement)this).ManipulationMode = (ManipulationModes)65536;
@@ -964,7 +1044,7 @@ namespace myTube
 
         protected override void OnPointerReleased(PointerRoutedEventArgs e)
         {
-            ((Control)this).OnPointerReleased(e);
+            this.OnPointerReleased(e);
             MediaTranscoder mediaTranscoder = new MediaTranscoder();
             if (!this.movingOvercanvas)
                 return;
@@ -1065,14 +1145,33 @@ namespace myTube
             }
         }
 
-        private void YouTube_SignedOut(object sender, EventArgs e)
+        private async void YouTube_SignedOut(object sender, EventArgs e)
         {
-            //TODO
-            //((DependencyObject)this).Dispatcher.RunAsync((CoreDispatcherPriority)(- 1), 
-            //    new DispatchedHandler((object)this, __methodptr(\u003CYouTube_SignedOut\u003Eb__122_0)));
+            await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+            {
+                this.YouTube_SignedOut();
+            });
         }
 
-        private void YouTube_SignedIn(object sender, EventArgs e) => ((DependencyObject)this).Dispatcher.RunAsync((CoreDispatcherPriority) - 1, new DispatchedHandler((object)this, __methodptr(\u003CYouTube_SignedIn\u003Eb__123_0)));
+
+        private async void YouTube_SignedIn(object sender, EventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+            {
+                this.YouTube_SignedIn();
+            });
+        }
+
+        //TODO
+        private void YouTube_SignedIn()
+        {
+            // your code here
+        }
+
+        private void YouTube_SignedOut()
+        {
+            // your code here
+        }
 
         private void HardwareButtons_BackPressed(object sender, EventArgs e)
         {
@@ -1085,11 +1184,7 @@ namespace myTube
             //e.Handled= this.GoBack();
         }
 
-        private void BackPressed(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public bool GoBack()
         {
             if (App.IsFullScreen)
@@ -1103,16 +1198,21 @@ namespace myTube
                 this.ClosePopup();
                 return true;
             }
-            if (this.webView != null && ((ICollection<UIElement>)((Panel)this.LayoutRoot).Children).Contains((UIElement)this.webView))
+            if (this.webView != null && ((ICollection<UIElement>)(
+                (Panel)this.LayoutRoot).Children).Contains((UIElement)this.webView))
             {
                 this.CloseBrowser();
                 return true;
             }
             if (this.RootFrame != null)
             {
-                if ((!this.VideoPlayer.Hidden || this.playerShown) && this.VideoPlayer.MediaElement != null && Settings.MiniPlayerType == MiniPlayerType.Background)
+                if ((!this.VideoPlayer.Hidden || this.playerShown) && this.VideoPlayer.MediaElement != null 
+                    && Settings.MiniPlayerType == MiniPlayerType.Background)
                 {
-                    if ((this.VideoPlayer.MediaElement.CurrentState == 3 || this.VideoPlayer.MediaElement.CurrentState == 4 || this.VideoPlayer.MediaElement.CurrentState == 2) && Settings.MiniPlayerType == MiniPlayerType.Background)
+                    if ((this.VideoPlayer.MediaElement.CurrentState == (MediaElementState)3 
+                        || this.VideoPlayer.MediaElement.CurrentState == (MediaElementState)4 
+                        || this.VideoPlayer.MediaElement.CurrentState == (MediaElementState)2) 
+                        && Settings.MiniPlayerType == MiniPlayerType.Background)
                     {
                         this.VideoPlayer.SetBookmark(save: true);
                         if (VideoPlayer.AudioElement.HasMedia())
@@ -1141,10 +1241,18 @@ namespace myTube
         {
             if (this.currentPopup != null)
                 this.ClosePopup();
-            this.goingBack = e == 1;
+            this.goingBack = (e == NavigationMode.Back);
+
             if (this.RootFrame.Animate)
             {
-                Storyboard storyboard = Ani.Animation(Ani.DoubleAni((DependencyObject)this.titleTrans, "Y", this.goingBack ? 45.0 : -45.0, 0.1, (EasingFunctionBase)Ani.Ease((EasingMode)1, 3.0)), Ani.DoubleAni((DependencyObject)this.pivotTrans, "Y", this.goingBack ? 70.0 : -70.0, 0.075, (EasingFunctionBase)Ani.Ease((EasingMode)1, 3.0)), Ani.DoubleAni((DependencyObject)this.pivot, "Opacity", 0.0, 0.075), Ani.DoubleAni((DependencyObject)this.title, "Opacity", 0.0, 0.1), Ani.DoubleAni((DependencyObject)this.backgroundRec, "Opacity", 0.0, 0.1));
+                Storyboard storyboard = Ani.Animation(
+                    Ani.DoubleAni((DependencyObject)this.titleTrans, "Y", 
+                    this.goingBack ? 45.0 : -45.0, 0.1, (EasingFunctionBase)Ani.Ease((EasingMode)1, 3.0)),
+                    Ani.DoubleAni((DependencyObject)this.pivotTrans, "Y",
+                    this.goingBack ? 70.0 : -70.0, 0.075, (EasingFunctionBase)Ani.Ease((EasingMode)1, 3.0)),
+                    Ani.DoubleAni((DependencyObject)this.pivot, "Opacity", 0.0, 0.075),
+                    Ani.DoubleAni((DependencyObject)this.title, "Opacity", 0.0, 0.1),
+                    Ani.DoubleAni((DependencyObject)this.backgroundRec, "Opacity", 0.0, 0.1));
                 this.frameNavigatingAnimation = storyboard;
                 storyboard.Begin();
             }
@@ -1152,11 +1260,11 @@ namespace myTube
             {
                 TextBlock title = this.title;
                 double num1;
-                ((UIElement)this.pivot).put_Opacity(num1 = 0.0);
+                this.pivot.Opacity = num1 = 0.0;
                 double num2 = num1;
-                ((UIElement)title).put_Opacity(num2);
-                this.titleTrans.put_Y(this.goingBack ? 15.0 : -15.0);
-                this.pivotTrans.put_Y(this.goingBack ? 20.0 : -20.0);
+                title.Opacity = num2;
+                this.titleTrans.Y = this.goingBack ? 15.0 : -15.0;
+                this.pivotTrans.Y = this.goingBack ? 20.0 : -20.0;
             }
         }
 
@@ -1167,9 +1275,9 @@ namespace myTube
         private void DefaultPage_Loaded(object sender, RoutedEventArgs e)
         {
             Helper.Write((object)nameof(DefaultPage), (object)"Loaded");
-            ((UIElement)this.titleGrid).put_RenderTransform((Transform)(this.stackPanelTrans = new TranslateTransform()));
-            ((UIElement)this.pivot).put_RenderTransform((Transform)this.pivotTrans);
-            ((UIElement)this.title).put_RenderTransform((Transform)this.titleTrans);
+            this.titleGrid.RenderTransform = (Transform)(this.stackPanelTrans = new TranslateTransform());
+            this.pivot.RenderTransform = (Transform)this.pivotTrans;
+            this.title.RenderTransform = (Transform)this.titleTrans;
             Helper.Write((object)nameof(DefaultPage), (object)"Getting orientation sensor");
             Accel.Dispatcher = ((DependencyObject)this).Dispatcher;
             Accel.OrientChanged += new OrientChangedEventHandler(this.Accel_OrientChanged);
@@ -1183,15 +1291,19 @@ namespace myTube
             this.MiniPlayerTypeChanged();
             if (this.currentPopup != null)
             {
-                Func<Point> popupArrangeMethod = DefaultPage.GetPopupArrangeMethod((DependencyObject)this.currentPopup);
+                Func<Point> popupArrangeMethod 
+                    = DefaultPage.GetPopupArrangeMethod((DependencyObject)this.currentPopup);
                 if (popupArrangeMethod != null)
                 {
                     Point point = popupArrangeMethod();
-                    this.currentPopup.put_HorizontalOffset(point.X);
-                    this.currentPopup.put_VerticalOffset(point.Y);
+                    this.currentPopup.HorizontalOffset = point.X;
+                    this.currentPopup.VerticalOffset = point.Y;
                 }
             }
-            string str = e.NewSize.Height > 450.0 ? (e.NewSize.Width <= 500.0 || e.NewSize.Height <= 500.0 ? "TinyPhone" : (e.NewSize.Width > 800.0 ? "DefaultPhone" : "NarrowPhone")) : "TinyLandscapePhone";
+            string str = e.NewSize.Height > 450.0 ? (e.NewSize.Width <= 500.0 
+                || e.NewSize.Height <= 500.0 
+                ? "TinyPhone" 
+                : (e.NewSize.Width > 800.0 ? "DefaultPhone" : "NarrowPhone")) : "TinyLandscapePhone";
             if (!(str != this.lastStateName))
                 return;
             VisualStateManager.GoToState((Control)this, str, false);
@@ -1215,7 +1327,7 @@ namespace myTube
             {
                 this.lastType = content.GetType();
                 FrameworkElement frameworkElement = content;
-                WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(frameworkElement.add_Loaded), new Action<EventRegistrationToken>(frameworkElement.remove_Loaded), new RoutedEventHandler(this.fe_Loaded));
+                frameworkElement.Loaded += this.fe_Loaded;
             }
             if (!(content is OverCanvas))
                 return;
@@ -1224,8 +1336,11 @@ namespace myTube
 
         private void SetPage(Page page)
         {
-            if (this.page != null && this.page.BottomAppBar is CommandBar && this.page.BottomAppBar is CommandBar bottomAppBar && ((ICollection<ICommandBarElement>)bottomAppBar.PrimaryCommands).Contains((ICommandBarElement)this.appBarSearch))
-                ((ICollection<ICommandBarElement>)bottomAppBar.PrimaryCommands).Remove((ICommandBarElement)this.appBarSearch);
+            if (this.page != null && this.page.BottomAppBar 
+                is CommandBar && this.page.BottomAppBar is CommandBar bottomAppBar 
+                && ((ICollection<ICommandBarElement>)bottomAppBar.PrimaryCommands).Contains((ICommandBarElement)this.appBarSearch))
+                ((ICollection<ICommandBarElement>)bottomAppBar
+                    .PrimaryCommands).Remove((ICommandBarElement)this.appBarSearch);
             this.page = page;
             this.SetOrientation(DisplayInformation.GetForCurrentView().CurrentOrientation);
             this.SetSearchInAppBar(Settings.SearchInAppBar);
@@ -1233,56 +1348,65 @@ namespace myTube
 
         public void SetSearchInAppBar(bool set)
         {
-            if (this.page == null | this.page.BottomAppBar == null || !(this.page.BottomAppBar is CommandBar bottomAppBar))
+            if (this.page == null | this.page.BottomAppBar == null 
+                || !(this.page.BottomAppBar is CommandBar bottomAppBar))
                 return;
             if (set)
             {
-                ((UIElement)this.searchButton).put_Opacity(0.0);
-                ((UIElement)this.searchButton).put_IsHitTestVisible(false);
-                ((UIElement)this.searchButton).put_Visibility((Visibility)1);
+                ((UIElement)this.searchButton).Opacity = 0.0;
+                ((UIElement)this.searchButton).IsHitTestVisible = false;
+                ((UIElement)this.searchButton).Visibility = Visibility.Collapsed;
                 if (bottomAppBar == null || ((ICollection<ICommandBarElement>)bottomAppBar.PrimaryCommands).Contains((ICommandBarElement)this.appBarSearch))
                     return;
-                this.appBarSearch.put_Label(App.Strings["search.search", "search"]);
-                ((ICollection<ICommandBarElement>)bottomAppBar.PrimaryCommands).Add((ICommandBarElement)this.appBarSearch);
-                ((Control)this.appBarSearch).put_IsEnabled(true);
+                this.appBarSearch.Label = App.Strings["search.search", "search"];
+                ((ICollection<ICommandBarElement>)bottomAppBar.PrimaryCommands)
+                    .Add((ICommandBarElement)this.appBarSearch);
+                ((Control)this.appBarSearch).IsEnabled = true;
             }
             else
             {
-                ((UIElement)this.searchButton).put_Opacity(1.0);
-                ((UIElement)this.searchButton).put_IsHitTestVisible(true);
-                ((UIElement)this.searchButton).put_Visibility((Visibility)0);
-                if (bottomAppBar == null || !((ICollection<ICommandBarElement>)bottomAppBar.PrimaryCommands).Contains((ICommandBarElement)this.appBarSearch))
+                ((UIElement)this.searchButton).Opacity = 1.0;
+                ((UIElement)this.searchButton).IsHitTestVisible = true;
+                ((UIElement)this.searchButton).Visibility = Visibility.Visible;
+                if (bottomAppBar == null || 
+                  !((ICollection<ICommandBarElement>)bottomAppBar.PrimaryCommands).Contains((ICommandBarElement)this.appBarSearch))
                     return;
                 ((ICollection<ICommandBarElement>)bottomAppBar.PrimaryCommands).Remove((ICommandBarElement)this.appBarSearch);
             }
         }
 
-        public void SetTheme(ElementTheme theme) => ((FrameworkElement)this).put_RequestedTheme(theme);
+        public void SetTheme(ElementTheme theme) => ((FrameworkElement)this).RequestedTheme = theme;
 
         private void setAppBarPlaceholder(bool open)
         {
             if (open)
             {
-                this.appBarTrans.put_Y(((FrameworkElement)this.appBarPlaceHolder).ActualHeight);
-                ((UIElement)this.appBarPlaceHolder).put_Visibility((Visibility)0);
-                Ani.Begin((DependencyObject)this.appBarTrans, "Y", 0.0, 0.4, (EasingFunctionBase)Ani.Ease((EasingMode)0, 4.0));
+                this.appBarTrans.Y = this.appBarPlaceHolder.ActualHeight;
+                this.appBarPlaceHolder.Visibility = Visibility.Visible;
+                Ani.Begin((DependencyObject)this.appBarTrans, "Y", 0.0, 0.4, 
+                    (EasingFunctionBase)Ani.Ease((EasingMode)0, 4.0));
             }
             else
             {
                 if (((UIElement)this.appBarPlaceHolder).Visibility != null)
                     return;
-                Storyboard storyboard = Ani.Begin((DependencyObject)this.appBarTrans, "Y", ((FrameworkElement)this.appBarPlaceHolder).ActualHeight, 0.2, (EasingFunctionBase)Ani.Ease((EasingMode)1, 4.0));
-                WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>, EventRegistrationToken>(((Timeline)storyboard).add_Completed), new Action<EventRegistrationToken>(((Timeline)storyboard).remove_Completed), (EventHandler<object>)((_param1, _param2) => ((UIElement)this.appBarPlaceHolder).put_Visibility((Visibility)1)));
+                Storyboard storyboard = Ani.Begin((DependencyObject)this.appBarTrans, "Y", 
+                    ((FrameworkElement)this.appBarPlaceHolder).ActualHeight, 0.2, 
+                    (EasingFunctionBase)Ani.Ease((EasingMode)1, 4.0));
+
+                storyboard.Completed += (s, e) 
+                    => this.appBarPlaceHolder.Visibility = Visibility.Visible;
             }
         }
 
         private async void fe_Loaded(object sender, RoutedEventArgs e)
         {
-            if (sender is FrameworkElement fe)
+            FrameworkElement fe = default;
+            if (sender is FrameworkElement)
             {
                 this.iterations = 0;
                 OverCanvas oc = await this.SearchForOverCanvas((DependencyObject)fe);
-                WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>(new Action<EventRegistrationToken>(fe.remove_Loaded), new RoutedEventHandler(this.fe_Loaded));
+                fe.Loaded -= this.fe_Loaded;
                 this.SetOverCanvas(oc);
             }
             Page page = fe as Page;
@@ -1331,34 +1455,46 @@ namespace myTube
                 this.setOverCanvasFlipStyle(oc);
             }
             bool bannerReady = this.BannerReady;
-            ((FrameworkElement)this).put_DataContext((object)oc);
+
+            this.DataContext = (object)oc;
             if (oc != null)
             {
                 PivotHeader pivot1 = this.pivot;
                 DependencyProperty stringsProperty = PivotHeader.StringsProperty;
                 Binding binding1 = new Binding();
-                binding1.put_Path(new PropertyPath("PageTitles"));
+                binding1.Path = new PropertyPath("PageTitles");
                 ((FrameworkElement)pivot1).SetBinding(stringsProperty, (BindingBase)binding1);
                 PivotHeader pivot2 = this.pivot;
                 DependencyProperty indexProperty = PivotHeader.IndexProperty;
                 Binding binding2 = new Binding();
-                binding2.put_Path(new PropertyPath("SelectedPage"));
+                binding2.Path = new PropertyPath("SelectedPage");
                 ((FrameworkElement)pivot2).SetBinding(indexProperty, (BindingBase)binding2);
                 this.pivot.OverCanvas = oc;
             }
             else
-                this.title.put_Text("");
+                this.title.Text = "";
+
             double num = 60.0;
             double Duration = 1.1;
             if (this.frameNavigatingAnimation != null)
                 this.frameNavigatingAnimation.Stop();
-            this.pivotTrans.put_Y(this.goingBack ? -num : num);
-            this.titleTrans.put_Y(this.goingBack ? -num * 0.677 : num * 0.677);
-            Storyboard sb = Ani.Animation(Ani.DoubleAni((DependencyObject)this.pivotTrans, "Y", 0.0, Duration, (EasingFunctionBase)Ani.Ease((EasingMode)0, 7.0)), Ani.DoubleAni((DependencyObject)this.titleTrans, "Y", 0.0, Duration * 0.667, (EasingFunctionBase)Ani.Ease((EasingMode)0, 5.0)), Ani.DoubleAni((DependencyObject)this.title, "Opacity", 1.0, 0.2), Ani.DoubleAni((DependencyObject)this.pivot, "Opacity", 1.0, 0.2));
+            this.pivotTrans.Y = this.goingBack ? -num : num;
+            this.titleTrans.Y = this.goingBack ? -num * 0.677 : num * 0.677;
+
+            Storyboard sb = Ani.Animation(
+                Ani.DoubleAni((DependencyObject)this.pivotTrans, "Y", 0.0, 
+                Duration, (EasingFunctionBase)Ani.Ease((EasingMode)0, 7.0)), 
+                Ani.DoubleAni((DependencyObject)this.titleTrans, "Y", 0.0, 
+                Duration * 0.667, (EasingFunctionBase)Ani.Ease((EasingMode)0, 5.0)), 
+                Ani.DoubleAni((DependencyObject)this.title, "Opacity", 1.0, 0.2),
+                Ani.DoubleAni((DependencyObject)this.pivot, "Opacity", 1.0, 0.2));
+
             if (((oc == null ? 0 : (oc.BannerReady ? 1 : 0)) & (bannerReady ? 1 : 0)) != 0)
-                sb.Add((Timeline)Ani.DoubleAni((DependencyObject)this.backgroundRec, "Opacity", (double)((IDictionary<object, object>)((FrameworkElement)this).Resources)[(object)"BackgroundRecOpacity"], 0.2));
+                sb.Add((Timeline)Ani.DoubleAni((DependencyObject)this.backgroundRec, 
+                    "Opacity", (double)((IDictionary<object, object>)(
+                    (FrameworkElement)this).Resources)[(object)"BackgroundRecOpacity"], 0.2));
             if (!this.RootFrame.Animate)
-                ((Timeline)sb).put_SpeedRatio(2.0);
+                ((Timeline)sb).SpeedRatio = 2.0;
             sb.Begin();
         }
 
@@ -1418,41 +1554,41 @@ namespace myTube
                 }
                 VideoPlayer player = this.player;
                 double num1;
-                ((FrameworkElement)this.player).put_Height(num1 = double.NaN);
+                this.player.Height = num1 = double.NaN;
                 double num2 = num1;
-                ((FrameworkElement)player).put_Width(num2);
-                ((FrameworkElement)this.player).put_HorizontalAlignment((HorizontalAlignment)3);
-                ((FrameworkElement)this.player).put_VerticalAlignment((VerticalAlignment)3);
+                player.Width = num2;
+                this.player.HorizontalAlignment = HorizontalAlignment.Stretch;
+                this.player.VerticalAlignment = VerticalAlignment.Stretch;
                 if (this.playerTrans != null)
                 {
                     TranslateTransform playerTrans = this.playerTrans;
                     double num3;
-                    this.playerTrans.put_Y(num3 = 0.0);
+                    this.playerTrans.Y = num3 = 0.0;
                     double num4 = num3;
-                    playerTrans.put_X(num4);
+                    playerTrans.X = num4;
                 }
-              ((Control)this.player).put_Background((Brush)null);
+              ((Control)this.player).Background = (Brush)null;
             }
             else
             {
                 if (this.playerArrangeTimer == null)
                 {
                     this.playerArrangeTimer = new DispatcherTimer();
-                    this.playerArrangeTimer.put_Interval(TimeSpan.FromSeconds(1.0 / 120.0));
+                    this.playerArrangeTimer.Interval = TimeSpan.FromSeconds(1.0 / 120.0);
                     DispatcherTimer playerArrangeTimer = this.playerArrangeTimer;
-                    WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>, EventRegistrationToken>(playerArrangeTimer.add_Tick), new Action<EventRegistrationToken>(playerArrangeTimer.remove_Tick), new EventHandler<object>(this.PlayerArrangeTimer_Tick));
+                    playerArrangeTimer.Tick += this.PlayerArrangeTimer_Tick;
                 }
                 if (this.playerTrans == null)
                 {
                     this.playerTrans = new TranslateTransform();
-                    ((UIElement)this.player).put_RenderTransform((Transform)this.playerTrans);
+                    this.player.RenderTransform = (Transform)this.playerTrans;
                 }
-              ((Control)this.player).put_Background((Brush)new SolidColorBrush(Colors.Black));
+                this.player.Background = (Brush)new SolidColorBrush(Colors.Black);
                 this.currentPlayerElement = parent;
                 if (this.fullscreenReturnElement != null)
                     this.fullscreenReturnElement = parent;
-                ((FrameworkElement)this.player).put_HorizontalAlignment((HorizontalAlignment)0);
-                ((FrameworkElement)this.player).put_VerticalAlignment((VerticalAlignment)0);
+                this.player.HorizontalAlignment = HorizontalAlignment.Left;
+                this.player.VerticalAlignment = VerticalAlignment.Top;
                 this.PlayerArrangeTimer_Tick((object)null, (object)null);
                 this.playerArrangeTimer.Start();
                 if (!callEvent || parent == null)
@@ -1476,27 +1612,33 @@ namespace myTube
                 }
                 else
                 {
-                    uint num = (uint)((IList<UIElement>)((Panel)this.LayoutRoot).Children).IndexOf((UIElement)this.player);
+                    uint num = (uint)((IList<UIElement>)((Panel)this.LayoutRoot).Children)
+                        .IndexOf((UIElement)this.player);
                     if ((int)num != (int)this.videoPlayerIndex)
                         ((Panel)this.LayoutRoot).Children.Move(num, this.videoPlayerIndex);
                 }
+
                 Point position = ((UIElement)this.currentPlayerElement.GetElement()).GetPosition((UIElement)this);
-                this.playerTrans.put_Y(position.Y);
-                this.playerTrans.put_X(position.X);
-                if (((FrameworkElement)this.player).Width != this.currentPlayerElement.GetElement().ActualWidth)
-                    ((FrameworkElement)this.player).put_Width(this.currentPlayerElement.GetElement().ActualWidth);
-                if (((FrameworkElement)this.player).Height != this.currentPlayerElement.GetElement().ActualHeight)
-                    ((FrameworkElement)this.player).put_Height(this.currentPlayerElement.GetElement().ActualHeight);
+                
+                this.playerTrans.X = position.X;
+                this.playerTrans.Y = position.Y;
+
+                if (this.player.Width != this.currentPlayerElement.GetElement().ActualWidth)
+                    this.player.Width = this.currentPlayerElement.GetElement().ActualWidth;
+                if (this.player.Height != this.currentPlayerElement.GetElement().ActualHeight)
+                    this.player.Height = this.currentPlayerElement.GetElement().ActualHeight;
                 this.bindVideoPlayer(this.currentPlayerElement.GetBindVideoPlayerShown());
+
                 if (this.currentPlayerElement.HasBackground())
                 {
-                    if (((Control)this.player).Background == null)
-                        ((Control)this.player).put_Background((Brush)new SolidColorBrush(Colors.Black));
+                    if (this.player.Background == null)
+                        this.player.Background = new SolidColorBrush(Colors.Black);
                 }
-                else if (((Control)this.player).Background != null)
-                    ((Control)this.player).put_Background((Brush)null);
+                else if (this.player.Background != null)
+                    this.player.Background = null;
+
                 if (this.currentPlayerElement.IsArrangeActive())
-                    this.playerArrangeTimer.put_Interval(this.PlayerArrangeActiveTick);
+                    this.playerArrangeTimer.Interval = this.PlayerArrangeActiveTick;
                 else
                     this.playerArrangeTimer.Interval = this.PlayerArrangeInactiveTick;
             }
@@ -1520,7 +1662,10 @@ namespace myTube
             {
                 int num = await this.currentVideoTcs.Task ? 1 : 0;
             }
-            Helper.Write((object)nameof(DefaultPage), (object)"Resetting video player");
+
+            Helper.Write((object)nameof(DefaultPage), 
+                (object)"Resetting video player");
+
             return await this.requestVideoPlayerInternal((IVideoContainer)this, true);
         }
 
@@ -1597,26 +1742,23 @@ namespace myTube
                 this.playerArrangeTimer.Stop();
             this.removePlayerFromParent(callEvent);
 
-            ((UIElement)this.player).put_Opacity(0.0);
+            this.player.Opacity = 0.0;
 
             this.addPlayerToParent(element, callEvent);
 
             Storyboard storyboard = Ani.Begin((DependencyObject)this.player, "Opacity", 1.0, 0.5);
 
-            WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>,
-                EventRegistrationToken>(((Timeline)storyboard).add_Completed), 
-                new Action<EventRegistrationToken>(((Timeline)storyboard).remove_Completed),
-                (EventHandler<object>)((_param1, _param2) =>
+            storyboard.Completed += (s, e) =>
             {
                 this.busyPlacingVideo = false;
                 if (this.waitingVideoElement != null)
                 {
                     this.requestVideoPlayerInternal(this.waitingVideoElement, this.waitingBind);
-                    this.waitingVideoElement = (IVideoContainer)null;
+                    this.waitingVideoElement = null;
                 }
-                tcs.SetResult(((FrameworkElement)this.player).Parent == element);
+                tcs.TrySetResult(this.player.Parent == element);
                 this.showOrHideVideoButton();
-            }));
+            };
             return tcs.Task;
         }
 
@@ -1683,8 +1825,7 @@ namespace myTube
 
         private void searchButton_Click(object sender, RoutedEventArgs e)
         {
-            if (((ContentControl)this.RootFrame).Content != null 
-                && ((ContentControl)this.RootFrame).Content is SearchPage)
+            if (this.RootFrame.Content != null && this.RootFrame.Content is SearchPage)
                 return;
             object parameter = (object)null;
             if (this.overCanvas != null)
@@ -1698,12 +1839,7 @@ namespace myTube
                 || !((ICollection<UIElement>)((Panel)this.LayoutRoot).Children).Contains((UIElement)this.webView))
                 return;
 
-            // ISSUE: method pointer
-            WindowsRuntimeMarshal.RemoveEventHandler<TypedEventHandler<WebView, 
-                WebViewNavigationCompletedEventArgs>>(new Action<EventRegistrationToken>(
-                    this.webView.remove_NavigationCompleted), 
-                    new TypedEventHandler<WebView, WebViewNavigationCompletedEventArgs>((object)this, 
-                    __methodptr(webView_NavigationCompleted)));
+            this.webView.NavigationCompleted -= this.webView_NavigationCompleted;
 
             TranslateTransform translateTransform = new TranslateTransform();
             translateTransform.X = (0.0);
@@ -1711,14 +1847,12 @@ namespace myTube
             ((UIElement)this.webView).RenderTransform = ((Transform)Element);
             Storyboard storyboard = Ani.Begin((Timeline)Ani.DoubleAni((DependencyObject)this.webView, 
                 "Opacity", 0.0, 0.3), (Timeline)Ani.DoubleAni((DependencyObject)Element, "X", -100.0, 0.3, (EasingFunctionBase)Ani.Ease((EasingMode)1, 6.0)));
-           
-            WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>, 
-                EventRegistrationToken>(((Timeline)storyboard).add_Completed), new Action<EventRegistrationToken>(
-                    ((Timeline)storyboard).remove_Completed), (EventHandler<object>)((_param1, _param2) =>
+
+            storyboard.Completed += (s, e) =>
             {
-                ((ICollection<UIElement>)((Panel)this.LayoutRoot).Children).Remove((UIElement)this.webView);
-                this.webView = (WebView)null;
-            }));
+                ((Panel)this.LayoutRoot).Children.Remove((UIElement)this.webView);
+                this.webView = null;
+            };
 
         }
 
@@ -1731,6 +1865,7 @@ namespace myTube
                     App.Strings["common.cancel", "cancel"].ToLower()) == 1)
                     return;
             }
+
             if (this.webView == null)
             {
                 this.webView = new WebView();
@@ -1738,15 +1873,9 @@ namespace myTube
                 Grid.SetColumnSpan((FrameworkElement)this.webView, 10);
                 WebView webView = this.webView;
 
-                // ISSUE: method pointer
-                WindowsRuntimeMarshal.AddEventHandler<TypedEventHandler<WebView, 
-                    WebViewNavigationCompletedEventArgs>>(new Func<TypedEventHandler<WebView, 
-                    WebViewNavigationCompletedEventArgs>, EventRegistrationToken>(
-                        webView.add_NavigationCompleted), 
-                        new Action<EventRegistrationToken>(webView.remove_NavigationCompleted), 
-                        new TypedEventHandler<WebView, WebViewNavigationCompletedEventArgs>((object)this,
-                        __methodptr(webView_NavigationCompleted)));
+                this.webView.NavigationCompleted += this.webView_NavigationCompleted;
             }
+
             TranslateTransform translateTransform = new TranslateTransform();
             translateTransform.X = 100.0;
             TranslateTransform Element = translateTransform;
@@ -1822,27 +1951,26 @@ namespace myTube
         {
             Ani.Begin((DependencyObject)this.titleGrid, "Opacity", 1.0, 0.2);
             MenuFlyout menuFlyout = new MenuFlyout();
+
             MenuFlyoutItem menuFlyoutItem1 = new MenuFlyoutItem();
-            menuFlyoutItem1.put_Text("home");
+            menuFlyoutItem1.Text = "home";
             MenuFlyoutItem menuFlyoutItem2 = menuFlyoutItem1;
             MenuFlyoutItem menuFlyoutItem3 = menuFlyoutItem2;
-            WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(
-                new Func<RoutedEventHandler, EventRegistrationToken>(menuFlyoutItem3.add_Click), 
-                new Action<EventRegistrationToken>(menuFlyoutItem3.remove_Click), 
-                (RoutedEventHandler)((s, args) =>
+
+            menuFlyoutItem3.Click += (s, e1) =>
             {
                 this.RootFrame.ClearBackStackAtNavigate();
                 this.RootFrame.Navigate(typeof(HomePage));
-            }));
+            };
+
             MenuFlyoutItem menuFlyoutItem4 = new MenuFlyoutItem();
-            menuFlyoutItem4.put_Text("settings");
+            menuFlyoutItem4.Text = "settings";
+
             MenuFlyoutItem menuFlyoutItem5 = menuFlyoutItem4;
             MenuFlyoutItem menuFlyoutItem6 = menuFlyoutItem5;
 
-            WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(
-                new Func<RoutedEventHandler, EventRegistrationToken>(menuFlyoutItem6.add_Click),
-                new Action<EventRegistrationToken>(menuFlyoutItem6.remove_Click), 
-                (RoutedEventHandler)((s, args) => ((App)Application.Current).OpenSettings()));
+            menuFlyoutItem6.Click += (s, e2) 
+                => ((App)Application.Current).OpenSettings();
 
             menuFlyout.Items.Add((MenuFlyoutItemBase)menuFlyoutItem2);
             menuFlyout.Items.Add((MenuFlyoutItemBase)menuFlyoutItem5);
@@ -1854,26 +1982,19 @@ namespace myTube
                 MenuFlyoutItem menuFlyoutItem8 = menuFlyoutItem7;
                 MenuFlyoutItem menuFlyoutItem9 = menuFlyoutItem8;
 
-                WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(
-                    new Func<RoutedEventHandler, EventRegistrationToken>(menuFlyoutItem9.add_Click), 
-                    new Action<EventRegistrationToken>(menuFlyoutItem9.remove_Click), 
-                    (RoutedEventHandler)((s, args) =>
+                menuFlyoutItem9.Click += (s, e3) =>
                 {
                     if (this.debugPanel == null)
                     {
-                        DebugInfoPanel debugInfoPanel = new DebugInfoPanel();
-                        ((UIElement)debugInfoPanel).IsHitTestVisible = false;
-                        this.debugPanel = debugInfoPanel;
-                        Grid.SetRowSpan((FrameworkElement)this.debugPanel, 5);
+                        this.debugPanel = new DebugInfoPanel();
+                        this.debugPanel.IsHitTestVisible = false;
+                        Grid.SetRowSpan(this.debugPanel, 5);
                     }
-                    if (((ICollection<UIElement>)((Panel)this.LayoutRoot).Children)
-                    .Contains((UIElement)this.debugPanel))
-                        ((ICollection<UIElement>)((Panel)this.LayoutRoot).Children)
-                        .Remove((UIElement)this.debugPanel);
+                    if (((Panel)this.LayoutRoot).Children.Contains(this.debugPanel))
+                        ((Panel)this.LayoutRoot).Children.Remove(this.debugPanel);
                     else
-                        ((ICollection<UIElement>)((Panel)this.LayoutRoot).Children)
-                        .Add((UIElement)this.debugPanel);
-                }));
+                        ((Panel)this.LayoutRoot).Children.Add(this.debugPanel);
+                };
 
                 menuFlyout.Items.Add((MenuFlyoutItemBase)menuFlyoutItem8);
             }
@@ -1903,14 +2024,14 @@ namespace myTube
         {
             if (!e.MediaRunning)
             {
-                ((FrameworkElement)this.player).put_RequestedTheme((ElementTheme)0);
+                this.player.RequestedTheme = ElementTheme.Default;
                 if (!this.Shown)
                     Ani.Begin((DependencyObject)this.blackRec, "Opacity", 0.0, 0.1);
                 this.showOrHideVideoButton();
             }
             else
             {
-                ((FrameworkElement)this.player).put_RequestedTheme((ElementTheme)2);
+                this.player.RequestedTheme = ElementTheme.Dark;
                 if (!this.Shown)
                 {
                     Ani.Begin((DependencyObject)this.blackRec, "Opacity", 1.0, 0.1);
@@ -2045,11 +2166,8 @@ namespace myTube
 
             Popup currentPopup = this.currentPopup;
 
-            WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(
-                new Func<EventHandler<object>, EventRegistrationToken>(currentPopup.add_Closed), 
-                new Action<EventRegistrationToken>(currentPopup.remove_Closed), 
-                new EventHandler<object>(this.currentPopup_Closed));
-            
+            currentPopup.Closed += this.currentPopup_Closed;
+
             this.popupTcs = new TaskCompletionSource<bool>();
             Helper.Write((object)("Showing popup id: " + (object)this.popupTcs.Task.Id));
             if (hideAppBar && this.page != null && this.page.BottomAppBar != null)
@@ -2086,7 +2204,7 @@ namespace myTube
             if (this.page == null || this.page.BottomAppBar == null 
                 || e.Cumulative.Translation.Y >= -5.0 || Math.Abs(e.Cumulative.Translation.X) >= 5.0)
                 return;
-            this.page.BottomAppBar.put_IsOpen(true);
+            this.page.BottomAppBar.IsOpen = true;
         }
 
         private void openVideoButton_Tapped(object sender, TappedRoutedEventArgs e)
@@ -2106,10 +2224,8 @@ namespace myTube
             {
                 this.currentPopup.ChildTransitions = (TransitionCollection)null;
 
-                WindowsRuntimeMarshal.RemoveEventHandler<EventHandler<object>>(
-                    new Action<EventRegistrationToken>(this.currentPopup.remove_Closed), 
-                    new EventHandler<object>(this.currentPopup_Closed));
-                
+                this.currentPopup.Closed -= this.currentPopup_Closed;
+
                 Popup popup = this.currentPopup;
                 this.currentPopup = (Popup)null;
                 if (popup.IsOpen)
@@ -2131,14 +2247,17 @@ namespace myTube
                     del = (EventHandler<object>)((sender, e) =>
                     {
                         if (popup.IsOpen)
-                            popup.put_IsOpen(false);
+                            popup.IsOpen = false;
                         if (this.popupTcs != null)
                             this.popupTcs.TrySetResult(true);
                         tcs.SetResult(true);
-                        WindowsRuntimeMarshal.RemoveEventHandler<EventHandler<object>>(new Action<EventRegistrationToken>(((Timeline)ani).remove_Completed), del);
+
+                        ((Timeline)ani).Completed -= del;
                     });
                     Storyboard storyboard = ani;
-                    WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>, EventRegistrationToken>(((Timeline)storyboard).add_Completed), new Action<EventRegistrationToken>(((Timeline)storyboard).remove_Completed), del);
+                    
+                    storyboard.Completed += del;
+
                     ani.Begin();
                 }
                 else
@@ -2160,10 +2279,10 @@ namespace myTube
                     "Opacity", 1.0, 0.2), (Timeline)Ani.DoubleAni((DependencyObject)this.titleGrid, "Opacity", 
                     1.0, 0.2), (Timeline)Ani.DoubleAni((DependencyObject)this.player, "Opacity", 1.0, 0.2));
 
-                WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>, 
-                    EventRegistrationToken>(((Timeline)storyboard).add_Completed),
-                    new Action<EventRegistrationToken>(((Timeline)storyboard).remove_Completed), 
-                    (EventHandler<object>)((_param1, _param2) => ((UIElement)this).IsHitTestVisible = true));
+                storyboard.Completed += (s, e) =>
+                {
+                    ((UIElement)this).IsHitTestVisible = true;
+                };
 
                 if (this.page != null && this.page.BottomAppBar != null)
                     ((UIElement)this.page.BottomAppBar).Visibility = Visibility.Visible;
@@ -2228,98 +2347,22 @@ namespace myTube
 
         public bool IsArrangeActive() => false;
 
-        /*
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        [DebuggerNonUserCode]
-        public void InitializeComponent()
-        {
-            if (this._contentLoaded)
-                return;
-            this._contentLoaded = true;
-            Application.LoadComponent((object)this, new Uri("ms-appx:///DefaultPage.xaml"), (ComponentResourceLocation)0);
-            this.appBarTrans = (TranslateTransform)((FrameworkElement)this).FindName("appBarTrans");
-            this.LayoutRoot = (Grid)((FrameworkElement)this).FindName("LayoutRoot");
-            this.DefaultState = (VisualState)((FrameworkElement)this).FindName("DefaultState");
-            this.DefaultPhone = (VisualState)((FrameworkElement)this).FindName("DefaultPhone");
-            this.NarrowState = (VisualState)((FrameworkElement)this).FindName("NarrowState");
-            this.NarrowPhone = (VisualState)((FrameworkElement)this).FindName("NarrowPhone");
-            this.TinyState = (VisualState)((FrameworkElement)this).FindName("TinyState");
-            this.TinyPhone = (VisualState)((FrameworkElement)this).FindName("TinyPhone");
-            this.TinyUWP = (VisualState)((FrameworkElement)this).FindName("TinyUWP");
-            this.TinyLandscapePhone = (VisualState)((FrameworkElement)this).FindName("TinyLandscapePhone");
-            this.renderingCanvas = (Canvas)((FrameworkElement)this).FindName("renderingCanvas");
-            this.blackRec = (Rectangle)((FrameworkElement)this).FindName("blackRec");
-            this.player = (VideoPlayer)((FrameworkElement)this).FindName("player");
-            this.RootFrame = (CustomFrame)((FrameworkElement)this).FindName("RootFrame");
-            this.openVideoButton = (ContentControl)((FrameworkElement)this).FindName("openVideoButton");
-            this.titleGrid = (Grid)((FrameworkElement)this).FindName("titleGrid");
-            this.appBarPlaceHolder = (Grid)((FrameworkElement)this).FindName("appBarPlaceHolder");
-            this.appBarFill = (Rectangle)((FrameworkElement)this).FindName("appBarFill");
-            this.buttonColumn = (ColumnDefinition)((FrameworkElement)this).FindName("buttonColumn");
-            this.titleColumn = (ColumnDefinition)((FrameworkElement)this).FindName("titleColumn");
-            this.searchColumn = (ColumnDefinition)((FrameworkElement)this).FindName("searchColumn");
-            this.backgroundRec = (Rectangle)((FrameworkElement)this).FindName("backgroundRec");
-            this.title = (TextBlock)((FrameworkElement)this).FindName("title");
-            this.pivot = (PivotHeader)((FrameworkElement)this).FindName("pivot");
-            this.backButton = (Button)((FrameworkElement)this).FindName("backButton");
-            this.searchButton = (Button)((FrameworkElement)this).FindName("searchButton");
-            this.searchTrans = (CompositeTransform)((FrameworkElement)this).FindName("searchTrans");
-            this.searchSymbol = (SymbolIcon)((FrameworkElement)this).FindName("searchSymbol");
-            this.searchSymbolTrans = (CompositeTransform)((FrameworkElement)this).FindName("searchSymbolTrans");
-            this.backTrans = (TranslateTransform)((FrameworkElement)this).FindName("backTrans");
-            this.backSymbol = (SymbolIcon)((FrameworkElement)this).FindName("backSymbol");
-        }
-
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        [DebuggerNonUserCode]
-        public void Connect(int connectionId, object target)
-        {
-            switch (connectionId)
-            {
-                case 1:
-                    ((VideoPlayer)target).MediaRunningChanged += new EventHandler<MediaRunningChangedEventArgs>(this.player_MediaRunningChanged);
-                    ((VideoPlayer)target).PlayerControlsShownChanged += new EventHandler<bool>(this.player_PlayerControlsShownChanged);
-                    break;
-                case 2:
-                    UIElement uiElement1 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement1.add_Tapped), new Action<EventRegistrationToken>(uiElement1.remove_Tapped), new TappedEventHandler(this.openVideoButton_Tapped));
-                    break;
-                case 3:
-                    UIElement uiElement2 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<HoldingEventHandler>(new Func<HoldingEventHandler, EventRegistrationToken>(uiElement2.add_Holding), new Action<EventRegistrationToken>(uiElement2.remove_Holding), new HoldingEventHandler(this.titleGrid_Holding));
-                    UIElement uiElement3 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement3.add_Tapped), new Action<EventRegistrationToken>(uiElement3.remove_Tapped), new TappedEventHandler(this.titleGrid_Tapped));
-                    UIElement uiElement4 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<RightTappedEventHandler>(new Func<RightTappedEventHandler, EventRegistrationToken>(uiElement4.add_RightTapped), new Action<EventRegistrationToken>(uiElement4.remove_RightTapped), new RightTappedEventHandler(this.titleGrid_RightTapped));
-                    UIElement uiElement5 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<PointerEventHandler>(new Func<PointerEventHandler, EventRegistrationToken>(uiElement5.add_PointerExited), new Action<EventRegistrationToken>(uiElement5.remove_PointerExited), new PointerEventHandler(this.titleGrid_PointerExited));
-                    FrameworkElement frameworkElement = (FrameworkElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<SizeChangedEventHandler>(new Func<SizeChangedEventHandler, EventRegistrationToken>(frameworkElement.add_SizeChanged), new Action<EventRegistrationToken>(frameworkElement.remove_SizeChanged), new SizeChangedEventHandler(this.titleGrid_SizeChanged));
-                    break;
-                case 4:
-                    UIElement uiElement6 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<PointerEventHandler>(new Func<PointerEventHandler, EventRegistrationToken>(uiElement6.add_PointerEntered), new Action<EventRegistrationToken>(uiElement6.remove_PointerEntered), new PointerEventHandler(this.appBarPlaceHolder_PointerEntered));
-                    UIElement uiElement7 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<PointerEventHandler>(new Func<PointerEventHandler, EventRegistrationToken>(uiElement7.add_PointerExited), new Action<EventRegistrationToken>(uiElement7.remove_PointerExited), new PointerEventHandler(this.appBarPlaceHolder_PointerExited));
-                    UIElement uiElement8 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement8.add_Tapped), new Action<EventRegistrationToken>(uiElement8.remove_Tapped), new TappedEventHandler(this.appBarPlaceHolder_Tapped));
-                    UIElement uiElement9 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<ManipulationDeltaEventHandler>(new Func<ManipulationDeltaEventHandler, EventRegistrationToken>(uiElement9.add_ManipulationDelta), new Action<EventRegistrationToken>(uiElement9.remove_ManipulationDelta), new ManipulationDeltaEventHandler(this.appBarPlaceHolder_ManipulationDelta));
-                    break;
-                case 5:
-                    ButtonBase buttonBase = (ButtonBase)target;
-                    WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(buttonBase.add_Click), new Action<EventRegistrationToken>(buttonBase.remove_Click), new RoutedEventHandler(this.searchButton_Click));
-                    break;
-            }
-            this._contentLoaded = true;
-        }
-        */
-
+     
         private class VisualTreeLoopHelper
         {
             public int MaxChildren;
             public int ChildIndex;
             public DependencyObject Obj;
+        }
+
+        private class DisplayClass86_0
+        {
+            internal DefaultPage u003E4;
+            internal SimpleOrientation or;
+
+            public DisplayClass86_0()
+            {
+            }
         }
     }
 }

@@ -1,0 +1,52 @@
+﻿<UserControl 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:local="using:myTube" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    mc:Ignorable="d"
+    x:Name="customSlider" 
+    x:Class="myTube.CustomSlider"
+  >
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <x:Double x:Key="recHeight">2</x:Double>
+            <TranslateTransform x:Name="thumbTrans" />
+            <ScaleTransform x:Name="recTrans" ScaleX="0" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="Transparent">
+        <ListView>
+            <Rectangle IsHitTestVisible="True">
+                <Rectangle.Height>
+                    <StaticResource ResourceKey="recHeight" />
+                </Rectangle.Height>
+                <Rectangle.Fill>
+                    <Binding Path="Background" ElementName="customSlider" />
+                </Rectangle.Fill>
+            </Rectangle>
+            <Rectangle IsHitTestVisible="True">
+                <Rectangle.RenderTransform>
+                    <StaticResource ResourceKey="recTrans" />
+                </Rectangle.RenderTransform>
+                <Rectangle.Height>
+                    <StaticResource ResourceKey="recHeight" />
+                </Rectangle.Height>
+                <Rectangle.Fill>
+                    <Binding Path="Foreground" ElementName="customSlider" />
+                </Rectangle.Fill>
+            </Rectangle>
+            <Rectangle x:Name="thumbRec" IsHitTestVisible="True" HorizontalAlignment="Left"
+                            Height="28,5" Width="10" RadiusX="5" RadiusY="5">
+                <Rectangle.RenderTransform>
+                    <StaticResource ResourceKey="thumbTrans" />
+                </Rectangle.RenderTransform>
+                <Rectangle.Fill>
+                    <Binding Path="Foreground" ElementName="customSlider" />
+                </Rectangle.Fill>
+            </Rectangle>
+        </ListView>
+    </Grid>
+</UserControl>
