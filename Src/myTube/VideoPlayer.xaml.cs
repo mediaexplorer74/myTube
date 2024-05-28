@@ -150,55 +150,8 @@ namespace myTube
         private bool firstOffset;
         private static TimeSpan offset = TimeSpan.FromSeconds(0.0);
         private MediaElementState lastMediaElementState;
-        private PlayerControls controls;
-
-
-        //TEMP
-        private Run titleText;
-
-        /*
-        private UserControl videoPlayer;
-
-        private TranslateTransform titleTrans;
-
-        private Grid layoutRoot;
-    
-        private TextBlock noVideoText;
-  
-        private Viewbox viewBox;
- 
-        private Image musicThumb;
-   
-        private Viewbox annotationsViewBox;
- 
-        private Rectangle blurRectangle;
-  
-        private Grid titleGrid;
-    
-        private ProgressBar progress;
-
-        private PlayerControls controls;
-
-        private ContentControl stopButton;
-
-        private TextBlock titleTextBlock;
-    
-        private TextBlock authorText;
-  
-        private ContentControl castingControl;
-  
-        private TextBlock castingText;
-
-        private Run titleText;
-  
-        private ItemsControl annotationsControl;
-      
-        private ItemsControl subtitlesControl;
-      
-        private BitmapImage musicBitmap;
-        
-        private MediaElement mediaElement;
-        */
+                                           //RnD
+        private PlayerControls controls = new PlayerControls();
 
         private static void OnSourcePropertyChanged(
           DependencyObject d,
@@ -258,7 +211,7 @@ namespace myTube
             bool newValue = (bool)e.NewValue;
             try
             {
-                if (((UIElement)vp.controls).RenderTransform == null)
+                if (vp.controls.RenderTransform == null)
                 {
                     ScaleTransform scaleTransform = new ScaleTransform();
                 }
@@ -451,7 +404,13 @@ namespace myTube
         }
         */
 
-        public PlayerControls Controls => this.controls;
+        public PlayerControls Controls
+        {
+            get
+            {
+                return this.controls;
+            }
+        }
 
         public YouTubeQuality CurrentQuality => this.quality;
 
@@ -480,27 +439,41 @@ namespace myTube
         public VideoPlayer()
         {
             Helper.Write((object)nameof(VideoPlayer), (object)"Constructor");
+            System.Diagnostics.Debug.WriteLine(nameof(VideoPlayer), " Constructor");
+
             this.InitializeComponent();
 
             // inline text 
-            this.titleText.Text = App.Strings["videos.player.novideo", "no video"].ToLower();
+            try
+            {
+                this.titleText.Text = "videos.player.novideo";// App.Strings["videos.player.novideo", "no video"].ToLower();
+            }
+            catch
+            {
+                this.titleText.Text = "videos.player.novideo";
+            }
 
             if (DefaultPage.Current != null)
                 DefaultPage.Current.LockRotation((SimpleOrientation)0);
 
             Helper.Write((object)nameof(VideoPlayer), (object)"Initialized component");
+            System.Diagnostics.Debug.WriteLine(nameof(VideoPlayer), " Initialized component");
 
             this.controlsWatch = new Stopwatch();
             Helper.Write((object)nameof(VideoPlayer), (object)"Created video player stopwatch");
+            System.Diagnostics.Debug.WriteLine(nameof(VideoPlayer), " Created video player stopwatch");
 
             this.displayRequest = new DisplayRequest();
             Helper.Write((object)nameof(VideoPlayer), (object)"Created display request");
+            System.Diagnostics.Debug.WriteLine(nameof(VideoPlayer), " Created display request");
 
             this.UseLayoutRounding = false;
             Helper.Write((object)nameof(VideoPlayer), (object)"Disabled layout rounding");
+            System.Diagnostics.Debug.WriteLine(nameof(VideoPlayer), " Disabled layout rounding");
 
             this.loader = new VideoInfoLoader();
             Helper.Write((object)nameof(VideoPlayer), (object)"Created video info loader");
+            System.Diagnostics.Debug.WriteLine(nameof(VideoPlayer), " Created video info loader");
 
             // FrameworkElement
             this.Unloaded += this.VideoPlayer_Unloaded;
@@ -865,8 +838,8 @@ namespace myTube
                 else
                 {
                     VideoPlayer.settingOffset = false;
-                    if (mediaElement.CurrentState == (MediaElementState)3 
-                        && Math.Abs((VideoPlayer.audioElement.Position - mediaElement.Position).TotalSeconds) > 0.07)
+                    if (mediaElement.CurrentState == (MediaElementState)3  && 
+                        Math.Abs((VideoPlayer.audioElement.Position - mediaElement.Position).TotalSeconds) > 0.07)
                     {
                         VideoPlayer.audioElement.Volume = 0.0;
                         await Task.Delay(250);
@@ -974,8 +947,8 @@ namespace myTube
           object sender,
           MediaPlayerDataReceivedEventArgs e)
         {
-          
-            var mediaOpened = new VideoPlayer.MediaOpened();
+
+            MediaOpened mediaOpened = new VideoPlayer.MediaOpened();
            
             mediaOpened.u003E4 = this;
             mediaOpened.e = e;
@@ -1019,14 +992,13 @@ namespace myTube
                 });
             }
             
-            // ISSUE: reference to a compiler-generated field
+        
             if (((IDictionary<string, object>)mediaOpened.e.Data).ContainsKey("entry"))
             {
-                // ISSUE: reference to a compiler-generated field
+             
                 YouTubeEntry ent = new YouTubeEntry(((IDictionary<string, object>)mediaOpened.e.Data)
                     ["entry"] as string);
-                // ISSUE: reference to a compiler-generated field
-                // ISSUE: reference to a compiler-generated field
+              
                 if (((IDictionary<string, object>)mediaOpened.e.Data).ContainsKey("needsRefresh") 
                     && (bool)((IDictionary<string, object>)mediaOpened.e.Data)["needsRefresh"])
                 {
@@ -1111,7 +1083,8 @@ namespace myTube
                 return;
 
             this.loaded = true;
-            //this.FontFamily = ((Control)DefaultPage.Current).FontFamily;
+
+            this.FontFamily = DefaultPage.Current.FontFamily;
 
             try
             {
@@ -1209,7 +1182,6 @@ namespace myTube
             
             this.Controls.RegisterBackgroundEvents();
 
-            //WindowsRuntimeMarshal.AddEventHandler<EventHandler<MediaPlayerDataReceivedEventArgs>>(new Func<EventHandler<MediaPlayerDataReceivedEventArgs>, EventRegistrationToken>(BackgroundMediaPlayer.add_MessageReceivedFromBackground), new Action<EventRegistrationToken>(BackgroundMediaPlayer.remove_MessageReceivedFromBackground), new EventHandler<MediaPlayerDataReceivedEventArgs>(this.BackgroundMediaPlayer_MessageReceivedFromBackground));
             BackgroundMediaPlayer.MessageReceivedFromBackground += this.BackgroundMediaPlayer_MessageReceivedFromBackground;
 
             MediaPlayer current = BackgroundMediaPlayer.Current;
@@ -1402,7 +1374,8 @@ namespace myTube
             double width = bounds1.Width;
             double windowSize;
             double elSize;
-            if ((double)this.mediaElement.NaturalVideoWidth / (double)this.mediaElement.NaturalVideoHeight > height1 / width)
+            if ((double)this.mediaElement.NaturalVideoWidth 
+                / (double)this.mediaElement.NaturalVideoHeight > height1 / width)
             {
                 bounds1 = Window.Current.Bounds;
                 windowSize = bounds1.Height;
@@ -1454,14 +1427,14 @@ namespace myTube
                 bool layout = false;
                 if (this.controls.Opacity == 0.0)
                 {
-                    ((UIElement)this.controls).Visibility = Visibility.Visible;
+                    this.controls.Visibility = Visibility.Visible;
                     this.cancel = new CancellationTokenSource();
                     layout = true;
                     this.controls.Opacity = 0.1;
-                    Task task = ((FrameworkElement)this.controls).WaitForLayoutUpdateAsync();
-                    ((UIElement)this.controls).InvalidateMeasure();
-                    ((UIElement)this.controls).InvalidateArrange();
-                    ((UIElement)this.controls).UpdateLayout();
+                    Task task = this.controls.WaitForLayoutUpdateAsync();
+                    this.controls.InvalidateMeasure();
+                    this.controls.InvalidateArrange();
+                    this.controls.UpdateLayout();
                     await task;
                 }
                 else if (this.cancel != null)
@@ -1498,12 +1471,11 @@ namespace myTube
                     }
                     else
                     {
-                        To4 = -(bounds2.Y + bounds2.Height * 
-                            ((UIElement)this.controls).RenderTransformOrigin.Y)
-                            + ((FrameworkElement)this.controls).ActualWidth / 2.0 + 38.0;
+                        To4 = - (bounds2.Y + bounds2.Height * this.controls.RenderTransformOrigin.Y)
+                            + this.controls.ActualWidth / 2.0 + 38.0;
                         bounds1 = Window.Current.Bounds;
-                        To3 = -(bounds1.Width / 2.0) + ((FrameworkElement)this.controls).ActualHeight
-                            * (1.0 - ((UIElement)this.controls).RenderTransformOrigin.Y) + 38.0;
+                        To3 = - (bounds1.Width / 2.0) + this.controls.ActualHeight
+                            * (1.0 - this.controls.RenderTransformOrigin.Y) + 38.0;
                     }
                     if (layout)
                         this.controls.Opacity = 0.0;

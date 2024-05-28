@@ -137,11 +137,12 @@ namespace myTube
             {
                 try
                 {
-                    return App.DeviceFamily == DeviceFamily.Desktop
+                    //RnD
+                    return RotationType.System;/*App.DeviceFamily == DeviceFamily.Desktop
                                   ? RotationType.System
                                   : (RotationType)Enum.Parse(typeof(RotationType),
                                   ((IDictionary<string, object>)Settings.roaming.Values)["rotationType"]
-                                  .ToString());
+                                  .ToString());*/
                 }
                 catch
                 {
@@ -390,24 +391,35 @@ namespace myTube
     }
 
     public static Version Version
-    {
-      get
-      {
-        try
         {
-          return Version.Parse(((IDictionary<string, object>) 
-              Settings.local.Values)[nameof (Version)].ToString());
+            get
+            {
+                try
+                {
+                    return new Version(2, 9, 0, 0);//return Version.Parse(((IDictionary<string, object>) 
+                                                   //    Settings.local.Values)[nameof (Version)].ToString());
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("[ex] Settings - Version - get: " + ex.Message);
+                    return new Version(1, 0, 0, 0);
+                }
+            }
+            set
+            {
+                try
+                {
+                    ((IDictionary<string, object>)Settings.local.Values)
+                          [nameof(Version)] = (object)value.ToString();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("[ex] Settings - Version - set: " + ex.Message);
+                }
+            }
         }
-        catch
-        {
-          return new Version(1, 0, 0, 0);
-        }
-      }
-      set => ((IDictionary<string, object>) Settings.local.Values)
-                [nameof (Version)] = (object) value.ToString();
-    }
 
-    public static DateTimeOffset BackgroundTaskLastRun
+        public static DateTimeOffset BackgroundTaskLastRun
     {
       get
       {

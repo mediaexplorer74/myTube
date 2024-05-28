@@ -79,24 +79,26 @@ namespace myTube
 
         private string vsName = nameof(Default);
 
-        private YouTubeEntry Entry => ((FrameworkElement)this).DataContext as YouTubeEntry;
+        private YouTubeEntry Entry
+        {
+            get
+            {
+                return ((FrameworkElement)this).DataContext as YouTubeEntry;
+            }
+        }
 
         public VideoPage()
         {
             this.InitializeComponent();
             ((FrameworkElement)this).Tag = (object)nameof(VideoPage);
 
-            //WindowsRuntimeMarshal.AddEventHandler<SizeChangedEventHandler>(
-            //    new Func<SizeChangedEventHandler, EventRegistrationToken>(
-            //        ((FrameworkElement)this).add_SizeChanged), 
-            //    new Action<EventRegistrationToken>(((FrameworkElement)this).remove_SizeChanged),
-            //    new SizeChangedEventHandler(this.OverCanvasTestPage_SizeChanged));
+           
             ((FrameworkElement)this).SizeChanged += this.OverCanvasTestPage_SizeChanged;
 
             this.NavigationCacheMode = (NavigationCacheMode)2;
 
           
-            ((FrameworkElement)this).DataContextChanged += this.OverCanvasTestPage_DataContextChanged;
+            this.DataContextChanged += this.OverCanvasTestPage_DataContextChanged;
 
             this.BottomAppBar.ClosedDisplayMode = (AppBarClosedDisplayMode)1;
             this.dataTM = DataTransferManager.GetForCurrentView();

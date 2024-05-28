@@ -282,8 +282,18 @@ namespace myTube
             get
             {
                 if (App.gObjects == null)
-                    App.gObjects = ((IDictionary<object, object>)
-                        Application.Current.Resources)[(object)"GlobalAppObjects"] as GlobalObjects;
+                {
+                    try
+                    {
+                        App.gObjects = ((IDictionary<object, object>)
+                            Application.Current.Resources)[(object)"GlobalAppObjects"] as GlobalObjects;
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[ex] get GlobalObjects error: " + ex.Message);
+                    }
+
+                }
                 return App.gObjects;
             }
         }
@@ -293,8 +303,16 @@ namespace myTube
         {
             get
             {
-                return ((IDictionary<object, object>)Application.Current.Resources)
-                    [(object)nameof(Strings)] as Strings;
+                Strings v = default;
+
+                try
+                {
+                    v = ((IDictionary<object, object>)Application.Current.Resources)
+                        [(object)nameof(Strings)] as Strings;
+                }
+                catch { }
+
+                return v;
             }
         }
 
@@ -663,6 +681,9 @@ namespace myTube
             //this.App_UnhandledException(this, 
             //    new System.UnhandledExceptionEventArgs(cDisplayClass910.exception.CausedCrash, false));
             //});
+            System.Diagnostics.Debug.WriteLine("[ex] Unhandled exception: " + exception.Message 
+                + " | "+ exception.ToString + 
+                " [" + exception.StackTrace+"]");
             ContentDialog SimplePopup = new ContentDialog()
             {
                 Title = "Error / Exception occurs",
@@ -825,13 +846,16 @@ namespace myTube
         private static async Task showMessageInternal(Message message)
         {
             MessageView messageView = new MessageView();
-            ((FrameworkElement)messageView).DataContext = (object)message;
-            ((Control)messageView).VerticalContentAlignment = (VerticalAlignment)0;
+            messageView.DataContext = (object)message;
+            messageView.VerticalContentAlignment = VerticalAlignment.Top;
             MessageView Element1 = messageView;
+
             (Element1.Content as FrameworkElement).MinHeight = (double)byte.MaxValue;
+
             Rect bounds1 = Window.Current.Bounds;
-            Rect bounds2 = ((FrameworkElement)App.Instance.RootFrame).GetBounds(Window.Current.Content);
-            ((FrameworkElement)Element1).Width = Math.Min(bounds1.Width, 600.0);
+            Rect bounds2 = App.Instance.RootFrame.GetBounds(Window.Current.Content);
+
+            Element1.Width = Math.Min(bounds1.Width, 600.0);
             if (((FrameworkElement)Element1).Width > bounds1.Width - 200.0)
                 ((FrameworkElement)Element1).Width = bounds1.Width;
             ((FrameworkElement)Element1).Height = Math.Min(bounds2.Bottom, 700.0);
@@ -873,11 +897,19 @@ namespace myTube
 
         public static void SendSupportEmail(string subject, string content)
         {
-            subject = subject + " [" + (object)App.PlatformType + (Settings.UserMode > UserMode.Normal ? (object)(" " + (object)Settings.UserMode) : (object)"") + " " + (object)App.DeviceFamily + "]";
+            subject = subject + " [" + (object)App.PlatformType 
+                + (Settings.UserMode > UserMode.Normal 
+                ? (object)(" " + (object)Settings.UserMode) 
+                : (object)"") + " " + (object)App.DeviceFamily + "]";
+
             subject = subject + " (" + (object)App.GlobalObjects.Version + ")";
+
             content += "\n\n=============\n";
-            content = content + "Device info: " + Environment.NewLine + App.DeviceManufacturer + " " + App.DeviceName + "\n" + App.OperatingSystem;
-            App.SendEmail("rykenproductions@outlook.com", subject, content);
+
+            content = content + "Device info: " + Environment.NewLine 
+                + App.DeviceManufacturer + " " + App.DeviceName + "\n" + App.OperatingSystem;
+
+            App.SendEmail("mediaexplorer74@hotmail.com", subject, content);
         }
 
         //private void HardwareButtons_BackPressed(object sender, BackPressedEventArgs e)
@@ -940,16 +972,23 @@ namespace myTube
 
             }
             
-            // Experimental 
-            //await Task.Run(() => this.initialSetup());
-
             Helper.Write((object)"InitialSetup", (object)"Starting");
 
             if (this.rootFrame == null)
             {
                 //await StatusBar.GetForCurrentView().HideAsync();
                 this.windowActivatedTask = new TaskCompletionSource<bool>();
-                await App.Strings.LoadXML(App.CurrentCulture.TwoLetterISOLanguageName + ".xml");
+
+                try
+                {
+                    //TODO
+                    //await App.Strings.LoadXML(App.CurrentCulture.TwoLetterISOLanguageName + ".xml");
+                }
+                catch (Exception ex) 
+                {
+                    System.Diagnostics.Debug.WriteLine("[ex] App.Strings.LoadXML ex.: " + ex.Message);
+                }
+
                 DefaultPage defaultPage = new DefaultPage();
                 Window.Current.Content = ((UIElement)defaultPage);
                 Window.Current.Activate();
@@ -1006,8 +1045,8 @@ namespace myTube
                     catch (Exception ex)
                     {
                         loadOrigPage = true;
-                        //if (Debugger.IsAttached)
-                        //    Debugger.Break();
+                        if (Debugger.IsAttached)
+                            Debugger.Break();
                     }
                 }
                 Helper.Write((object)"InitialSetup", (object)"Finished default setup");
@@ -1100,36 +1139,35 @@ namespace myTube
                     FileOpenPickerContinuationEventArgs activationArgs 
                         = this.activationArgs as FileOpenPickerContinuationEventArgs;
                     loadOrigPage = false;
-                    //if (this.rootFrame.CurrentSourcePageType == typeof(UploaderPage))
-                    //    (((ContentControl)this.rootFrame).Content as UploaderPage).SelectFile(
-                    //        (IStorageFile)Enumerable.FirstOrDefault<StorageFile>(
-                    //            (IEnumerable<StorageFile>)activationArgs.Files));
-                    //else
-                    //    this.rootFrame.Navigate(typeof(UploaderPage),
-                    //    (object)Enumerable.FirstOrDefault<StorageFile>(
-                    //    (IEnumerable<StorageFile>)activationArgs.Files));
+                    if (this.rootFrame.CurrentSourcePageType == typeof(UploaderPage))
+                        UploaderPage.SelectFile(
+                            (IStorageFile)Enumerable.FirstOrDefault<StorageFile>(
+                                (IEnumerable<StorageFile>)activationArgs.Files));
+                    else
+                        this.rootFrame.Navigate(typeof(UploaderPage),
+                        (object)Enumerable.FirstOrDefault<StorageFile>(
+                        (IEnumerable<StorageFile>)activationArgs.Files));
                 }
                 else if (this.activationArgs.Kind == ActivationKind.ShareTarget)
                 {
-                    ShareTargetActivatedEventArgs activationArgs = this.activationArgs as ShareTargetActivatedEventArgs;
+                    ShareTargetActivatedEventArgs activationArgs 
+                        = this.activationArgs as ShareTargetActivatedEventArgs;
                     if (activationArgs.ShareOperation.Data.Contains(StandardDataFormats.StorageItems))
                     {
-                        foreach (IStorageItem istorageItem in 
-                            (IEnumerable<IStorageItem>)await activationArgs.ShareOperation.Data.GetStorageItemsAsync())
+                        foreach (IStorageItem istorageItem in await activationArgs.ShareOperation.Data.GetStorageItemsAsync())
                         {
                             if (istorageItem is IStorageFile)
                             {
                                 loadOrigPage = false;
-                                //if (this.rootFrame.CurrentSourcePageType == typeof(UploaderPage))
-                                //{
-                                //    (((ContentControl)this.rootFrame).Content as UploaderPage)
-                                //    .SelectFile(istorageItem as IStorageFile);
-                                //}
-                                //else
-                                //{
-                                //    this.rootFrame.Navigate(typeof(UploaderPage), (object)istorageItem);
-                                //    break;
-                                //}
+                                if (this.rootFrame.CurrentSourcePageType == typeof(UploaderPage))
+                                {
+                                    UploaderPage.SelectFile(istorageItem as IStorageFile);
+                                }
+                                else
+                                {
+                                    this.rootFrame.Navigate(typeof(UploaderPage), (object)istorageItem);
+                                    break;
+                                }
                             }
                         }
                     }
@@ -1202,11 +1240,19 @@ namespace myTube
             if (Settings.UserMode < UserMode.Owner || Window.Current == null
                 || Window.Current.Content == null)
                 return;
-            
-            await Window.Current.Content.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+
+            //await Window.Current.Content.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+            //{
+            //    this.YouTube_ErrorReported(displayClass1150.e);
+            //});
+
+            ContentDialog SimplePopup = new ContentDialog()
             {
-                this.YouTube_ErrorReported(displayClass1150.e);
-            });
+                Title = "[!] Error / Exception occurs",
+                Content = e.Exception.Message,
+                CloseButtonText = "Ok"
+            };
+            await SimplePopup.ShowAsync();
         }
 
         private string writeOutDict(Dictionary<string, object> dict)
@@ -1233,10 +1279,15 @@ namespace myTube
             {
                 if (this.windowActivatedTask != null)
                     this.windowActivatedTask.TrySetResult(true);
+
+                //?
                 this.InitialChecks();
+                
                 this.alreadyActivated = true;
                 App.startTime = Helper.EndTimer();
-                if (Settings.UserMode >= UserMode.Owner)
+
+                //RnD
+                if (1==1)//(Settings.UserMode >= UserMode.Owner)
                 {
                     TextBlock textBlock1 = new TextBlock();
                     textBlock1.Foreground = (Brush)new SolidColorBrush(Colors.White);
@@ -1260,13 +1311,17 @@ namespace myTube
         }
 
         private async Task InitialChecks()
-        { 
-            //TODO
-            //ThreadPool.RunAsync(new WorkItemHandler((object)new App.DisplayClass121_0()
-            //{
-            //    gobj = App.GlobalObjects,
-            //    strings = App.Strings
-            //}, __methodptr(\u003CInitialChecks\u003Eb__0)));
+        {
+            await Task.Run(() =>
+            {
+                var displayClass1210 = new App.DisplayClass121_0()
+                {
+                    gobj = App.GlobalObjects,
+                    strings = App.Strings
+                };
+
+                displayClass1210.InitialChecks();
+            });
         }
 
 
@@ -1289,7 +1344,8 @@ namespace myTube
                     if (urlConstructor.StartsWith("TileArgs"))
                     {
                         App.launchTile = new TileArgs(urlConstructor);
-                        Helper.Write((object)nameof(OnActivated), (object)("TileArgs from voice command: " + App.launchTile.ToString()));
+                        Helper.Write((object)nameof(OnActivated), (object)(
+                            "TileArgs from voice command: " + App.launchTile.ToString()));
                         flag = false;
                     }
                 }
@@ -1327,12 +1383,11 @@ namespace myTube
           UnobservedTaskExceptionEventArgs e)
         {
             e.SetObserved();
-            foreach (AggregateException innerException in e.Exception.InnerExceptions)
+            foreach (Exception innerException in e.Exception.InnerExceptions)
             {
-                // ISSUE: object of a compiler-generated type is created
-                // ISSUE: variable of a compiler-generated type
+               
                 var displayClass1300 = new App.DisplayClass130_0();
-                // ISSUE: reference to a compiler-generated field
+               
                 displayClass1300.u003E4 = this;
                 try
                 {
@@ -1354,20 +1409,20 @@ namespace myTube
                 catch
                 {
                 }
-                // ISSUE: reference to a compiler-generated field
+               
                 displayClass1300.data = new ExceptionData(innerException);
-                // ISSUE: reference to a compiler-generated field
+               
                 displayClass1300.data.Versions.Add("v3.9");
-                // ISSUE: reference to a compiler-generated field
+              
                 displayClass1300.data.Devices.Add(App.FullDeviceName);
-                // ISSUE: reference to a compiler-generated field
+               
                 displayClass1300.data.EventHandlerMessage = "From task scheduler, unobserved exception";
-                // ISSUE: reference to a compiler-generated field
+               
                 displayClass1300.data.CausedCrash = true;
-                // ISSUE: reference to a compiler-generated field
+               
                 displayClass1300.data.AppName = "myTube";
 
-                // ISSUE: reference to a compiler-generated field
+               
                 Settings.UnhandledException = DataObject.ToJson((object)displayClass1300.data);
                 string str1 = "Note: You are seeing this message because you are a beta tester\n\n" +
                     "Oops, looks like we've run into an internal error the developer hasn't looked out for.\n\n" +
@@ -1379,14 +1434,20 @@ namespace myTube
                     string str2 = str1 + "\n\n" + innerException.ToString();
                 }
 
-                //((DependencyObject)this.RootFrame).Dispatcher.RunAsync((CoreDispatcherPriority)0, 
-                //    new DispatchedHandler((object)displayClass1300,
-                //    __methodptr(\u003CTaskScheduler_UnobservedTaskException\u003Eb__0)));
+                /*
                 await this.RootFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
                     this.TaskScheduler_UnobservedTaskException(this, 
-                        new UnobservedTaskExceptionEventArgs(innerException));
-                });
+                        new UnobservedTaskExceptionEventArgs((AggregateException)innerException));
+                });*/
+
+                ContentDialog SimplePopup = new ContentDialog()
+                {
+                    Title = "[!] Error / Exception occurs",
+                    Content = str1 + "\n\n" + innerException.ToString(),
+                    CloseButtonText = "Ok"
+                };
+                await SimplePopup.ShowAsync();
 
             }
         }
@@ -1404,29 +1465,42 @@ namespace myTube
                         Helper.Write((object)Tag, (object)"Getting GlobalObjects");
                         obj = App.GlobalObjects;
                     }
-                    if (Settings.Version != obj.Version)
+                    if (obj != null && Settings.Version != obj.Version)
                     {
                         Helper.Write((object)Tag, (object)"App has been updated, performing necessary changes");
-                        BackgroundExecutionManager.RemoveAccess();
+
+                        System.Diagnostics.Debug.WriteLine(Tag, 
+                            "App has been updated, performing necessary changes");
+
+                        //RnD
+                        //BackgroundExecutionManager.RemoveAccess();
+
                         Settings.UseNavigatePage = false;
+
                         YouTube.HTTPS = true;
-                        if (Settings.Version == new Version(2, 7, 13, 0) || Settings.Version == new Version(2, 7, 0, 13))
+
+                        if (Settings.Version == new Version(2, 7, 13, 0) || Settings.Version
+                            == new Version(2, 7, 0, 13))
                         {
-                            MultipleSignInContainer accounts = SharedSettings.Accounts;
-                            accounts.Clear();
-                            SharedSettings.Accounts = accounts;
-                            SharedSettings.CurrentAccount = (SignInInfo)null;
+                            //MultipleSignInContainer accounts = SharedSettings.Accounts;
+                            //accounts.Clear();
+                            //SharedSettings.Accounts = accounts;
+                            //SharedSettings.CurrentAccount = (SignInInfo)null;
+                            System.Diagnostics.Debug.WriteLine("[i] BackgroundExecutionManager.RemoveAccess Checkpoint ");
                         }
+
                         Settings.Version = obj.Version;
                     }
                 }
                 catch
                 {
                 }
+
                 Helper.Write((object)Tag, (object)"Listing tiles");
                 IReadOnlyList<SecondaryTile> tiles = await SecondaryTile.FindAllAsync();
                 Helper.Write((object)Tag, (object)"Listing all registered background tasks");
-                IReadOnlyDictionary<Guid, IBackgroundTaskRegistration> allTasks = BackgroundTaskRegistration.AllTasks;
+                IReadOnlyDictionary<Guid, IBackgroundTaskRegistration> allTasks
+                    = BackgroundTaskRegistration.AllTasks;
                 if (allTasks != null)
                 {
                     try
@@ -1462,16 +1536,22 @@ namespace myTube
                     {
                     }
                 }
-                BackgroundAccessStatus backgroundAccessStatus = await BackgroundExecutionManager.RequestAccessAsync();
+                BackgroundAccessStatus backgroundAccessStatus = 
+                    await BackgroundExecutionManager.RequestAccessAsync();
+
                 TimeTrigger trigger1 = new TimeTrigger(30U, false);
                 TimeTrigger trigger2 = new TimeTrigger(30U, false);
+
                 foreach (SecondaryTile secondaryTile in (IEnumerable<SecondaryTile>)tiles)
                 {
                     if (secondaryTile.TileId.StartsWith("Typed"))
                         App.RegisterBackgroundTask("WindowsPhoneBackgroundTask.TileUpdateTask", secondaryTile.TileId, (IBackgroundTrigger)trigger1, (IBackgroundCondition)null);
                 }
+
                 Helper.Write((object)Tag, (object)"Registering channel notifications task");
-                App.RegisterBackgroundTask("ChannelNotificationsTask.RegularTask", "NotificationTask", (IBackgroundTrigger)trigger2, (IBackgroundCondition)null);
+
+                App.RegisterBackgroundTask("ChannelNotificationsTask.RegularTask", "NotificationTask",
+                    (IBackgroundTrigger)trigger2, (IBackgroundCondition)null);
                 App.UnregisterBackgroundTask("RegularTask");
                 Helper.Write((object)Tag, (object)"Background tasks set up");
                 tiles = (IReadOnlyList<SecondaryTile>)null;
@@ -1479,12 +1559,15 @@ namespace myTube
             catch (Exception ex)
             {
                 Helper.Write((object)("Exception setting up background task:\n\n " + (object)ex));
+                System.Diagnostics.Debug.WriteLine("[ex] Exception setting up background task: " + ex.Message);
             }
         }
 
         public static void UnregisterBackgroundTask(string name)
         {
-            foreach (KeyValuePair<Guid, IBackgroundTaskRegistration> allTask in (IEnumerable<KeyValuePair<Guid, IBackgroundTaskRegistration>>)BackgroundTaskRegistration.AllTasks)
+            foreach (KeyValuePair<Guid, IBackgroundTaskRegistration> allTask 
+                in (IEnumerable<KeyValuePair<Guid, IBackgroundTaskRegistration>>)
+                BackgroundTaskRegistration.AllTasks)
             {
                 if (allTask.Value.Name == name)
                 {
@@ -1524,7 +1607,8 @@ namespace myTube
             ProductKeyClient productKeyClient = new ProductKeyClient();
             try
             {
-                ProductKey productKey = await productKeyClient.GetProductKey(Settings.ProductKeyRequestId, Settings.RykenUserID);
+                ProductKey productKey = await productKeyClient.GetProductKey(
+                    Settings.ProductKeyRequestId, Settings.RykenUserID);
                 if (productKey.Key == null)
                     return;
                 Settings.ProductKey = productKey.Key;
@@ -1537,107 +1621,91 @@ namespace myTube
             }
         }
 
+
         public static async Task CheckRykenUser()
         {
-            // ISSUE: object of a compiler-generated type is created
-            // ISSUE: variable of a compiler-generated type
-            var displayClass1350 = new App.DisplayClass135_0();
-           
-            // ISSUE: reference to a compiler-generated field
-            // ISSUE: reference to a compiler-generated field
-            // ISSUE: reference to a compiler-generated field
-            // ISSUE: method pointer
-            //await ((DependencyObject)App.Instance.RootFrame).Dispatcher.RunAsync((CoreDispatcherPriority)0, 
-            //    App.u003E9__135_0 ?? (App.u003E9__135_0 
-            //    = new DispatchedHandler((object)App.u003E9, __methodptr(CCheckRykenUser.u003Eb__135))));
-            
-            // ISSUE: reference to a compiler-generated field
-            displayClass1350.userClient = new RykenUserClient();
-            bool flag = false;
+            var userClient = new RykenUserClient();
+            bool isUserValid = false;
+
             if (Settings.RykenUserID != null)
             {
                 try
                 {
-                    // ISSUE: object of a compiler-generated type is created
-                    // ISSUE: variable of a compiler-generated type
-                    var displayClass1351 = new App.DisplayClass135_1();
-                    // ISSUE: reference to a compiler-generated field
-                    displayClass1351.locals1 = displayClass1350;
-                    // ISSUE: reference to a compiler-generated field
-                    RykenUser user1 = displayClass1351.user;
-                    // ISSUE: reference to a compiler-generated field
-                    // ISSUE: reference to a compiler-generated field
-                    RykenUser rykenUser1 = await displayClass1351.locals1.userClient.Login(Settings.RykenUserID);
-                    // ISSUE: reference to a compiler-generated field
-                    displayClass1351.user = rykenUser1;
-                    // ISSUE: reference to a compiler-generated field
-                    if (displayClass1351.user != null)
+                    RykenUser rykenUser = await userClient.Login(Settings.RykenUserID);
+                    CoreDispatcher dispatcher = Window.Current.Dispatcher;
+
+                    if (rykenUser != null)
                     {
-                        // ISSUE: reference to a compiler-generated field
-                        int userMode = (int)displayClass1351.user.UserMode;
-                        // ISSUE: reference to a compiler-generated field
-                        if (displayClass1351.user.UserMode != Settings.UserMode)
+                        if (rykenUser.UserMode != Settings.UserMode)
                         {
-                            // ISSUE: method pointer
-                            //await ((DependencyObject)App.Instance.RootFrame).Dispatcher.RunAsync(
-                            //(CoreDispatcherPriority)0, new DispatchedHandler((object)displayClass1351,
-                            //__methodptr(\u003CCheckRykenUser\u003Eb__1)));
+                            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                            {
+                                // Handle user mode change
+                                //CheckRykenUser,,,,,
+                            });
                         }
+
+                        if (SharedSettings.CurrentAccount != null &&
+                            SharedSettings.CurrentAccount.UserName != rykenUser.Name)
+                        {
+                            try
+                            {
+                                await userClient.ChangeName(rykenUser.Id, SharedSettings.CurrentAccount.UserName);
+                            }
+                            catch
+                            {
+                                // Handle change name exception
+                            }
+                        }
+
+                        isUserValid = true;
                     }
-                    // ISSUE: reference to a compiler-generated field
-                    // ISSUE: reference to a compiler-generated field
-                    if (displayClass1351.user != null && SharedSettings.CurrentAccount != null 
-                        && SharedSettings.CurrentAccount.UserName != displayClass1351.user.Name)
-                    {
-                        try
-                        {
-                            // ISSUE: reference to a compiler-generated field
-                            // ISSUE: reference to a compiler-generated field
-                            // ISSUE: reference to a compiler-generated field
-                            RykenUser rykenUser2 = await displayClass1351.locals1.userClient.ChangeName(
-                                displayClass1351.user.Id, SharedSettings.CurrentAccount.UserName);
-                        }
-                        catch
-                        {
-                        }
-                    }
-                    // ISSUE: reference to a compiler-generated field
-                    flag = displayClass1351.user != null;
-                    displayClass1351 = (App.DisplayClass135_1) null;
                 }
                 catch
                 {
-                    flag = true;
+                    isUserValid = true;
                 }
             }
-            if (Settings.RykenUserID != null && flag)
+
+            if (Settings.RykenUserID != null && isUserValid)
+            {
                 return;
-            RykenUser user = (RykenUser)null;
+            }
+
+            RykenUser user = null;
+
             try
             {
                 if (SharedSettings.CurrentAccount == null)
                 {
-                    // ISSUE: reference to a compiler-generated field
-                    user = await displayClass1350.userClient.CreateNewUser();
+                    user = await userClient.CreateNewUser();
                 }
                 else
                 {
-                    // ISSUE: reference to a compiler-generated field
-                    user = await displayClass1350.userClient.CreateNewUser(SharedSettings.CurrentAccount.UserName);
+                    user = await userClient.CreateNewUser(SharedSettings.CurrentAccount.UserName);
                 }
             }
             catch
             {
+                // Handle create new user exception
             }
+
             if (user != null)
+            {
                 Settings.RykenUserID = user.Id;
-            user = (RykenUser)null;
+            }
         }
+
+
 
         public object GetThemeResource(string key)
         {
             ResourceDictionary themeDictionary = this.GetThemeDictionary();
-            return themeDictionary != null && ((IDictionary<object, object>)themeDictionary).ContainsKey((object)key) ? ((IDictionary<object, object>)themeDictionary)[(object)key] : (object)null;
+
+            return themeDictionary != null
+                && ((IDictionary<object, object>)themeDictionary).ContainsKey((object)key) 
+                       ? ((IDictionary<object, object>)themeDictionary)[(object)key] 
+                        : (object)null;
         }
 
         public void SetThemeResource(string key, object value)
@@ -1715,25 +1783,20 @@ namespace myTube
                     Window.Current.Content = (UIElement)frame;
                     Window current1 = Window.Current;
 
-                    //WindowsRuntimeMarshal.AddEventHandler<WindowActivatedEventHandler>(
-                    //    new Func<WindowActivatedEventHandler, EventRegistrationToken>(current1.add_Activated),
-                    //    new Action<EventRegistrationToken>(current1.remove_Activated), 
-                    //    new WindowActivatedEventHandler(this.WindowShareTargetActivated));
+                    current1.Activated += this.WindowShareTargetActivated;
 
                     this.windowActivatedTask = new TaskCompletionSource<bool>();
                     TaskCompletionSource<bool> visibiltyTask = new TaskCompletionSource<bool>();
 
                     Window current2 = Window.Current;
-                    //WindowsRuntimeMarshal.AddEventHandler<WindowVisibilityChangedEventHandler>(
-                    //    new Func<WindowVisibilityChangedEventHandler, EventRegistrationToken>(
-                    //        current2.add_VisibilityChanged), new Action<EventRegistrationToken>(
-                    //            current2.remove_VisibilityChanged), (WindowVisibilityChangedEventHandler)(
-                    //            (s, e) =>
-                    //    {
-                    //        if (!e.Visible)
-                    //            return;
-                    //        visibiltyTask.TrySetResult(true);
-                    //    }));
+
+                    Window.Current.VisibilityChanged += (s, e) =>
+                    {
+                        if (!e.Visible)
+                            return;
+                        visibiltyTask.TrySetResult(true);
+                    };
+
                     Window.Current.Activate();
                     int num = await visibiltyTask.Task ? 1 : 0;
                     frame.Navigate(typeof(ShareLinkPage), (object)args.ShareOperation);
@@ -1755,9 +1818,8 @@ namespace myTube
 
         private void WindowShareTargetActivated(object sender, WindowActivatedEventArgs e)
         {
-           // WindowsRuntimeMarshal.RemoveEventHandler<WindowActivatedEventHandler>(
-           //     new Action<EventRegistrationToken>(Window.Current.remove_Activated), 
-           //     new WindowActivatedEventHandler(this.WindowShareTargetActivated));
+            Window.Current.Activated -= this.WindowShareTargetActivated;
+
             this.windowActivatedTask.TrySetResult(true);
         }
 
@@ -1785,13 +1847,16 @@ namespace myTube
                     Y = bounds2.Bottom - ((FrameworkElement)settings).Height
                 };
             }));
-            //DefaultPage.Current.ShowPopup(popup2, new Point(), new Point(0.0, 150.0));
+
+            DefaultPage.Current.ShowPopup(popup2, new Point(), new Point(0.0, 150.0));
         }
 
         protected override void OnWindowCreated(WindowCreatedEventArgs args)
         {
             Window window = args.Window;
-            //WindowsRuntimeMarshal.AddEventHandler<WindowClosedEventHandler>(new Func<WindowClosedEventHandler, EventRegistrationToken>(window.add_Closed), new Action<EventRegistrationToken>(window.remove_Closed), new WindowClosedEventHandler(this.Window_Closed));
+
+            window.Closed += this.Window_Closed;
+
             base.OnWindowCreated(args);
         }
 
@@ -1799,7 +1864,7 @@ namespace myTube
         {
             if (DefaultPage.Current == null)
                 return;
-            //DefaultPage.Current.VideoPlayer.SetBookmark(save: true);
+            DefaultPage.Current.VideoPlayer.SetBookmark(save: true);
         }
 
         private void RootFrame_FirstNavigated(object sender, NavigationEventArgs e)
@@ -1811,7 +1876,9 @@ namespace myTube
                 if (pages.Length > 1)
                 {
                     for (int index = 0; index < pages.Length - 1; ++index)
-                        this.rootFrame.BackStack.Add(new PageStackEntry(pages[index].PageType, pages[index].Parameter, (NavigationTransitionInfo)null));
+                        this.rootFrame.BackStack.Add(
+                            new PageStackEntry(pages[index].PageType, pages[index].Parameter, 
+                            (NavigationTransitionInfo)null));
                 }
                 this.pageInfoCollection = (PageInfoCollection)null;
             }
@@ -1824,14 +1891,16 @@ namespace myTube
 
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
+            //TODO
             SuspendingDeferral deferral = e.SuspendingOperation.GetDeferral();
             bool completeDeferral = true;
             Helper.Write((object)"Suspending");
+            /*
             try
             {
                 await Settings.SavePageInfoCollection(this.RootFrame);
                 Settings.SuspendedAt = DateTimeOffset.Now;
-                //await DefaultPage.Current.VideoPlayer.SetBookmark(save: true);
+                await DefaultPage.Current.VideoPlayer.SetBookmark(save: true);
             }
             catch
             {
@@ -1840,7 +1909,7 @@ namespace myTube
             }
             if (DefaultPage.Current != null)
             {
-                VideoPlayer vp = default;//DefaultPage.Current.VideoPlayer;
+                VideoPlayer vp = DefaultPage.Current.VideoPlayer;
                 if (App.DeviceFamily == DeviceFamily.Desktop)
                     BackgroundMediaPlayer.Shutdown();
 
@@ -1856,51 +1925,48 @@ namespace myTube
                 vp = (VideoPlayer)null;
             }
             Helper.Write((object)nameof(App), (object)"Suspension complete");
+            */
             if (!completeDeferral)
                 return;
             deferral.Complete();
         }
 
-
-        private Task<bool> waitForBackgroundMedia(TimeSpan timeout)
+               
+        private async Task<bool> WaitForBackgroundMedia(TimeSpan timeout)
         {
-            // ISSUE: object of a compiler-generated type is created
-            // ISSUE: variable of a compiler-generated type
-            var displayClass1520 = new App.DisplayClass152_0();
-            
-            // ISSUE: reference to a compiler-generated field
-            displayClass1520.tcs = new TaskCompletionSource<bool>();
-            // ISSUE: reference to a compiler-generated field
-            displayClass1520.player = BackgroundMediaPlayer.Current;
-            // ISSUE: reference to a compiler-generated field
-            displayClass1520.opened = (TypedEventHandler<MediaPlayer, object>)null;
-            DispatcherTimer dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Interval = timeout;
-            // ISSUE: reference to a compiler-generated field
-            displayClass1520.timer = dispatcherTimer;
-            // ISSUE: reference to a compiler-generated field
-            displayClass1520.tick = (EventHandler<object>)null;
-            // ISSUE: reference to a compiler-generated field
-            displayClass1520.dispatcher = Window.Current.Dispatcher;
-            // ISSUE: reference to a compiler-generated field
-            // ISSUE: method pointer
-            displayClass1520.opened = default;//new TypedEventHandler<MediaPlayer, object>((object)displayClass1520, 
-                //__methodptr(\u003CwaitForBackgroundMedia\u003Eb__0));
-            // ISSUE: reference to a compiler-generated field
-            MediaPlayer player = displayClass1520.player;
-            // ISSUE: reference to a compiler-generated field
-            //WindowsRuntimeMarshal.AddEventHandler<TypedEventHandler<MediaPlayer, object>>(new Func<TypedEventHandler<MediaPlayer, object>, EventRegistrationToken>(player.add_MediaOpened), new Action<EventRegistrationToken>(player.remove_MediaOpened), displayClass1520.opened);
-            // ISSUE: reference to a compiler-generated field
-            // ISSUE: reference to a compiler-generated method
-            displayClass1520.tick = new EventHandler<object>(displayClass1520.waitForBackgroundMedia_u003Eb);
-            // ISSUE: reference to a compiler-generated field
-            displayClass1520.timer.Start();
-            // ISSUE: reference to a compiler-generated field
-            DispatcherTimer timer = displayClass1520.timer;
-            // ISSUE: reference to a compiler-generated field
-            //WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>, EventRegistrationToken>(timer.add_Tick), new Action<EventRegistrationToken>(timer.remove_Tick), displayClass1520.tick);
-            // ISSUE: reference to a compiler-generated field
-            return displayClass1520.tcs.Task;
+            var tcs = new TaskCompletionSource<bool>();
+            var player = BackgroundMediaPlayer.Current;
+            TypedEventHandler<MediaPlayer, object> opened = null;
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = timeout;
+            EventHandler<object> tick = null;
+            CoreDispatcher dispatcher = Window.Current.Dispatcher;
+
+            opened = (sender, args) =>
+            {
+                player.MediaOpened -= opened;
+                timer.Tick -= tick;
+                dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    tcs.TrySetResult(true);
+                });
+            };
+
+            tick = (sender, args) =>
+            {
+                player.MediaOpened -= opened;
+                timer.Tick -= tick;
+                dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    tcs.TrySetResult(false);
+                });
+            };
+
+            player.MediaOpened += opened;
+            timer.Tick += tick;
+            timer.Start();
+
+            return await tcs.Task;
         }
 
         private class DisplayClass152_0
@@ -1978,6 +2044,21 @@ namespace myTube
 
             public DisplayClass135_1()
             {
+            }
+        }
+
+        private class DisplayClass121_0
+        {
+            public DisplayClass121_0()
+            {
+            }
+
+            public GlobalObjects gobj { get; set; }
+            public Strings strings { get; set; }
+
+            internal void InitialChecks()
+            {
+                // Not Implemented yet.
             }
         }
     }//App class

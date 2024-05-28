@@ -1,0 +1,457 @@
+﻿<UserControl 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:local="using:myTube" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    x:Class="myTube.UserHome">
+    
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <x:Double x:Key="itemWidth">85.5</x:Double>
+            <x:Double x:Key="itemWidth2">66.5</x:Double>
+            <local:IconButtonInfoCollection x:Key="buttonCollection">
+                <local:IconButtonInfo Symbol="Video" Name="uploads">
+                    <!--local:Text>
+                        <Binding Path="Values" ConverterParameter="videos.lists.uploads/uploads">
+                            <Binding.Converter>
+                                <StaticResource ResourceKey="LowerConverter" />
+                            </Binding.Converter>
+                            <Binding.Source>
+                                <StaticResource ResourceKey="Strings" />
+                            </Binding.Source>
+                        </Binding>
+                    </local:Text-->
+                </local:IconButtonInfo>
+                <local:IconButtonInfo Symbol="SolidStar" Name="favorites">
+                    <!--local:Text>
+                        <Binding Path="Values" ConverterParameter="videos.lists.favorites/favorites">
+                            <Converter>
+                                <StaticResource ResourceKey="LowerConverter" />
+                            </Converter>
+                            <Source>
+                                <StaticResource ResourceKey="Strings" />
+                            </Source>
+                        </Binding>
+                    </local:Text-->
+                </local:IconButtonInfo>
+                <local:IconButtonInfo Symbol="Like" Name="liked">
+                    <!--local:Text1>
+                        <Binding Path="Values" ConverterParameter="videos.lists.liked/liked">
+                            <Binding.Source>
+                                <StaticResource ResourceKey="Strings" />
+                            </Binding.Source>
+                            <Binding.Converter>
+                                <StaticResource ResourceKey="LowerConverter" />
+                            </Binding.Converter>
+                        </Binding>
+                    </local:Text1-->
+                </local:IconButtonInfo>
+                
+                <local:IconButtonInfo Symbol="Clock" Name="history">
+                    <!--local:Text1>
+                        <Binding Path="Values" ConverterParameter="videos.lists.history/history">
+                            <Binding.Converter>
+                                <StaticResource ResourceKey="LowerConverter" />
+                            </Binding.Converter>
+                            <Binding.Source>
+                                <StaticResource ResourceKey="Strings" />
+                            </Binding.Source>
+                        </Binding>
+                    </local:Text1-->
+                </local:IconButtonInfo>
+                
+                <local:IconButtonInfo Symbol="Memo" Name="watch later">
+                    <!--local:Text1>
+                        <Binding Path="Values" ConverterParameter="videos.lists.watchlater/watch later">
+                            <Binding.Converter>
+                                <StaticResource ResourceKey="LowerConverter" />
+                            </Binding.Converter>
+                            <Binding.Source>
+                                <StaticResource ResourceKey="Strings" />
+                            </Binding.Source>
+                        </Binding>
+                    </local:Text1-->
+                </local:IconButtonInfo>
+                
+                <local:IconButtonInfo Symbol="List" Name="playlists">
+                    <!--local:Text1>
+                        <Binding Path="Values" ConverterParameter="playlists.playlists/playlists">
+                            <Binding.Converter>
+                                <StaticResource ResourceKey="LowerConverter" />
+                            </Binding.Converter>
+                            <Binding.Source>
+                                <StaticResource ResourceKey="Strings" />
+                            </Binding.Source>
+                        </Binding>
+                    </local:Text1-->
+                </local:IconButtonInfo>
+                
+                <local:IconButtonInfo Symbol="Save" Name="saved">
+                    <!--local:Text1>
+                        <Binding Path="Values" ConverterParameter="videos.lists.saved/saved">
+                            <Binding.Converter>
+                                <StaticResource ResourceKey="LowerConverter" />
+                            </Binding.Converter>
+                            <Binding.Source>
+                                <StaticResource ResourceKey="Strings" />
+                            </Binding.Source>
+                        </Binding>
+                    </local:Text1-->
+                </local:IconButtonInfo>
+                
+                <local:IconButtonInfo Symbol="People" Name="subscribed to">
+                    <!--local:Text1>
+                        <Binding Path="Values" ConverterParameter="home.subscribedto/subscribed to">
+                            <Binding.Converter>
+                                <StaticResource ResourceKey="LowerConverter" />
+                            </Binding.Converter>
+                            <Binding.Source>
+                                <StaticResource ResourceKey="Strings" />
+                            </Binding.Source>
+                        </Binding>
+                    </local:Text1-->
+                </local:IconButtonInfo>
+            </local:IconButtonInfoCollection>
+            
+            <DataTemplate x:Key="homeItemsTemplate">
+                <ControlTemplate>
+                    <local:IconTextButton Margin="0,0,4,75" Foreground="White">
+                        <!--Width>
+                            <StaticResource ResourceKey="UserHomeItemSize" />
+                        </Width>
+                        <Height>
+                            <StaticResource ResourceKey="UserHomeItemSize" />
+                        </Height>
+                        <Background>
+                            <ThemeResource ResourceKey="AccentBrush" />
+                        </Background>
+                        <local:Text>
+                            <Binding Path="Text" />
+                        </local:Text>
+                        <local:Symbol>
+                            <Binding Path="Symbol" />
+                        </local:Symbo-->
+                    </local:IconTextButton>
+                </ControlTemplate>
+            </DataTemplate>
+            <DataTemplate x:Key="homeItemsTemplate2">
+                <ControlTemplate>
+                    <Grid Margin="0,0,9,5"> 
+                        
+                            <ListView>
+                                <Ellipse>
+                                    <Ellipse.Fill>
+                                        <ThemeResource ResourceKey="AccentBrush" />
+                                    </Ellipse.Fill>
+                                    <Ellipse.Width>
+                                        <StaticResource ResourceKey="itemWidth" />
+                                    </Ellipse.Width>
+                                <Ellipse.Height>
+                                        <StaticResource ResourceKey="itemWidth" />
+                                    </Ellipse.Height>
+                                </Ellipse>
+                                
+                                <SymbolIcon Foreground="White">
+                                     <SymbolIcon.Symbol>
+                                        <Binding Path="Symbol" />
+                                    </SymbolIcon.Symbol>
+                                </SymbolIcon>
+                                
+                               <TextBlock Foreground="White" HorizontalAlignment="Center" 
+                                          VerticalAlignment="Top" FontSize="11" TextWrapping="Wrap" 
+                                          MaxWidth="66" Margin="0,63,0,0" TextAlignment="Center">
+                                 <TextBlock.Text>
+                                    <Binding Path="Text" />
+                                  </TextBlock.Text>   
+                                </TextBlock>
+                                
+                            </ListView>
+             
+                    </Grid>
+                </ControlTemplate>
+            </DataTemplate>
+            <DataTemplate x:Key="homeItemsTemplate3">
+                <ControlTemplate>
+                    <Grid Margin="0,0,0,9">
+                        <Grid.ColumnDefinitions>
+                          
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                          
+                        </Grid.ColumnDefinitions>
+                        
+                        
+                            <ListView>
+                                <Rectangle>
+                                    <Rectangle.Fill>
+                                       <ThemeResource ResourceKey="AccentBrush" />
+                                     </Rectangle.Fill>
+                                     <Rectangle.Height>
+                                         <StaticResource ResourceKey="itemWidth2" />
+                                      </Rectangle.Height>
+                                    <Rectangle.Width>
+                                       <StaticResource ResourceKey="itemWidth2" />
+                                    </Rectangle.Width>
+                                 </Rectangle>
+                                
+                                <SymbolIcon Foreground="White">
+                                <SymbolIcon.Symbol>
+                                        <Binding Path="Symbol" />
+                                    </SymbolIcon.Symbol>
+                                </SymbolIcon>
+                                                            <!--Column="1"-->
+                                <TextBlock Margin="19,0,0,0" FontWeight="SemiLight" 
+                                           VerticalAlignment="Center" >
+                                  <TextBlock.FontSize>
+                                    <StaticResource ResourceKey="LargeFontSize" />
+                                  </TextBlock.FontSize>
+                                  <TextBlock.Text>
+                                    <Binding Path="Text" />
+                                  </TextBlock.Text>
+                                    </TextBlock>
+                            </ListView>
+                     
+                        
+                    </Grid>
+                    
+                    
+                </ControlTemplate>
+            </DataTemplate>
+            
+            <ItemsPanelTemplate x:Key="itemsPanelTemplate">
+                <ControlTemplate>
+                    <ItemsWrapGrid Orientation="Horizontal" />
+                </ControlTemplate>
+            </ItemsPanelTemplate>
+            
+            <ItemsPanelTemplate x:Key="itemsPanelTemplate2">
+                <ControlTemplate>
+                    <ItemsStackPanel Orientation="Vertical" />
+                </ControlTemplate>
+            </ItemsPanelTemplate>
+
+            <Style x:Key="listViewStyle1" TargetType="ListView">
+                <Style.Setters>
+                    <Setter Property="ItemTemplate">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="homeItemsTemplate" />
+                        </Setter.Value>
+                    </Setter>
+
+                </Style.Setters>
+            </Style>
+            <!--Style x:Key="listViewStyle1" TargetType="ListView">
+                <Style.Setters>                   
+                     <Setter Property="ItemTemplate">
+                         <Setter.Value>
+                           <StaticResource ResourceKey="homeItemsTemplate" />
+                          </Setter.Value>
+                     </Setter>
+                      <Setter Property="ItemsPanel">
+                         <Setter.Value>
+                          <StaticResource ResourceKey="itemsPanelTemplate" />
+                        </Setter.Value>
+                     </Setter>             
+                </Style.Setters>
+            </Style-->
+            
+            
+            <Style x:Key="listViewStyle2" TargetType="ListView">
+                <Style.Setters>                    
+                    <Setter Property="ItemTemplate">
+                    <Setter.Value>
+                            <StaticResource ResourceKey="homeItemsTemplate3" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="ItemsPanel">
+                    <Setter.Value>
+                            <StaticResource ResourceKey="itemsPanelTemplate2" />
+                        </Setter.Value>
+                    </Setter>         
+                </Style.Setters>
+            </Style>
+            
+            <ImageBrush x:Name="thumbBrush" ImageSource="Images/UserNoThumb.png" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+ 
+        <ScrollViewer HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" 
+                      VerticalScrollBarVisibility="Auto">
+          
+                <Grid>
+            <Grid.RowDefinitions>
+                 
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                    
+            </Grid.RowDefinitions>
+
+            <ListView>
+                <Grid x:Name="signInPanel" Background="Transparent" Margin="0,0,0,9">
+                    <Grid.ColumnDefinitions>
+
+                        <ColumnDefinition>
+                            <ColumnDefinition.MaxWidth>
+                                <StaticResource ResourceKey="UserHomeNameSize" />
+                            </ColumnDefinition.MaxWidth>
+                        </ColumnDefinition>
+                        <ColumnDefinition Width="Auto" />
+
+                    </Grid.ColumnDefinitions>
+
+
+                    <ListView>
+                        <ContentControl x:Name="accountNamePanel" Margin="0,0,0,0">
+                            <!--ContentControl.Template>
+                                                <StaticResource ResourceKey="StandardPointerWithBackground" />
+                                            </ContentControl.Template-->
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition MaxWidth="180" />
+
+                                </Grid.ColumnDefinitions>
+
+                                <ListView>
+
+                                    <Ellipse x:Name="thumb">
+                                        <Ellipse.Fill>
+                                            <StaticResource ResourceKey="thumbBrush" />
+                                        </Ellipse.Fill>
+                                        <!--Ellipse.Width>
+                                                                    <StaticResource ResourceKey="UserHomeItemSize" />
+                                                                </Ellipse.Width-->
+                                        <!--Ellipse.Height>
+                                                                    <StaticResource ResourceKey="UserHomeItemSize" />
+                                                                </Ellipse.Height-->
+                                    </Ellipse>
+
+                                    <!--Column="1"-->
+                                    <TextBlock x:Name="userText" TextTrimming="CharacterEllipsis" 
+                                                         HorizontalAlignment="Left"  VerticalAlignment="Center" 
+                                                   Margin="19,0,0,0" FontWeight="SemiLight">
+                                                <!--TextBlock.FontSize>
+                                                  <StaticResource ResourceKey="LargeFontSize" />
+                                                </TextBlock.FontSize-->
+                                        <TextBlock.Text>
+                                            sign in
+                                            <!--Binding Path="Values" ConverterParameter="common.signin/sign in">
+                                                    <Binding.Converter>
+                                                      <StaticResource ResourceKey="LowerConverter" />
+                                                    </Binding.Converter>
+                                                    <Binding.Source>
+                                                      <StaticResource ResourceKey="Strings" />
+                                                    </Binding.Source>
+                                                  </Binding-->
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </ListView>
+                            </Grid>
+
+                        </ContentControl>
+
+                        <ContentControl   
+                                                         Margin="0,0,0,0" 
+                                                         VerticalContentAlignment="Stretch"
+                                                         HorizontalContentAlignment="Stretch"
+                                                         FontFamily="Segoe UI Symbol">
+                            <!--ContentControl.Template>
+                                                <StaticResource ResourceKey="StandardPointerWithBackground" />
+                                            </ContentControl.Template-->
+                            <ContentControl.Content>
+                                <Grid Background="Transparent">
+
+                                    <ListView>
+                                        <TextBlock Margin="14,25,0,14" 
+                                                                       MaxWidth="28" 
+                                                                       VerticalAlignment="Center" 
+                                                                       HorizontalAlignment="Left" Text=""
+                                                                       FontFamily="Segoe UI Symbol">
+                                            <TextBlock.Foreground>
+                                                <ThemeResource ResourceKey="AppBarBackgroundThemeBrush" />
+                                            </TextBlock.Foreground>
+                                            <!--TextBlock.FontSize>
+                                                <StaticResource ResourceKey="LargeFontSize" />
+                                            </TextBlock.FontSize-->
+                                        </TextBlock>
+                                    </ListView>
+
+                                </Grid>
+                            </ContentControl.Content>
+                        </ContentControl>
+
+                    </ListView>
+
+                </Grid>
+
+
+
+                <!--    VerticalScrollMode="Auto"  HorizontalScrollMode="Disabled"  Row="1" -->
+                <ListView x:Name="listView" ItemsSource="{StaticResource buttonCollection}">
+                    <!--Style>
+                        <StaticResource ResourceKey="listViewStyle1" />
+                     </Style>
+                    <ListView.ItemsSource>
+                       <StaticResource ResourceKey="buttonCollection" />
+                     </ListView.ItemsSource>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Style.Setters>
+                                <Setter Property="Margin" Value="0" />
+                                <Setter Property="Padding" Value="0" />
+                            </Style.Setters>
+                        </Style>
+                    </ListView.ItemContainerStyle-->
+                </ListView>
+
+                <!-- Row="2"-->
+                <ContentControl  x:Name="uploadControl" VerticalAlignment="Top" 
+                                             HorizontalAlignment="Stretch" Background="Transparent" 
+                                             FontWeight="SemiLight">
+                    <!--ContentControl.FontSize>
+                                <StaticResource ResourceKey="LargeFontSize" />
+                              </ContentControl.FontSize-->
+                    <!--ContentControl.Template>
+                                   <StaticResource ResourceKey="StandardPointerWithFade" />
+                                </ContentControl.Template-->
+
+                    <ContentControl.Content>
+
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+
+                            <ListView>
+                                <SymbolIcon Symbol="Upload" Margin="0,19,0,19">
+                                    <SymbolIcon.Foreground>
+                                        <ThemeResource ResourceKey="AppBarBackgroundThemeBrush" />
+                                    </SymbolIcon.Foreground>
+                                </SymbolIcon>
+                                <TextBlock Margin="0,19,0,19">
+                                    <TextBlock.Text>
+                                        upload
+                                        <!--Binding Path="Values" ConverterParameter="common.upload/upload">
+                                            <Binding.Converter>
+                                                <StaticResource ResourceKey="LowerConverter" />
+                                            </Binding.Converter>
+                                            <Binding.Source>
+                                                <StaticResource ResourceKey="Strings" />
+                                            </Binding.Source>
+                                        </Binding-->
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </ListView>
+
+                        </StackPanel>
+
+                    </ContentControl.Content>
+                </ContentControl>
+            </ListView>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

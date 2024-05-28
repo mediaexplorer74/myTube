@@ -24,7 +24,6 @@ using Windows.Devices.Input;
 using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
 using Windows.Media.Transcoding;
-//using Windows.Phone.UI.Input;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
@@ -50,7 +49,7 @@ namespace myTube
         private TranslateTransform rootTrans;
         public const int MaxVisualTreeIterations = 100;
         private int iterations;
-        private OverCanvas overCanvas;
+        private OverCanvas overCanvas = new OverCanvas(); //!
         private TranslateTransform stackPanelTrans;
         private TranslateTransform titleTrans;
         private TranslateTransform pivotTrans;
@@ -129,63 +128,7 @@ namespace myTube
         private Storyboard popupAni;
         private object BackPressed;
 
-        /*
-        private TranslateTransform appBarTrans;
-        private Grid LayoutRoot;
-        private VisualState DefaultState;
-        private VisualState DefaultPhone;
-        private VisualState NarrowState;
-        private VisualState NarrowPhone;
-        private VisualState TinyState;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private VisualState TinyPhone;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private VisualState TinyUWP;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private VisualState TinyLandscapePhone;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private Canvas renderingCanvas;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private Rectangle blackRec;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private VideoPlayer player;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private CustomFrame RootFrame;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private ContentControl openVideoButton;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private Grid titleGrid;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private Grid appBarPlaceHolder;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private Rectangle appBarFill;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private ColumnDefinition buttonColumn;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private ColumnDefinition titleColumn;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private ColumnDefinition searchColumn;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private Rectangle backgroundRec;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private TextBlock title;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private PivotHeader pivot;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private Button backButton;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private Button searchButton;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private CompositeTransform searchTrans;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private SymbolIcon searchSymbol;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private CompositeTransform searchSymbolTrans;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private TranslateTransform backTrans;
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        private SymbolIcon backSymbol;
-     */
+      
 
         public VideoPlayer Player
         {
@@ -342,15 +285,18 @@ namespace myTube
         public DefaultPage()
         {
             DefaultPage.lastDefaultPage = this;
+
             Helper.Write((object)nameof(DefaultPage), (object)"Constructor");
             this.InitializeComponent();
+            
             Helper.Write((object)nameof(DefaultPage), (object)"InitializedComponent");
             DependencyProperty shownProperty = DefaultPage.ShownProperty;
+            
             Binding binding1 = new Binding();
 
             binding1.Path = new PropertyPath(nameof(Shown));
 
-            ((FrameworkElement)this).SetBinding(shownProperty, (BindingBase)binding1);
+            this.SetBinding(shownProperty, (BindingBase)binding1);
             AppBarButton appBarButton = new AppBarButton();
             SymbolIcon symbolIcon = new SymbolIcon();
 
@@ -364,24 +310,24 @@ namespace myTube
             appBarSearch.Click += this.searchButton_Click;
 
             this.appView = ApplicationView.GetForCurrentView();
-            ((Control)this).FontFamily = new FontFamily("Segoe WP");
+            this.FontFamily = new FontFamily("Segoe WP");
             ApplicationView appView = this.appView;
 
             appView.VisibleBoundsChanged += (s, e) => view_VisibleBoundsChanged(this, e);
 
             this.appView.SetDesiredBoundsMode((ApplicationViewBoundsMode)1);
 
-            ((FrameworkElement)this).Loaded += this.DefaultPage_Loaded;
+            this.Loaded += this.DefaultPage_Loaded;
 
 
             this.rootTrans = new TranslateTransform();
             this.titleTrans = new TranslateTransform();
             this.pivotTrans = new TranslateTransform();
-            ((UIElement)this.RootFrame).RenderTransform = (Transform)this.rootTrans;
+            this.RootFrame.RenderTransform = (Transform)this.rootTrans;
             Helper.Write((object)nameof(DefaultPage), (object)"Create TranslateTransforms");
             CustomFrame rootFrame1 = this.RootFrame;
 
-            ((Windows.UI.Xaml.Controls.Frame)rootFrame1).Navigated += this.RootFrame_Navigated;
+            rootFrame1.Navigated += this.RootFrame_Navigated;
 
 
             CustomFrame rootFrame2 = this.RootFrame;
@@ -392,13 +338,13 @@ namespace myTube
             Button backButton = this.backButton;
            
            
-            ((ButtonBase)backButton).Click += this.backButton_Click;
+            backButton.Click += this.backButton_Click;
 
-            ((FrameworkElement)this).SizeChanged += this.DefaultPage_SizeChanged;
+            this.SizeChanged += this.DefaultPage_SizeChanged;
 
             HardwareButtons.BackPressed += this.HardwareButtons_BackPressed;
 
-            ((UIElement)this).ManipulationMode = (ManipulationModes)3;
+            this.ManipulationMode = (ManipulationModes)3;
 
             Helper.Write((object)nameof(DefaultPage), 
                 (object)("Set ManipulatonMode to " + (object)((UIElement)this).ManipulationMode));
@@ -406,10 +352,10 @@ namespace myTube
             YouTube.SignedIn += new EventHandler<SignedInEventArgs>(this.YouTube_SignedIn);
             YouTube.SignedOut += new EventHandler<SignedOutEventArgs>(this.YouTube_SignedOut);
 
-            ((UIElement)this).ManipulationDelta += this.DefaultPage_ManipulationDelta;
-            ((UIElement)this).ManipulationStarted += this.DefaultPage_ManipulationStarted;
-            ((UIElement)this).Tapped += this.DefaultPage_Tapped;
-            ((UIElement)this).ManipulationCompleted += this.DefaultPage_ManipulationCompleted;
+            this.ManipulationDelta += this.DefaultPage_ManipulationDelta;
+            this.ManipulationStarted += this.DefaultPage_ManipulationStarted;
+            this.Tapped += this.DefaultPage_Tapped;
+            this.ManipulationCompleted += this.DefaultPage_ManipulationCompleted;
 
             CoreWindow coreWindow1 = Window.Current.CoreWindow;
 
@@ -435,15 +381,25 @@ namespace myTube
             Helper.Write((object)nameof(DefaultPage), (object)"Created CoreWindow key and pointer events");
             
             this.SetTheme(Settings.Theme);
-            App.GlobalObjects.VideoThumbTemplate = Settings.Thunbnail != ThumbnailStyle.Classic 
-                ? (DataTemplate)((IDictionary<object, object>)Application.Current.Resources)[(object)"VideoThumbs2"]
-                : (DataTemplate)((IDictionary<object, object>)Application.Current.Resources)[(object)"VideoThumbs"];
+
+            try
+            {
+                App.GlobalObjects.VideoThumbTemplate = Settings.Thunbnail != ThumbnailStyle.Classic
+                    ? (DataTemplate)((IDictionary<object, object>)Application.Current.Resources)[(object)"VideoThumbs2"]
+                    : (DataTemplate)((IDictionary<object, object>)Application.Current.Resources)[(object)"VideoThumbs"];
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[ex] App.GlobalObjects.VideoThumbTemplate init error: " + ex.Message);
+            }
+
             DependencyProperty bannerReadyProperty = DefaultPage.BannerReadyProperty;
             Binding binding2 = new Binding();
             binding2.Path = (new PropertyPath(nameof(BannerReady)));
             binding2.FallbackValue = ((object)false);
             binding2.TargetNullValue = ((object)false);
-            ((FrameworkElement)this).SetBinding(bannerReadyProperty, (BindingBase)binding2);
+            this.SetBinding(bannerReadyProperty, (BindingBase)binding2);
             DisplayInformation forCurrentView = DisplayInformation.GetForCurrentView();
             
          
@@ -454,15 +410,14 @@ namespace myTube
             rootFrame3.Navigated += this.FirstNavi;
 
 
-            ((UIElement)this).RenderTransform = ((Transform)this.trans);
-            ((UIElement)this).RenderTransformOrigin = (new Point(0.5, 0.5));
+            this.RenderTransform = ((Transform)this.trans);
+            this.RenderTransformOrigin = (new Point(0.5, 0.5));
             Helper.Write((object)nameof(DefaultPage), (object)"Created");
             
             CoreDispatcher dispatcher = ((DependencyObject)this).Dispatcher;
             dispatcher.AcceleratorKeyActivated += this.Dispatcher_AcceleratorKeyActivated;
 
-            this.videoPlayerIndex = (uint)((IList<UIElement>)((Panel)this.LayoutRoot).Children).IndexOf(
-                (UIElement)this.player);
+            this.videoPlayerIndex = (uint)this.LayoutRoot.Children.IndexOf(this.player);
         }
 
         private void view_VisibleBoundsChanged(DefaultPage defaultPage, object e)
@@ -502,14 +457,14 @@ namespace myTube
             thickness1.Right = thickness2.Right = bounds.Right - visibleBounds.Right;
             if (!this.Shown || this.playerShown)
                 return;
-            ((FrameworkElement)this.RootFrame).Margin = thickness1;
-            ((FrameworkElement)this.titleGrid).Margin = thickness2;
+            this.RootFrame.Margin = thickness1;
+            this.titleGrid.Margin = thickness2;
         }
 
         protected override Size MeasureOverride(Size availableSize)
         {
             //RnD
-            return availableSize;// ((FrameworkElement)this).MeasureOverride(availableSize);
+            return availableSize;// this.MeasureOverride(availableSize);
         }
 
         private void Current_SizeChanged(object sender, WindowSizeChangedEventArgs e)
@@ -547,7 +502,8 @@ namespace myTube
             }
         }
 
-        private void DefaultPage_OrientationChanged(DisplayInformation sender, object args) => this.SetOrientation(sender.CurrentOrientation);
+        private void DefaultPage_OrientationChanged(DisplayInformation sender, object args) 
+            => this.SetOrientation(sender.CurrentOrientation);
 
         private void DefaultPage_OrientationChanged(
           SimpleOrientationSensor sender,
@@ -576,41 +532,35 @@ namespace myTube
             this.Rotate(orient);
         }
 
-        public async void Rotate(SimpleOrientation or, bool actuallyRotate = true)
+        public async void Rotate(SimpleOrientation orientation, bool actuallyRotate = true)
         {
-            // ISSUE: object of a compiler-generated type is created
-            // ISSUE: variable of a compiler-generated type
-            var cDisplayClass860 = new DefaultPage.DisplayClass86_0();
-            // ISSUE: reference to a compiler-generated field
-            cDisplayClass860.u003E4 = this;
-            // ISSUE: reference to a compiler-generated field
-            cDisplayClass860.or = or;
+            if (currentPopup != null) return;
 
-            if (this.currentPopup != null)
-                return;
-
-            if (this.rotationLocked)
+            if (rotationLocked)
             {
-                // ISSUE: reference to a compiler-generated field
-                cDisplayClass860.or = this.lockRotation;
+                orientation = lockRotation;
             }
-            // ISSUE: reference to a compiler-generated field
-            // ISSUE: reference to a compiler-generated field
-            // ISSUE: reference to a compiler-generated field
-            // ISSUE: reference to a compiler-generated field
-            if (Settings.RotationType != RotationType.Custom || cDisplayClass860.or != null 
-                && cDisplayClass860.or != (SimpleOrientation)3 && cDisplayClass860.or != (SimpleOrientation)1 
-                || cDisplayClass860.or == this.lastSimpleOrientation)
-                return;
-            // ISSUE: reference to a compiler-generated field
-            Helper.Write((object)nameof(DefaultPage), (object)("Rotating to " + (object)cDisplayClass860.or));
-            // ISSUE: reference to a compiler-generated field
-            this.lastSimpleOrientation = cDisplayClass860.or;
 
-            //TODO
-            //await ((DependencyObject)this).Dispatcher.RunAsync((CoreDispatcherPriority)1,
-            //new DispatchedHandler((object)cDisplayClass860, __methodptr(\u003CRotate\u003Eb__0)));
+            if (Settings.RotationType != RotationType.Custom &&
+                orientation != SimpleOrientation.Rotated270DegreesCounterclockwise &&
+                orientation != SimpleOrientation.Rotated90DegreesCounterclockwise &&
+                orientation != lastSimpleOrientation)
+            {
+                lastSimpleOrientation = orientation;
+                Helper.Write(nameof(DefaultPage), $"Rotating to {orientation}");
+
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, 
+                    RotateHandler(orientation));
+            }
+        }
+
+        private DispatchedHandler RotateHandler(object state)
+        {
+            var displayClass = (DefaultPage.DisplayClass86_0)state;
             
+            // Bad idea (iterative cycling!)
+            //displayClass.u003E4.Rotate(displayClass.or);
+            return default;
         }
 
         private void setPlayerShown(bool res)

@@ -6,7 +6,7 @@ using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
-namespace myTube.Converters
+namespace myTube
 {
   public class SubtitlePlacementToVerticalAlignment : IValueConverter
   {

@@ -1,5 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: RykenTube.FeedClient
+﻿// RykenTube.FeedClient
 // Assembly: RykenTubeWinRT, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // MVID: 90ADCE83-9478-4D5C-B501-F15F53E219D5
 // Assembly location: C:\Users\Admin\Desktop\re\MyTube\RykenTubeWinRT.dll
@@ -45,16 +44,24 @@ namespace RykenTube
     protected override string GetCacheName()
     {
       string cacheName = "t" + (object) (int) this.time + "c" + (object) (int) this.cat;
-      if (YouTube.Region != (RegionInfo) null)
+       
+       //RnD
+       //if (YouTube.Region != (RegionInfo) null)
         cacheName = cacheName + "r" + YouTube.Region.CountryCode;
+
       return cacheName;
     }
 
-    private string getRegion() => YouTube.Region != RegionInfo.Global ? YouTube.Region.CountryCode + "/" : "";
+        private string getRegion()
+        {
+            return YouTube.Region != RegionInfo.Global ? YouTube.Region.CountryCode + "/" : "";
+        }
 
-    protected override void SetBaseAddress(int page)
+        protected override void SetBaseAddress(int page)
     {
       base.SetBaseAddress(page);
+
+            /*
       if (this.version == 2)
       {
         if (this.type == YouTubeFeed.Trending)
@@ -127,12 +134,16 @@ namespace RykenTube
         }
         this.BaseAddress.SetValue("time", (object) this.b);
       }
-      else
+      */
+
+      if (1==1)//else
       {
         if (this.version != 3)
           return;
+
         this.BaseAddress.BaseAddress = "https://www.googleapis.com/youtube/v3/videos";
         this.BaseAddress["chart"] = "mostPopular";
+
         if (YouTube.Region != RegionInfo.Global)
           this.BaseAddress["regionCode"] = YouTube.Region.CountryCode;
         else
@@ -142,6 +153,7 @@ namespace RykenTube
         else
           this.BaseAddress.SetValue("videoCategoryId", (object) (int) this.cat);
       }
+
     }
   }
 }

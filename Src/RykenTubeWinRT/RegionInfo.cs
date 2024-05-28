@@ -1,9 +1,6 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: RykenTube.RegionInfo
-// Assembly: RykenTubeWinRT, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 90ADCE83-9478-4D5C-B501-F15F53E219D5
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\RykenTubeWinRT.dll
+﻿// RykenTube.RegionInfo
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -70,7 +67,8 @@ namespace RykenTube
     public string CountryCode = "";
     private static Dictionary<string, RegionInfo> codeInfo;
     private static Dictionary<string, RegionInfo> codeInfo2;
-    private static TaskCompletionSource<List<RegionInfo>> regionsLoadedTCS = new TaskCompletionSource<List<RegionInfo>>();
+    private static TaskCompletionSource<List<RegionInfo>> regionsLoadedTCS 
+            = new TaskCompletionSource<List<RegionInfo>>();
 
     private static void createCodeInfo()
     {
@@ -167,33 +165,29 @@ namespace RykenTube
       {
         bool flag1 = false;
         bool flag2 = false;
-        string countryCode = "";
+        
 
         try
-        {
-            if (r1 != null)
-                countryCode = r1.CountryCode;
-            else
-                flag1 = true;
+        {     
+           string countryCode = r1.CountryCode;
         }
-        catch
+        catch (Exception ex)
         {
           flag1 = true;
         }
+               
         try
         {
-            if (r2 != null)
-                countryCode = r2.CountryCode;
-            else
-                flag2 = true;
+            string countryCode = r2.CountryCode;
         }
-        catch
+        catch (Exception ex)
         {
-          flag2 = true;
+            flag2 = true;
         }
 
         if (flag1 & flag2)
           return true;
+
         return !(flag1 | flag2) && r1.CountryName == r2.CountryName && r1.CountryCode == r2.CountryCode;
       }
       catch

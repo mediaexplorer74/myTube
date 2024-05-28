@@ -1,13 +1,9 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: myTube.AllCapsConverter
-// Assembly: myTubeAppLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 421B05F1-0283-4856-94C3-9442AF560132
-// Assembly location: C:\Users\Admin\Desktop\re\MyTube\myTubeAppLibrary.dll
+﻿// myTube.AllCapsConverter
 
 using System;
 using Windows.UI.Xaml.Data;
 
-namespace myTube.Converters
+namespace myTube
 {
   public class AllCapsConverter : IValueConverter
   {

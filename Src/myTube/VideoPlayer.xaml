@@ -184,24 +184,24 @@
                                            FontWeight="SemiBold" 
                                            TextWrapping="Wrap" 
                                            MaxLines="1">
-                  <!--FontSize>
-                    <StaticResource ResourceKey="ImportantFontSize" />
-                  </FontSize-->
-                  <!--Foreground>
+                                <!--TextBlock.FontSize>
+                                    <StaticResource ResourceKey="ImportantFontSize" />
+                                </TextBlock.FontSize-->   
+                  <TextBlock.Foreground>
                     <StaticResource ResourceKey="ApplicationForegroundThemeBrush" />
-                  </Foreground-->
-                  <!--Transitions>
+                  </TextBlock.Foreground>
+                  <TextBlock.Transitions>
                     <TransitionCollection>
                       <ReorderThemeTransition />
                     </TransitionCollection>
-                  </Transitions-->
-                  <!--Inlines>
-                    <InlineCollection>
+                  </TextBlock.Transitions>
+                   <TextBlock.Inlines>
+                    <!--Inlines.InlineCollection-->
                       <Run x:Name="titleText" Text="no video" />
-                    </InlineCollection>
-                  </Inlines-->
-                        </TextBlock>
-                        <TextBlock x:Name="authorText" FontWeight="Normal" 
+                    <!--/Inlines.InlineCollection-->
+                  </TextBlock.Inlines>
+             </TextBlock>
+             <TextBlock x:Name="authorText" FontWeight="Normal" 
                                    Margin="19,0,0,9" 
                                    Text="author">
                   <!--FontSize>

@@ -74,14 +74,14 @@ namespace myTube
         private bool volumeShown;
 
         //TEMP
-        private SymbolIcon symbolIcon;
-        private Run timeRun;
-        private Run totalTimeRun;
-        private ListBox qualityPicker;
+        //private SymbolIcon symbolIcon;
+        //private Run timeRun;
+        //private Run totalTimeRun;
+        //private ListBox qualityPicker;
         private TextBlock videoSpeedText;
         private CustomSlider volumeSlider;
         private QualityButtonInfoCollection qualityButtons;
-        private TextBlock menuButton;
+        //private TextBlock menuButton;
         private TextBlock shuffleIcon;
         private Border volumeBorder;
 
@@ -321,8 +321,11 @@ namespace myTube
             this.changeQuality = true;
             this.volumeShown = true;
 
+            //Experimental
             // ISSUE: explicit constructor call (TODO)
-            //base.constructor();
+            //base.ctor();
+            base.OnApplyTemplate();
+            
 
             this.menuWatch = new Stopwatch();
             this.timer = new DispatcherTimer();
@@ -362,6 +365,9 @@ namespace myTube
 
             this.qualityPicker.FontFamily = DefaultPage.Current.FontFamily;
         }
+     
+
+
 
         public void SetPlaybackSpeed(double speed)
         {

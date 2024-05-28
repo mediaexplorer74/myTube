@@ -104,7 +104,7 @@ namespace myTube
         this.BackStack.Add(this.pageStack.Dequeue());
     }
 
-    private async void CustomFrame_Loaded(object sender, RoutedEventArgs e)
+    private /*async*/ void CustomFrame_Loaded(object sender, RoutedEventArgs e)
     {
       //WindowsRuntimeMarshal.RemoveEventHandler<RoutedEventHandler>(
       //    new Action<EventRegistrationToken>((((ContentControl) this).Content 
@@ -130,52 +130,77 @@ namespace myTube
       }
     }
 
-    public bool Navigate(Type type) => this.Navigate(type, (object) null);
+    public new bool Navigate(Type type)
+    {
+        return this.Navigate(type, (object)null);
+    }
 
-    public bool Navigate(Type type, object parameter) 
-            => this.Navigate(type, parameter, (NavigationTransitionInfo) null);
+    public new bool Navigate(Type type, object parameter)
+    {
+        return this.Navigate(type, parameter, default);
+    }
 
-    public bool Navigate(Type type, object parameter, NavigationTransitionInfo tranInfo)
+    public new bool Navigate(Type type, object parameter, NavigationTransitionInfo tranInfo)
     {
       if (!this.navigating)
       {
         if (this.NavigationCalled != null)
           this.NavigationCalled((object) this, (NavigationMode) 0);
-        if (this.firstNavigate && this.Animate)
-        {
-          this.navigating = true;
-          ((UIElement) this).RenderTransform = ((Transform) this.trans);
-          this.trans.X = (0.0);
-          if (((ContentControl) this).Content != null)
-          {
-            Storyboard sb = new Storyboard();
-            sb.Add((Timeline) Ani.DoubleAni((DependencyObject) this.trans, "Y", -49.875, 0.1,
-                (EasingFunctionBase) Ani.Ease((EasingMode) 1, 3.0)));
-            sb.Add((Timeline) Ani.DoubleAni((DependencyObject) this, "Opacity", 0.0, 0.1));
-
-            sb.Begin();
-            Storyboard storyboard = sb;
-
-                //WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>, 
-                //    EventRegistrationToken>(((Timeline) storyboard).add_Completed), 
-                //    new Action<EventRegistrationToken>(((Timeline) storyboard).remove_Completed),
-                //    (EventHandler<object>) ((_param1, _param2) => base.Navigate(type, parameter, tranInfo)));
-                        
-                //((Timeline)storyboard).Completed -= (sender, args) => base.Navigate(type, parameter, tranInfo);
-                //base.Navigate(type, parameter, tranInfo);
-
-                storyboard.Completed += (s, e) =>
+                if (this.firstNavigate && this.Animate)
                 {
-                    ((Timeline)s).Completed -= (sender, args) => base.Navigate(type, parameter, tranInfo);
-                    base.Navigate(type, parameter, tranInfo);
-                };
+                    this.navigating = true;
+                    this.RenderTransform = ((Transform)this.trans);
+                    this.trans.X = (0.0);
 
-            }
-          else
-            base.Navigate(type, parameter, tranInfo);
-        }
-        else
-          base.Navigate(type, parameter, tranInfo);
+                    if (this.Content != null)
+                    {
+                        Storyboard sb = new Storyboard();
+                        sb.Add((Timeline)Ani.DoubleAni((DependencyObject)this.trans, "Y", -49.875, 0.1,
+                            (EasingFunctionBase)Ani.Ease((EasingMode)1, 3.0)));
+                        sb.Add((Timeline)Ani.DoubleAni((DependencyObject)this, "Opacity", 0.0, 0.1));
+
+                        sb.Begin();
+                        Storyboard storyboard = sb;
+
+                        //WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(new Func<EventHandler<object>, 
+                        //    EventRegistrationToken>(((Timeline) storyboard).add_Completed), 
+                        //    new Action<EventRegistrationToken>(((Timeline) storyboard).remove_Completed),
+                        //    (EventHandler<object>) ((_param1, _param2) => base.Navigate(type, parameter, tranInfo)));
+
+                        ((Timeline)storyboard).Completed -= (sender, args) 
+                            => base.Navigate(type, parameter, tranInfo);
+
+                        base.Navigate(type, parameter, tranInfo);
+
+                        storyboard.Completed += (s, e) =>
+                        {
+                            ((Timeline)s).Completed -= (sender, args) => base.Navigate(type, parameter, tranInfo);
+                            base.Navigate(type, parameter, tranInfo);
+                        };
+                    }
+                    else
+                    {
+                        try
+                        {
+                            base.Navigate(type, parameter, tranInfo);
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine("[ex] CustomFrame Navigate error");
+                        }
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        base.Navigate(type, parameter, tranInfo);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[ex] CustomFrame Navigate error");
+                    }
+                }
       }
       return true;
     }
@@ -215,13 +240,7 @@ namespace myTube
         try
         {
           Storyboard storyboard = sb;
-
-          //WindowsRuntimeMarshal.AddEventHandler<EventHandler<object>>(
-          //    new Func<EventHandler<object>, EventRegistrationToken>(((Timeline) storyboard).add_Completed),
-          //    new Action<EventRegistrationToken>(((Timeline) storyboard).remove_Completed), 
-          //    (EventHandler<object>) ((_param1, _param2) => base.GoBack()));
-
-            storyboard.Completed += (s, e) =>
+          storyboard.Completed += (s, e) =>
             {
                 ((Timeline)s).Completed -= (sender, args) => base.GoBack();
                 base.GoBack();

@@ -3,7 +3,7 @@
 using System;
 using Windows.UI.Xaml.Data;
 
-namespace myTube.Converters
+namespace myTube
 {
   public class ColorSchemeToStringConverter : IValueConverter
   {

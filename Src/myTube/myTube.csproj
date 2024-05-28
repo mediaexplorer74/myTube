@@ -10,6 +10,7 @@
     <RootNamespace>myTube</RootNamespace>
     <AssemblyName>myTube</AssemblyName>
     <DefaultLanguage>ru-RU</DefaultLanguage>
+    <LangVersion>latest</LangVersion>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
@@ -135,8 +136,13 @@
     <Compile Include="Converters\AllCapsConverter.cs" />
     <Compile Include="Converters\BoolInverter.cs" />
     <Compile Include="Converters\BoolToVisibility.cs" />
+    <Compile Include="Converters\DateToDotString.cs" />
+    <Compile Include="Converters\NullToVisibility.cs" />
     <Compile Include="Converters\NumberWithNewLinesConverter.cs" />
+    <Compile Include="Converters\StringAppendConverter.cs" />
     <Compile Include="Converters\StringToVisibiltyConverter.cs" />
+    <Compile Include="Converters\TimeBookmark.cs" />
+    <Compile Include="Converters\TimeShortener.cs" />
     <Compile Include="CustomFrame.cs" />
     <Compile Include="CustomMath\Curve.cs" />
     <Compile Include="CustomMath\CurvePoint.cs" />
@@ -153,7 +159,9 @@
       <DependentUpon>DefaultPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="DirectionTappedEventArgs.cs" />
-    <Compile Include="DownloaderPanel.cs" />
+    <Compile Include="DownloaderPanel.xaml.cs">
+      <DependentUpon>DownloaderPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ExceptionClient.cs" />
     <Compile Include="FadeType.cs" />
     <Compile Include="FlipStyle.cs" />
@@ -175,10 +183,16 @@
     <Compile Include="IconButtonEvent.cs" />
     <Compile Include="IconButtonEventArgs.cs" />
     <Compile Include="IconButtonEventCollection.cs" />
+    <Compile Include="PlaylistSelectorControl.xaml.cs">
+      <DependentUpon>PlaylistSelectorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Text.cs" />
     <Compile Include="IconButtonInfo.cs" />
+    <Compile Include="IconButtonInfoCollection.cs" />
     <Compile Include="IconTextButton.xaml.cs">
       <DependentUpon>IconTextButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="IDownloadPanelCallbackReceiver.cs" />
     <Compile Include="LeftRightControl.cs" />
     <Compile Include="LikesPage.cs" />
     <Compile Include="ListState.cs" />
@@ -221,11 +235,18 @@
     <Compile Include="TestPage.xaml.cs">
       <DependentUpon>TestPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TextToHyperlinkBlocksConverter.cs" />
     <Compile Include="Tiles\VideoTile.xaml.cs">
       <DependentUpon>VideoTile.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserHome.xaml.cs">
+      <DependentUpon>UserHome.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VideoContextMenu.xaml.cs">
       <DependentUpon>VideoContextMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VideoDetails.xaml.cs">
+      <DependentUpon>VideoDetails.xaml</DependentUpon>
     </Compile>
     <Compile Include="VideoList.xaml.cs">
       <DependentUpon>VideoList.xaml</DependentUpon>
@@ -268,12 +289,15 @@
     <Compile Include="ThumbnailStyle.cs" />
     <Compile Include="TileStyle.cs" />
     <Compile Include="UploaderPage.cs" />
-    <Compile Include="UserHome.cs" />
     <Compile Include="Vector3.cs" />
+    <Compile Include="VideoPageThumb.xaml.cs">
+      <DependentUpon>VideoPageThumb.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VideoPlayer.xaml.cs">
       <DependentUpon>VideoPlayer.xaml</DependentUpon>
     </Compile>
     <Compile Include="WatchLaterPage.cs" />
+    <Compile Include="WrapPanel.cs" />
     <Compile Include="YouTubeEntryCollection.cs" />
     <Compile Include="RykenUserClient.cs" />
   </ItemGroup>
@@ -377,6 +401,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="DownloaderPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="IconTextButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -393,6 +421,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PlaylistSelectorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TestPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -401,7 +433,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserHome.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="VideoContextMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VideoDetails.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -412,6 +452,10 @@
     <Page Include="VideoPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VideoPageThumb.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="VideoPlayer.xaml">
       <SubType>Designer</SubType>

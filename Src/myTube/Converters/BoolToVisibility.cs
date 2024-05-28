@@ -16,13 +16,16 @@ namespace myTube
       {
         case bool flag:
           return (object) (Visibility) (flag ? 0 : 1);
+
         case int num:
           return (object) (Visibility) (num > 0 ? 0 : 1);
-
-                    //RnD
+                    
+              // C# 9 +
         //case bool? _:
-        //  bool? nullable = value as bool?;
-        //  return nullable.HasValue ? (object) (Visibility) (nullable.Value ? 0 : 1) : (object) (Visibility) 1;
+       //
+                    bool? nullable = value as bool?;
+       //   return nullable.HasValue ? (object) (Visibility) (nullable.Value ? 0 : 1) : (object) (Visibility) 1;
+       
         default:
           return (object) (Visibility) 0;
       }

@@ -1,0 +1,474 @@
+﻿<UserControl 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:local="using:myTube" 
+    xmlns:extensions="using:WinRTXamlToolkit.Controls.Extensions" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    mc:Ignorable="d"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    x:Class="myTube.VideoDetails"
+>
+<UserControl.Foreground>
+    <ThemeResource ResourceKey="ApplicationForegroundThemeBrush" />
+</UserControl.Foreground>
+<UserControl.FontSize>
+    <StaticResource ResourceKey="DefaultFontSize" />
+</UserControl.FontSize>
+<UserControl.Resources>
+    <ResourceDictionary>
+        <local:NullToVisibility x:Key="NullToVisibility" />
+        <local:TimeBookmark x:Key="TestBookmark" Time="0:05:49" ID="ds435fdtr" />
+        <local:TimeShortener x:Key="TimeShortener" />
+        <local:NumberWithNewLinesConverter x:Key="NumberWithNewLinesConverter" />
+        <local:StringAppendConverter x:Key="StringAppendConverter" />
+        <local:DateToDotString x:Key="DateToDotString" />
+        <local:AllCapsConverter x:Key="AllCapsConverter" />
+        
+        <BitmapImage x:Name="userThumbBitmap" />
+        
+        <ImageBrush x:Name="userThumbBrush">
+           <ImageBrush.ImageSource>
+                <StaticResource ResourceKey="userThumbBitmap" />
+            </ImageBrush.ImageSource>
+        </ImageBrush>
+    </ResourceDictionary>
+</UserControl.Resources>
+    
+<Grid>
+    <StackPanel>
+            <StackPanel.ChildrenTransitions>
+            <TransitionCollection>
+                <RepositionThemeTransition />
+            </TransitionCollection>
+        </StackPanel.ChildrenTransitions>
+            <StackPanel.Children>
+            <ListView>
+                <local:VideoPageThumb x:Name="thumb" />
+                <Grid x:Name="progressGrid" Visibility="Collapsed">
+                    <Grid.Resources>
+                    <ResourceDictionary>
+                        <Style TargetType="Rectangle">
+                            <Style.Setters>
+                                    <Setter Property="Height" Value="3" />
+                                    <Setter Property="VerticalAlignment" Value="Bottom" />                                  
+                            </Style.Setters>
+                        </Style>
+                    </ResourceDictionary>
+                </Grid.Resources>
+                    
+                <Grid.Children>
+                    <ListView>
+                        <Rectangle>
+                                <Rectangle.Fill>
+                                <ThemeResource ResourceKey="SubtleBrush" />
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <Rectangle RenderTransformOrigin="0, 0">
+                                <Rectangle.Fill>
+                                <ThemeResource ResourceKey="AccentBrush" />
+                            </Rectangle.Fill>
+                                <Rectangle.RenderTransform>
+                                <ScaleTransform x:Name="progressTrans" ScaleX="0" />
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
+                        <TextBlock x:Name="progressText" Text="saving..." 
+                                    VerticalAlignment="Center" Margin="0,9,5,0" Foreground="White">
+                            <TextBlock.FontSize>
+                            <StaticResource ResourceKey="SmallFontSize" />
+                            </TextBlock.FontSize> 
+                            </TextBlock>
+                    </ListView>
+                </Grid.Children>
+            </Grid>
+
+                <TextBlock x:Name="bookmarkText" Margin="0,9,5,0" FontWeight="SemiBold">
+
+                    <TextBlock.Text>
+                        <Binding Path="Time" ConverterParameter="left off at *">
+                            <Binding.Converter>
+                                <StaticResource ResourceKey="TimeShortener" />
+                            </Binding.Converter>
+                        </Binding>
+                    </TextBlock.Text>
+                    <TextBlock.FontSize>
+                        <StaticResource ResourceKey="SmallFontSize" />
+                    </TextBlock.FontSize>
+                    <TextBlock.Foreground>
+                        <ThemeResource ResourceKey="SubtleBrush" />
+                    </TextBlock.Foreground>
+                    <TextBlock.Visibility>
+                        <Binding FallbackValue="Collapsed" Mode="OneWay" TargetNullValue="Collapsed">
+                            <Binding.Converter>
+                                <StaticResource ResourceKey="NullToVisibility" />
+                            </Binding.Converter>
+                        </Binding>
+                    </TextBlock.Visibility>
+                </TextBlock>
+
+
+                <Grid Margin="0,14,25,0">
+                <Grid.ColumnDefinitions>
+                       
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                 
+                </Grid.ColumnDefinitions>
+                    
+                <Grid.RowDefinitions>
+              
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                   
+                </Grid.RowDefinitions>
+                    
+                   
+                    <ListView>
+                        <Grid  x:Name="userThumbGrid" 
+                                Width="57" Height="57" RowSpan="2" 
+                                HorizontalAlignment="Left">
+                           
+                                <ListView>
+                                    <Ellipse Fill="Black" />
+                                    <Ellipse>
+                                        <Ellipse.Fill>
+                                            <StaticResource ResourceKey="userThumbBrush" />
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+                                </ListView>
+                            
+                        </Grid>
+                            
+                            <ContentControl Margin="9,5,0,0" VerticalAlignment="Bottom">
+                            <ContentControl.Template>
+                                <StaticResource ResourceKey="StandardPointerWithFade" />
+                            </ContentControl.Template>
+                            <ContentControl.Content>
+                                <TextBlock  MaxLines="1" FontWeight="Bold" 
+                                            TextWrapping="WrapWholeWords" 
+                                            TextTrimming="CharacterEllipsis" Margin="0,0,19,0">
+                                    <TextBlock.Text>
+                                    <Binding Path="AuthorDisplayName" />
+                                    </TextBlock.Text>
+                                    <TextBlock.Foreground>
+                                    <ThemeResource ResourceKey="AccentBrush" />
+                                    </TextBlock.Foreground>
+                                    <TextBlock.FontSize>
+                                    <StaticResource ResourceKey="ImportantFontSize" />
+                                    </TextBlock.FontSize> 
+                                </TextBlock>
+                            </ContentControl.Content>
+                        </ContentControl>
+
+                        <!-- Column="1" Row="1" -->
+                            <TextBlock Margin="9,5,0,0"  
+                                        VerticalAlignment="Top" 
+                                        FontWeight="SemiBold" 
+                                        UseLayoutRounding="True" 
+                                        >
+            <TextBlock.FontSize>
+            <StaticResource ResourceKey="UnmportantFontSize" />
+            </TextBlock.FontSize>
+                            <TextBlock.Foreground>
+            <ThemeResource ResourceKey="SubtleBrush" />
+            </TextBlock.Foreground>
+                <TextBlock.Inlines>
+                <Run>
+                    <Run.Text>
+                    <Binding Path="Time">
+                        <Binding.Converter>
+                        <StaticResource ResourceKey="DateToDotString" />
+                    </Binding.Converter>
+                    </Binding>
+                    </Run.Text>
+                </Run>
+                <Run Text=" | " />
+                       
+                <Run>
+                    <Run.Text>
+                    <Binding Path="Duration">
+                                            <Binding.Converter>
+                        <StaticResource ResourceKey="TimeShortener" />
+                    </Binding.Converter>
+                    </Binding>
+                    </Run.Text>
+                </Run>
+         
+            </TextBlock.Inlines>
+                </TextBlock>                            
+                        <Grid x:Name="subscribeBorder" Column="3" Width="57" Height="57" RowSpan="2">
+                                
+                                <ListView>
+                                    <Ellipse StrokeThickness="2">
+                                    <Ellipse.Stroke>
+                                            <ThemeResource ResourceKey="AccentBrush" />
+                                        </Ellipse.Stroke>
+                                    </Ellipse>
+
+                                <!--Symbol="Add"-->
+                                    <local:IconTextButton x:Name="subscribeIcon">
+                                        <!--Foreground>
+                                            <ThemeResource ResourceKey="AccentBrush" />
+                                        </Foreground-->
+                                    </local:IconTextButton>
+                                </ListView>                
+                        </Grid>
+                    </ListView>                 
+            </Grid>
+
+                <Grid Margin="9,5,28,5">
+                    <Grid.ColumnDefinitions>
+
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.Resources>
+                        <ResourceDictionary>
+                            <ScaleTransform x:Key="buttonScale" ScaleX="-1" />
+                        </ResourceDictionary>
+                    </Grid.Resources>
+
+
+                    <!-- ************** -->
+                    <ListView>
+                        <!--Column="1"-->
+                        <TextBlock UseLayoutRounding="True" FontWeight="SemiBold" 
+                                    Margin="19,0,19,0" HorizontalAlignment="Right"
+                                        VerticalAlignment="Top">
+                            <TextBlock.Text>
+                                <Binding Path="Dislikes" ConverterParameter=",">
+                                    <Binding.Converter>
+                                        <StaticResource ResourceKey="NumberWithNewLinesConverter" />
+                                    </Binding.Converter>
+                                </Binding>
+                            </TextBlock.Text>
+
+                            <TextBlock.FontSize>
+                                <StaticResource ResourceKey="SmallFontSize" />
+                            </TextBlock.FontSize>
+                        </TextBlock>
+
+                        <!-- Column="1" -->
+                        <TextBlock UseLayoutRounding="True" FontWeight="SemiBold" 
+                                    Margin="19,0,19,0" HorizontalAlignment="Left" 
+                                    VerticalAlignment="Top">
+                            <TextBlock.Text>
+                                <Binding Path="Likes" ConverterParameter=",">
+                                    <Binding.Converter>
+                                        <StaticResource ResourceKey="NumberWithNewLinesConverter" />
+                                    </Binding.Converter>
+                                </Binding>
+                            </TextBlock.Text>
+
+                            <TextBlock.FontSize>
+                                <StaticResource ResourceKey="SmallFontSize" />
+                            </TextBlock.FontSize>
+                            <TextBlock.Foreground>
+                                <ThemeResource ResourceKey="AccentBrush" />
+                            </TextBlock.Foreground>
+                        </TextBlock>
+
+                        <!-- Column="1" -->
+                        <Rectangle VerticalAlignment="Top" Margin="19,19,19,0" Height="2">
+                            <Rectangle.Fill>
+                                <ThemeResource ResourceKey="SubtleBrush" />
+                            </Rectangle.Fill>
+                        </Rectangle>
+
+                        <!-- Column="1"  -->
+                        <Rectangle VerticalAlignment="Top" Margin="19,19,19,0" Height="2" 
+                                        RenderTransformOrigin="0,0">
+                            <Rectangle.Fill>
+                                <ThemeResource ResourceKey="AccentBrush" />
+                            </Rectangle.Fill>
+
+                            <Rectangle.RenderTransform>
+                                <ScaleTransform x:Name="likesBarScale">
+                                    <ScaleTransform.ScaleX>
+                                        <Binding Path="LikesPercentage" />
+                                    </ScaleTransform.ScaleX>
+                                </ScaleTransform>
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
+
+                        <!-- Column="2" -->
+                        <ContentControl x:Name="dislikeButton" RenderTransformOrigin="0.5,0.5" 
+                                    Width="40,5" Height="40,5" VerticalAlignment="Top">
+                            <ContentControl.Background>
+                                <ThemeResource ResourceKey="AccentBrush" />
+                            </ContentControl.Background>
+                            <ContentControl.Template>
+                                <StaticResource ResourceKey="StandardPointerContent" />
+                            </ContentControl.Template>
+                            <ContentControl.RenderTransform>
+                                <StaticResource ResourceKey="buttonScale" />
+                            </ContentControl.RenderTransform>
+                            <ContentControl.Content>
+                                <SymbolIcon Symbol="Dislike" />
+                            </ContentControl.Content>
+                        </ContentControl>
+
+                        <!--  Column="0" -->
+                        <ContentControl x:Name="likeButton" RenderTransformOrigin="0.5,0.5"
+                                Width="40,5" Height="40,5" VerticalAlignment="Top">
+                            <ContentControl.Template>
+                                <StaticResource ResourceKey="StandardPointerContent" />
+                            </ContentControl.Template>
+                            <ContentControl.RenderTransform>
+                                <StaticResource ResourceKey="buttonScale" />
+                            </ContentControl.RenderTransform>
+                            <ContentControl.Background>
+                                <ThemeResource ResourceKey="AccentBrush" />
+                            </ContentControl.Background>
+                            <ContentControl.Content>
+                                <SymbolIcon Symbol="Like" />
+                            </ContentControl.Content>
+                        </ContentControl>
+                            
+                        <!-- Column="1" -->
+                        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" 
+                                        FontWeight="SemiBold">
+                            <TextBlock.FontSize>
+                                <StaticResource ResourceKey="SmallFontSize" />
+                            </TextBlock.FontSize>
+                            <TextBlock.Foreground>
+                                <ThemeResource ResourceKey="SubtleBrush" />
+                            </TextBlock.Foreground>
+
+                            <TextBlock.Inlines>
+
+                                <Run>
+                                    <Run.Text>
+                                        <Binding Path="Views" ConverterParameter=",">
+                                            <Binding.Converter>
+                                                <StaticResource ResourceKey="NumberWithNewLinesConverter" />
+                                            </Binding.Converter>
+                                        </Binding>
+                                    </Run.Text>
+                                </Run>
+                                <Run>
+                                    <Run.Text>
+                                        views
+                                        <!--Binding Path="Values" 
+                                                    ConverterParameter="videos.details.views/views">
+                                            <Binding.Converter>
+                                                <StaticResource ResourceKey="LowerConverter" />
+                                            </Binding.Converter>
+                                            <Binding.Source>
+                                                <StaticResource ResourceKey="Strings" />
+                                            </Binding.Source>
+                                        </Binding-->
+                                    </Run.Text>
+                                </Run>
+
+                            </TextBlock.Inlines>
+                        </TextBlock>
+                    </ListView>
+
+                </Grid>
+
+
+                <Border Background="Transparent" Margin="0,19,0,0">
+                      <Border.Child>
+                             <TextBlock x:Name="linkText" HorizontalAlignment="Center"
+                                        IsTextSelectionEnabled="False">
+                                <TextBlock.Foreground>
+                                    <ThemeResource ResourceKey="SubtleBrush" />
+                                </TextBlock.Foreground>
+                                <TextBlock.Text>
+                                    <Binding Path="ID" ConverterParameter="https://youtu.be/*1">
+                                        <Binding.Converter>
+                                            <StaticResource ResourceKey="StringAppendConverter" />
+                                        </Binding.Converter>
+                                    </Binding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                    </Border.Child>
+                </Border>
+                
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,0">
+                        <StackPanel.Resources>
+                        <ResourceDictionary>
+                            <Style TargetType="local:IconTextButton">
+                                <Style.Setters>
+                              
+                                        <Setter Property="Foreground">
+                                            <Setter.Value>
+                                                <ThemeResource ResourceKey="AccentBrush" />
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Height" Value="66.5" />
+                                        <Setter Property="Width" Value="66.5" />
+                              
+                                </Style.Setters>
+                            </Style>
+                        </ResourceDictionary>
+                            
+                    </StackPanel.Resources>
+                    
+                
+                        <ListView>
+                                <!-- Text="save" Symbol="Download" -->
+                                    <local:IconTextButton  x:Name="saveButton" />
+
+                                   <!--Symbol="Add"-->
+                                <local:IconTextButton  x:Name="addToButton">
+                                    
+                                <!--local:Text>
+                                    <Binding Path="Values" ConverterParameter="videos.details.addto/add to">
+                                        <Binding.Converter>
+                                            <StaticResource ResourceKey="LowerConverter" />
+                                        </Binding.Converter>
+                                        <Binding.Source>
+                                            <StaticResource ResourceKey="Strings" />
+                                        </Binding.Source>
+                                    </Binding>
+                                </local:Text-->
+                            </local:IconTextButton>
+
+                            <!-- Symbol="ReShare" -->
+                                <local:IconTextButton x:Name="shareButton">
+                                <!--local:Text>
+                                    <Binding Path="Values" ConverterParameter="common.share/share">
+                                        <Binding.Converter>
+                                            <StaticResource ResourceKey="LowerConverter" />
+                                        </Binding.Converter>
+                                        <Binding.Source>
+                                            <StaticResource ResourceKey="Strings" />
+                                        </Binding.Source>
+                                    </Binding>
+                                </local:Text-->
+                            </local:IconTextButton>
+                        </ListView>
+              
+                </StackPanel>
+                
+                <RichTextBlock x:Name="description" TextWrapping="Wrap" Padding="0,28,5,2" 
+                               IsTextSelectionEnabled="True">
+                        <RichTextBlock.FontSize>
+                          <StaticResource ResourceKey="DefaultFontSize" />
+                      </RichTextBlock.FontSize>
+                </RichTextBlock>
+                
+                
+                <TextBlock Margin="0,0,0,47" Opacity="0.5" 
+                           FontWeight="SemiBold" TextWrapping="Wrap">
+                    <TextBlock.Text>
+                        <Binding Path="Title" />
+                    </TextBlock.Text>
+                    <TextBlock.Foreground>
+                        <ThemeResource ResourceKey="AccentBrush" />
+                    </TextBlock.Foreground>
+                        <TextBlock.FontSize>
+                            <StaticResource ResourceKey="SmallFontSize" />
+                        </TextBlock.FontSize>
+                </TextBlock>
+            </ListView>
+        </StackPanel.Children>
+    </StackPanel>
+</Grid>
+</UserControl>
