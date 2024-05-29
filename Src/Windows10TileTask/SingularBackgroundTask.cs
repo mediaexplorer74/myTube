@@ -18,15 +18,19 @@ namespace Windows10TileTask
     ISingularBackgroundTaskClass,
     IStringable
   {
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+    //[MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
     public extern SingularBackgroundTask();
 
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+    //[MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
     public extern void Run([In] IBackgroundTaskInstance taskInstance);
 
-    public extern bool SetYouTubeParams { [MethodImpl(MethodCodeType = MethodCodeType.Runtime)] get; [MethodImpl(MethodCodeType = MethodCodeType.Runtime)] [param: In] set; }
+    public extern bool SetYouTubeParams
+        {
+            get;
+            set;
+        }
 
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+    
     extern string IStringable.ToString();
   }
 }

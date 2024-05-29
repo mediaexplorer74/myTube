@@ -14,15 +14,15 @@ namespace myTube.Popups
 {
   public sealed partial class ClipboardPopup : UserControl
   {
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private ContentControl closeButton;
+    //TEMP
+    private ContentControl closeButton = new ContentControl();
     
 
     public ClipboardPopup()
     {
-            //this.InitializeComponent();
-            this.Tapped += ClipboardPopup_Tapped;
-        }
+       //this.InitializeComponent();
+       this.Tapped += ClipboardPopup_Tapped;
+    }
 
     private void ClipboardPopup_Tapped(object sender, TappedRoutedEventArgs e)
     {

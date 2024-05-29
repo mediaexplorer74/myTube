@@ -13,7 +13,7 @@ namespace ChannelNotificationsTask
   [ExclusiveTo(typeof (RegularTask))]
   internal interface IRegularTaskStatic
   {
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+    //[MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
     IAsyncAction UpdateNotifications();
   }
 }

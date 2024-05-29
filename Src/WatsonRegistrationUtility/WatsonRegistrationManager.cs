@@ -14,13 +14,13 @@ namespace WatsonRegistrationUtility
   public sealed class WatsonRegistrationManager : __IWatsonRegistrationManagerPublicNonVirtuals
   {
     //[Overload("CreateInstance1")]
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+ 
     public extern WatsonRegistrationManager();
 
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+
     public static extern void Start([In] string appSecret);
 
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+
     public static extern void SetCorrelationId([In] string correlationId);
   }
 }

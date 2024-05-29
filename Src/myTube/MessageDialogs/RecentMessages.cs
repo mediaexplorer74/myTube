@@ -20,24 +20,26 @@ namespace myTube.MessageDialogs
   {
     private MessageClient client;
 
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private ProgressBar progress;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private TextBlock noMessages;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private ItemsControl items;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private bool _contentLoaded;
+    //TEMP
+  
+    private ProgressBar progress = new ProgressBar();
+
+    private TextBlock noMessages = new TextBlock();
+
+    private ItemsControl items = new ItemsControl();
+
 
     public RecentMessages()
     {
-      //this.InitializeComponent();
-      this.client = new MessageClient();
-      this.Loaded += this.RecentMessages_Loaded;
+        //this.InitializeComponent();
+        this.client = new MessageClient();
+
+        this.Loaded += this.RecentMessages_Loaded;
     }
 
     private void RecentMessages_Loaded(object sender, RoutedEventArgs e)
     {
+       //
     }
 
     private async Task LoadMessages()

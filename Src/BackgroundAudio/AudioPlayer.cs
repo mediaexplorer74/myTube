@@ -18,13 +18,13 @@ namespace BackgroundAudio
   [Activatable(16777216)]
   public sealed class AudioPlayer : IBackgroundTask, IStringable
   {
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+    //[MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
     public extern AudioPlayer();
 
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+    //[MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
     public extern void Run([In] IBackgroundTaskInstance taskInstance);
 
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+    //[MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
     extern string IStringable.ToString();
   }
 }

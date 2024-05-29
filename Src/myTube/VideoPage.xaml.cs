@@ -240,7 +240,7 @@ namespace myTube
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             //TODO
-            //DefaultPage.Current.ResetVideoPlayer();
+            DefaultPage.Current.ResetVideoPlayer();
 
             if (e.NavigationMode == null && e.SourcePageType == typeof(VideoPage))
                 this.overCanvas.ScrollToPage(0, true);
@@ -250,6 +250,8 @@ namespace myTube
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            
+            //TODO
             //this.details.Thumb.ClientConstructor = (TypeConstructor)null;
             //this.details.Thumb.PlayAutomaticallyOnOpen = false;
             
@@ -489,70 +491,7 @@ namespace myTube
             //DefaultPage.Current.Frame.Navigate(typeof(HomePage));
         }
 
-        /*
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        [DebuggerNonUserCode]
-        public void InitializeComponent()
-        {
-            if (this._contentLoaded)
-                return;
-            this._contentLoaded = true;
-            Application.LoadComponent((object)this, new Uri("ms-appx:///VideoPage.xaml"), (ComponentResourceLocation)0);
-            this.loadingCommentsString = (Page)((FrameworkElement)this).FindName("loadingCommentsString");
-            this.saveButtonInfo = (IconButtonInfo)((FrameworkElement)this).FindName("saveButtonInfo");
-            this.cancelButtonInfo = (IconButtonInfo)((FrameworkElement)this).FindName("cancelButtonInfo");
-            this.deletelButtonInfo = (IconButtonInfo)((FrameworkElement)this).FindName("deletelButtonInfo");
-            this.manageButtonInfo = (IconButtonInfo)((FrameworkElement)this).FindName("manageButtonInfo");
-            this.scrollViewer = (ScrollViewer)((FrameworkElement)this).FindName("scrollViewer");
-            this.Default = (VisualState)((FrameworkElement)this).FindName("Default");
-            this.Large = (VisualState)((FrameworkElement)this).FindName("Large");
-            this.SmallTablet = (VisualState)((FrameworkElement)this).FindName("SmallTablet");
-            this.overCanvas = (OverCanvas)((FrameworkElement)this).FindName("overCanvas");
-            this.detailsScroll = (ScrollViewer)((FrameworkElement)this).FindName("detailsScroll");
-            this.commentsList1 = (CommentsList)((FrameworkElement)this).FindName("commentsList1");
-            this.related = (VideoList)((FrameworkElement)this).FindName("related");
-            this.details = (VideoDetails)((FrameworkElement)this).FindName("details");
-            this.appBar = (CommandBar)((FrameworkElement)this).FindName("appBar");
-            this.saveButton = (AppBarButton)((FrameworkElement)this).FindName("saveButton");
-            this.addToButton = (AppBarButton)((FrameworkElement)this).FindName("addToButton");
-            this.shareButton = (AppBarButton)((FrameworkElement)this).FindName("shareButton");
-            this.settingsButton = (AppBarButton)((FrameworkElement)this).FindName("settingsButton");
-            this.homeButton = (AppBarButton)((FrameworkElement)this).FindName("homeButton");
-        }
-
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        [DebuggerNonUserCode]
-        public void Connect(int connectionId, object target)
-        {
-            switch (connectionId)
-            {
-                case 1:
-                    ((OverCanvas)target).ShownChanged += new EventHandler<bool>(this.overCanvas_ShownChanged);
-                    break;
-                case 2:
-                    ButtonBase buttonBase1 = (ButtonBase)target;
-                    WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(buttonBase1.add_Click), new Action<EventRegistrationToken>(buttonBase1.remove_Click), new RoutedEventHandler(this.saveButton_Click));
-                    break;
-                case 3:
-                    ButtonBase buttonBase2 = (ButtonBase)target;
-                    WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(buttonBase2.add_Click), new Action<EventRegistrationToken>(buttonBase2.remove_Click), new RoutedEventHandler(this.addToButton_Click));
-                    break;
-                case 4:
-                    ButtonBase buttonBase3 = (ButtonBase)target;
-                    WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(buttonBase3.add_Click), new Action<EventRegistrationToken>(buttonBase3.remove_Click), new RoutedEventHandler(this.shareButton_Click));
-                    break;
-                case 5:
-                    ButtonBase buttonBase4 = (ButtonBase)target;
-                    WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(buttonBase4.add_Click), new Action<EventRegistrationToken>(buttonBase4.remove_Click), new RoutedEventHandler(this.settingsButton_Click));
-                    break;
-                case 6:
-                    ButtonBase buttonBase5 = (ButtonBase)target;
-                    WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(buttonBase5.add_Click), new Action<EventRegistrationToken>(buttonBase5.remove_Click), new RoutedEventHandler(this.homeButton_Click));
-                    break;
-            }
-            this._contentLoaded = true;
-        }*/
-
+       
         public class ClientConstructorAndEntry
         {
             public YouTubeEntry Entry;

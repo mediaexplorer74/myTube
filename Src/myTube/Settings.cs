@@ -616,7 +616,8 @@ namespace myTube
       {
         try
         {
-          return (DateTimeOffset) ((IDictionary<string, object>) Settings.local.Values)[nameof (StartedWatchingAt)];
+           //RnD
+           return DateTimeOffset.MinValue;//return (DateTimeOffset) ((IDictionary<string, object>) Settings.local.Values)[nameof (StartedWatchingAt)];
         }
         catch
         {

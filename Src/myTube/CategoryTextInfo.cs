@@ -38,6 +38,9 @@ namespace myTube
       set => this.SetValue(CategoryTextInfo.CategoryProperty, (object) value);
     }
 
-    public override string ToString() => this.RealText;
+    public override string ToString()
+    {
+        return this.RealText;
+    }
   }
 }

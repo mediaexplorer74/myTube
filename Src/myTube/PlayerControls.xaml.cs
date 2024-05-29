@@ -78,12 +78,12 @@ namespace myTube
         //private Run timeRun;
         //private Run totalTimeRun;
         //private ListBox qualityPicker;
-        private TextBlock videoSpeedText;
-        private CustomSlider volumeSlider;
-        private QualityButtonInfoCollection qualityButtons;
+        private TextBlock videoSpeedText = new TextBlock();
+        private CustomSlider volumeSlider = new CustomSlider();
+        private QualityButtonInfoCollection qualityButtons = new QualityButtonInfoCollection();
         //private TextBlock menuButton;
-        private TextBlock shuffleIcon;
-        private Border volumeBorder;
+        private TextBlock shuffleIcon = new TextBlock();
+        private Border volumeBorder = new Border();
 
         /*
     private UserControl root;
@@ -324,8 +324,8 @@ namespace myTube
             //Experimental
             // ISSUE: explicit constructor call (TODO)
             //base.ctor();
-            base.OnApplyTemplate();
-            
+            this.InitializeComponent();
+
 
             this.menuWatch = new Stopwatch();
             this.timer = new DispatcherTimer();
@@ -335,7 +335,9 @@ namespace myTube
             this.timer.Tick += this.timer_Tick;
 
             this.timeShortener = new TimeShortener();
-            this.InitializeComponent();
+
+
+            //this.InitializeComponent();
 
             this.progressRec.RenderTransform = (Transform)this.recTrans;
             this.loadingRec.RenderTransform = (Transform)this.downloadTrans;
@@ -364,6 +366,7 @@ namespace myTube
             this.timeUpdateTimer.Tick += this.timeUpdateTimer_Tick;
 
             this.qualityPicker.FontFamily = DefaultPage.Current.FontFamily;
+
         }
      
 
@@ -551,7 +554,8 @@ namespace myTube
 
         protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
         {
-            this.OnPointerCaptureLost(e);
+            base.OnPointerCaptureLost(e);
+
             if (!this.mouseSeeking || !this.seeking)
                 return;
             this.mouseSeeking = false;
@@ -1170,133 +1174,6 @@ namespace myTube
             }
 
             public MediaPlayer sender { get; set; }
-        }
-
-        /*[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        [DebuggerNonUserCode]
-        public void InitializeComponent()
-        {
-            if (this._contentLoaded)
-                return;
-            this._contentLoaded = true;
-            Application.LoadComponent((object)this, new Uri("ms-appx:///PlayerControls.xaml"), (ComponentResourceLocation)0);
-            this.root = (UserControl)((FrameworkElement)this).FindName("root");
-            this.qualityTrans = (TranslateTransform)((FrameworkElement)this).FindName("qualityTrans");
-            this.menuTrans = (TranslateTransform)((FrameworkElement)this).FindName("menuTrans");
-            this.qualityButtons = (QualityButtonInfoCollection)((FrameworkElement)this).FindName("qualityButtons");
-            this.playlistIconStyle = (Style)((FrameworkElement)this).FindName("playlistIconStyle");
-            this.layoutRoot = (Grid)((FrameworkElement)this).FindName("layoutRoot");
-            this.normalModes = (VisualStateGroup)((FrameworkElement)this).FindName("normalModes");
-            this.normalSizeModes = (VisualStateGroup)((FrameworkElement)this).FindName("normalSizeModes");
-            this.NormalSize = (VisualState)((FrameworkElement)this).FindName("NormalSize");
-            this.SmallSize = (VisualState)((FrameworkElement)this).FindName("SmallSize");
-            this.Normal = (VisualState)((FrameworkElement)this).FindName("Normal");
-            this.Compact = (VisualState)((FrameworkElement)this).FindName("Compact");
-            this.playlistPanel = (StackPanel)((FrameworkElement)this).FindName("playlistPanel");
-            this.fullScreenButtonGrid = (StackPanel)((FrameworkElement)this).FindName("fullScreenButtonGrid");
-            this.menuGrid = (Grid)((FrameworkElement)this).FindName("menuGrid");
-            this.mainGrid = (Grid)((FrameworkElement)this).FindName("mainGrid");
-            this.progressRec = (Rectangle)((FrameworkElement)this).FindName("progressRec");
-            this.loadingRec = (Rectangle)((FrameworkElement)this).FindName("loadingRec");
-            this.smallRec1 = (Rectangle)((FrameworkElement)this).FindName("smallRec1");
-            this.smallRec2 = (Rectangle)((FrameworkElement)this).FindName("smallRec2");
-            this.seekingRec = (Rectangle)((FrameworkElement)this).FindName("seekingRec");
-            this.audioText = (TextBlock)((FrameworkElement)this).FindName("audioText");
-            this.seekInstructions = (TextBlock)((FrameworkElement)this).FindName("seekInstructions");
-            this.menuButtonGrid = (Grid)((FrameworkElement)this).FindName("menuButtonGrid");
-            this.menuButton = (TextBlock)((FrameworkElement)this).FindName("menuButton");
-            this.symbolIcon = (SymbolIcon)((FrameworkElement)this).FindName("symbolIcon");
-            this.timeRun = (Run)((FrameworkElement)this).FindName("timeRun");
-            this.totalTimeRun = (Run)((FrameworkElement)this).FindName("totalTimeRun");
-            this.seekingRecTrans = (TranslateTransform)((FrameworkElement)this).FindName("seekingRecTrans");
-            this.menuPanel = (StackPanel)((FrameworkElement)this).FindName("menuPanel");
-            this.captions = (ContentControl)((FrameworkElement)this).FindName("captions");
-            this.annotations = (ContentControl)((FrameworkElement)this).FindName("annotations");
-            this.lockRotation = (ContentControl)((FrameworkElement)this).FindName("lockRotation");
-            this.shuffleMode = (ContentControl)((FrameworkElement)this).FindName("shuffleMode");
-            this.playlistMode = (ContentControl)((FrameworkElement)this).FindName("playlistMode");
-            this.videoSpeed = (ContentControl)((FrameworkElement)this).FindName("videoSpeed");
-            this.videoSpeedText = (TextBlock)((FrameworkElement)this).FindName("videoSpeedText");
-            this.playlistIcon = (TextBlock)((FrameworkElement)this).FindName("playlistIcon");
-            this.shuffleIcon = (TextBlock)((FrameworkElement)this).FindName("shuffleIcon");
-            this.qualityPicker = (ListBox)((FrameworkElement)this).FindName("qualityPicker");
-            this.volumeButton = (IconTextButton)((FrameworkElement)this).FindName("volumeButton");
-            this.volumeBorder = (Border)((FrameworkElement)this).FindName("volumeBorder");
-            this.fullScreenButton = (IconTextButton)((FrameworkElement)this).FindName("fullScreenButton");
-            this.volumeSlider = (CustomSlider)((FrameworkElement)this).FindName("volumeSlider");
-            this.prevButton = (IconTextButton)((FrameworkElement)this).FindName("prevButton");
-            this.nextButton = (IconTextButton)((FrameworkElement)this).FindName("nextButton");
-        }
-
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        [DebuggerNonUserCode]
-        public void Connect(int connectionId, object target)
-        {
-            switch (connectionId)
-            {
-                case 1:
-                    UIElement uiElement1 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement1.add_Tapped), new Action<EventRegistrationToken>(uiElement1.remove_Tapped), new TappedEventHandler(this.Grid_Tapped_1));
-                    break;
-                case 2:
-                    UIElement uiElement2 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement2.add_Tapped), new Action<EventRegistrationToken>(uiElement2.remove_Tapped), new TappedEventHandler(this.menuButton_Tapped));
-                    break;
-                case 3:
-                    UIElement uiElement3 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement3.add_Tapped), new Action<EventRegistrationToken>(uiElement3.remove_Tapped), new TappedEventHandler(this.Grid_Tapped));
-                    break;
-                case 4:
-                    UIElement uiElement4 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement4.add_Tapped), new Action<EventRegistrationToken>(uiElement4.remove_Tapped), new TappedEventHandler(this.captions_Tapped));
-                    break;
-                case 5:
-                    UIElement uiElement5 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement5.add_Tapped), new Action<EventRegistrationToken>(uiElement5.remove_Tapped), new TappedEventHandler(this.annotations_Tapped));
-                    break;
-                case 6:
-                    UIElement uiElement6 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement6.add_Tapped), new Action<EventRegistrationToken>(uiElement6.remove_Tapped), new TappedEventHandler(this.lockRotation_Tapped));
-                    break;
-                case 7:
-                    UIElement uiElement7 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement7.add_Tapped), new Action<EventRegistrationToken>(uiElement7.remove_Tapped), new TappedEventHandler(this.shuffleMode_Tapped));
-                    break;
-                case 8:
-                    UIElement uiElement8 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement8.add_Tapped), new Action<EventRegistrationToken>(uiElement8.remove_Tapped), new TappedEventHandler(this.playlistMode_Tapped));
-                    break;
-                case 9:
-                    UIElement uiElement9 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement9.add_Tapped), new Action<EventRegistrationToken>(uiElement9.remove_Tapped), new TappedEventHandler(this.videoSpeed_Tapped));
-                    break;
-                case 10:
-                    Selector selector = (Selector)target;
-                    WindowsRuntimeMarshal.AddEventHandler<SelectionChangedEventHandler>(new Func<SelectionChangedEventHandler, EventRegistrationToken>(selector.add_SelectionChanged), new Action<EventRegistrationToken>(selector.remove_SelectionChanged), new SelectionChangedEventHandler(this.qualityPicker_SelectionChanged));
-                    break;
-                case 11:
-                    UIElement uiElement10 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement10.add_Tapped), new Action<EventRegistrationToken>(uiElement10.remove_Tapped), new TappedEventHandler(this.volumeButton_Tapped));
-                    break;
-                case 12:
-                    UIElement uiElement11 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement11.add_Tapped), new Action<EventRegistrationToken>(uiElement11.remove_Tapped), new TappedEventHandler(this.fullScreenButton_Tapped));
-                    break;
-                case 13:
-                    ((CustomSlider)target).ValueChanged += new EventHandler<SliderValueChangedEventArgs>(this.volumeSlider_ValueChanged);
-                    break;
-                case 14:
-                    UIElement uiElement12 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement12.add_Tapped), new Action<EventRegistrationToken>(uiElement12.remove_Tapped), new TappedEventHandler(this.prevTapped));
-                    break;
-                case 15:
-                    UIElement uiElement13 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement13.add_Tapped), new Action<EventRegistrationToken>(uiElement13.remove_Tapped), new TappedEventHandler(this.nextTapped));
-                    break;
-            }
-            this._contentLoaded = true;
-        }
-        */
+        }              
     }
-
 }

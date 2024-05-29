@@ -150,8 +150,9 @@ namespace myTube
         private bool firstOffset;
         private static TimeSpan offset = TimeSpan.FromSeconds(0.0);
         private MediaElementState lastMediaElementState;
-                                           //RnD
-        private PlayerControls controls = new PlayerControls();
+                                           
+        //TEMP
+        //private PlayerControls controls = new PlayerControls();
 
         private static void OnSourcePropertyChanged(
           DependencyObject d,
@@ -2413,74 +2414,7 @@ namespace myTube
             this.MediaElement.Stop();
         }
 
-        /*[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        [DebuggerNonUserCode]
-        public void InitializeComponent()
-        {
-            if (this._contentLoaded)
-                return;
-            this._contentLoaded = true;
-            Application.LoadComponent((object)this, new Uri("ms-appx:///VideoPlayer.xaml"), (ComponentResourceLocation)0);
-            this.videoPlayer = (UserControl)((FrameworkElement)this).FindName("videoPlayer");
-            this.titleTrans = (TranslateTransform)((FrameworkElement)this).FindName("titleTrans");
-            this.layoutRoot = (Grid)((FrameworkElement)this).FindName("layoutRoot");
-            this.noVideoText = (TextBlock)((FrameworkElement)this).FindName("noVideoText");
-            this.viewBox = (Viewbox)((FrameworkElement)this).FindName("viewBox");
-            this.musicThumb = (Image)((FrameworkElement)this).FindName("musicThumb");
-            this.annotationsViewBox = (Viewbox)((FrameworkElement)this).FindName("annotationsViewBox");
-            this.blurRectangle = (Rectangle)((FrameworkElement)this).FindName("blurRectangle");
-            this.titleGrid = (Grid)((FrameworkElement)this).FindName("titleGrid");
-            this.progress = (ProgressBar)((FrameworkElement)this).FindName("progress");
-            this.controls = (PlayerControls)((FrameworkElement)this).FindName("controls");
-            this.stopButton = (ContentControl)((FrameworkElement)this).FindName("stopButton");
-            this.titleTextBlock = (TextBlock)((FrameworkElement)this).FindName("titleTextBlock");
-            this.authorText = (TextBlock)((FrameworkElement)this).FindName("authorText");
-            this.castingControl = (ContentControl)((FrameworkElement)this).FindName("castingControl");
-            this.castingText = (TextBlock)((FrameworkElement)this).FindName("castingText");
-            this.titleText = (Run)((FrameworkElement)this).FindName("titleText");
-            this.annotationsControl = (ItemsControl)((FrameworkElement)this).FindName("annotationsControl");
-            this.subtitlesControl = (ItemsControl)((FrameworkElement)this).FindName("subtitlesControl");
-            this.musicBitmap = (BitmapImage)((FrameworkElement)this).FindName("musicBitmap");
-            this.mediaElement = (MediaElement)((FrameworkElement)this).FindName("mediaElement");
-        }
-        
-        [GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-        [DebuggerNonUserCode]
-        public void Connect(int connectionId, object target)
-        {
-            switch (connectionId)
-            {
-                case 1:
-                    UIElement uiElement1 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<PointerEventHandler>(new Func<PointerEventHandler, EventRegistrationToken>(uiElement1.add_PointerEntered), new Action<EventRegistrationToken>(uiElement1.remove_PointerEntered), new PointerEventHandler(this.layoutRoot_PointerEntered));
-                    break;
-                case 2:
-                    FrameworkElement frameworkElement1 = (FrameworkElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<SizeChangedEventHandler>(new Func<SizeChangedEventHandler, EventRegistrationToken>(frameworkElement1.add_SizeChanged), new Action<EventRegistrationToken>(frameworkElement1.remove_SizeChanged), new SizeChangedEventHandler(this.titleGrid_SizeChanged));
-                    break;
-                case 3:
-                    UIElement uiElement2 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement2.add_Tapped), new Action<EventRegistrationToken>(uiElement2.remove_Tapped), new TappedEventHandler(this.stopButton_Tapped));
-                    break;
-                case 4:
-                    FrameworkElement frameworkElement2 = (FrameworkElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<SizeChangedEventHandler>(new Func<SizeChangedEventHandler, EventRegistrationToken>(frameworkElement2.add_SizeChanged), new Action<EventRegistrationToken>(frameworkElement2.remove_SizeChanged), new SizeChangedEventHandler(this.titleTextBox_SizeChanged));
-                    UIElement uiElement3 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement3.add_Tapped), new Action<EventRegistrationToken>(uiElement3.remove_Tapped), new TappedEventHandler(this.detailsButton_Tapped));
-                    break;
-                case 5:
-                    UIElement uiElement4 = (UIElement)target;
-                    WindowsRuntimeMarshal.AddEventHandler<TappedEventHandler>(new Func<TappedEventHandler, EventRegistrationToken>(uiElement4.add_Tapped), new Action<EventRegistrationToken>(uiElement4.remove_Tapped), new TappedEventHandler(this.castingControl_Tapped));
-                    break;
-                case 6:
-                    BitmapImage bitmapImage = (BitmapImage)target;
-                    WindowsRuntimeMarshal.AddEventHandler<RoutedEventHandler>(new Func<RoutedEventHandler, EventRegistrationToken>(bitmapImage.add_ImageOpened), new Action<EventRegistrationToken>(bitmapImage.remove_ImageOpened), new RoutedEventHandler(this.musicBitmap_ImageOpened));
-                    break;
-            }
-            this._contentLoaded = true;
-        }
-        */
-
+      
         private enum ScaleType
         {
             Video,

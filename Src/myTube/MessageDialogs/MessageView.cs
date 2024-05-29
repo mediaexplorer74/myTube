@@ -26,23 +26,16 @@ namespace myTube.MessageDialogs
     private string lastMessageId = "-1";
     private CommentsView commentsView;
     private Popup p;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private UserControl userControl;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private Grid layoutRoot;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private ContentControl commentsContent;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private ContentControl button;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private RichTextBlock commentsText;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
+   
+    private UserControl userControl = new UserControl();
+   
+    private Grid layoutRoot = new Grid();
+    private ContentControl commentsContent = new ContentControl();
+    private ContentControl button = new ContentControl();
+    private RichTextBlock commentsText = new RichTextBlock();
     private Run commentsNumberRun;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
     private Run commentsTextRun;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
     private ItemsControl actionsControl;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
     private StackPanel extraContent;
        
 
@@ -59,12 +52,12 @@ namespace myTube.MessageDialogs
         public MessageView()
     {
       //this.InitializeComponent();
-      ((Control) this).FontFamily = ((Control) DefaultPage.Current).FontFamily;
+      this.FontFamily = DefaultPage.Current.FontFamily;
        
          //RnD
-        ((FrameworkElement)this).DataContextChanged += MessageView_DataContextChanged;
-        ((FrameworkElement)this).DataContextChanged -= MessageView_DataContextChanged;
-        }
+        this.DataContextChanged += MessageView_DataContextChanged;
+        this.DataContextChanged -= MessageView_DataContextChanged;
+     }
 
     private async void MessageView_DataContextChanged(
       FrameworkElement sender,
@@ -76,7 +69,9 @@ namespace myTube.MessageDialogs
       if (dataContext.Id == this.lastMessageId)
         return;
       this.lastMessageId = dataContext.Id;
+
       this.SetCommentsCount();
+
       if (!(dataContext.PollId != "-1"))
         return;
       try
@@ -121,12 +116,12 @@ namespace myTube.MessageDialogs
       }
     }
 
-        private void button_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            //DefaultPage.Current.ClosePopup();
-        }
+    private void button_Tapped(object sender, TappedRoutedEventArgs e)
+    {
+        DefaultPage.Current.ClosePopup();
+    }
 
-        private void commentsContent_Tapped(object sender, TappedRoutedEventArgs e)
+    private void commentsContent_Tapped(object sender, TappedRoutedEventArgs e)
     {
       Rect bounds1 = Window.Current.Bounds;
       Rect bounds2 = ((FrameworkElement) this.layoutRoot).GetBounds((UIElement) DefaultPage.Current);

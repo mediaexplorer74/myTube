@@ -17,16 +17,16 @@ namespace ChannelNotificationsTask
   [Static(typeof (IRegularTaskStatic), 16777216)]
   public sealed class RegularTask : IBackgroundTask, IStringable
   {
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+    //[MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
     public extern RegularTask();
 
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+    //[MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
     public static extern IAsyncAction UpdateNotifications();
 
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+    //[MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
     public extern void Run([In] IBackgroundTaskInstance taskInstance);
 
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+    //[MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
     extern string IStringable.ToString();
   }
 }

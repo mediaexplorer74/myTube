@@ -26,22 +26,29 @@ namespace myTube.Popups
     public const int MaxChannels = 15;
     private ObservableCollection<ChannelNotificationViewModel> viewModels;
     private ChannelNotificationViewModel mainViewModel;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private Style countStyle;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private Style countStyleMax;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private TextBlock countText;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private ItemsControl items;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private ContentControl currentUser;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private Run currentNumber;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private Run maxNumber;
-    
-    private UserInfo Channel => ((FrameworkElement) this).DataContext as UserInfo;
+  
+    //TEMP
+    private Style countStyle = new Style();
+
+    private Style countStyleMax = new Style();
+ 
+    private TextBlock countText = new TextBlock();
+
+    private ItemsControl items = new ItemsControl();
+ 
+    private ContentControl currentUser = new ContentControl();
+  
+    private Run currentNumber = new Run();
+ 
+    private Run maxNumber = new Run();
+
+        private UserInfo Channel
+        {
+            get
+            {
+                return ((FrameworkElement)this).DataContext as UserInfo;
+            }
+        }
 
     public ChannelNotificationsPopup()
     {

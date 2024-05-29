@@ -10,22 +10,23 @@
     Foreground="White" 
     RequestedTheme="Dark"
  >
+   
 
-    <UserControl.Resources>
+  <UserControl.Resources>
         <ResourceDictionary>
             <local:BoolToVisibility x:Key="BoolToVisibility" />
             <SolidColorBrush x:Key="buttonBackground" Color="DarkGray" Opacity="0" />
             <SolidColorBrush x:Key="recBackground" Color="Gray" Opacity="0.3" />
-            <x:Double x:Key="Size">52</x:Double>
+            <!--x:Double x:Key="Size">52</>
             <x:Double x:Key="PlaylistButtonSize">38</x:Double>
             <x:Double x:Key="MenuButtonSize">38</x:Double>
-            <x:Double x:Key="menuItemFade">0.3</x:Double>
+            <x:Double x:Key="menuItemFade">0.3</x:Double-->
             <TranslateTransform x:Name="qualityTrans" />
             <TranslateTransform x:Name="menuTrans" />
-            <x:String x:Key="musicString">♫</x:String>
+            <!--x:String x:Key="musicString">♫</>
             <x:String x:Key="repeatString"></x:String>
             <x:String x:Key="repeatOneString"></x:String>
-            <x:String x:Key="shuffleString"></x:String>
+            <x:String x:Key="shuffleString"></x:String-->
 
             <DataTemplate x:Key="qualityTemplate">
                 <!--DataTemplate.ItemTemplate-->
@@ -37,13 +38,15 @@
                         TextWrapping="Wrap" 
                         IsColorFontEnabled="True" 
                         FontStyle="Normal">
-        <!--Visibility>
-            <Binding Path="IsEnabled">
-            <Converter>
-                <StaticResource ResourceKey="BoolToVisibility" />
-            </Converter>
-            </Binding>
-        </Visibility-->
+
+                        <TextBlock.Visibility>
+                            <Binding Path="IsEnabled">
+                            <Binding.Converter>
+                                <StaticResource ResourceKey="BoolToVisibility" />
+                            </Binding.Converter>
+                            </Binding>
+                        </TextBlock.Visibility>
+                    
                     <TextBlock.Text>
                         <Binding Path="Text" />
                     </TextBlock.Text>
@@ -77,25 +80,28 @@
 
             <Style x:Name="playlistIconStyle" TargetType="local:IconTextButton">
             <Style.Setters>
-                    <Setter Property="Background">
+                    <!--Setter Property="Background">
                     <Setter.Value>
                             <ThemeResource ResourceKey="AppBarBackgroundThemeBrush" />
                         </Setter.Value>
-                    </Setter>
+                    </Setter-->
                     <Setter Property="Foreground" Value="White" />
-                    
-                    <Setter Property="Width">
+
+                    <Setter Property="Width" Value="32" />
+                    <Setter Property="Height" Value="32" />
+
+                    <!--Setter Property="Width">
                         <Setter.Value>
                             <StaticResource ResourceKey="PlaylistButtonSize" />
                         </Setter.Value>
-                    </Setter>
+                    </>
                     <Setter Property="Height">
                         <Setter.Value>
                             <StaticResource ResourceKey="PlaylistButtonSize" />
                         </Setter.Value>
-                    </Setter>
+                    </Setter-->
                     
-                    <Setter Property="Margin" Value="0, 0, 9.5, 0" />
+                    <Setter Property="Margin" Value="0, 0, 9, 0" />
                     <Setter Property="VerticalAlignment" Value="Bottom" />
                 </Style.Setters>
         </Style>
@@ -103,10 +109,10 @@
     </UserControl.Resources>
 
 <Grid x:Name="layoutRoot" VerticalAlignment="Bottom">
-  <!--Grid.RowDefinitions>              
+  <Grid.RowDefinitions>              
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />              
-  </Grid.RowDefinitions-->
+  </Grid.RowDefinitions>
             
                  
     <ListView x:Name="playList1">
@@ -127,7 +133,7 @@
                 </ListView-->                        
         </StackPanel>
                     
-        <StackPanel x:Name="fullScreenButtonGrid" Margin="0,0,-9,5" 
+        <StackPanel x:Name="fullScreenButtonGrid" Margin="0,0,0,5" 
                     VerticalAlignment="Bottom" HorizontalAlignment="Right" 
                     Orientation="Horizontal">
                         
@@ -143,54 +149,55 @@
                 </TransitionCollection>
             </StackPanel.Transitions>
 
-        <Button x:Name="volumeButton" Content="Volume"/>
-        <Button x:Name="fullScreenButton" Content="FullScreen"/>
-                                      
+          <Button x:Name="volumeButton" Content="Volume"/>
+          <Button x:Name="fullScreenButton" Content="FullScreen"/>                                      
                      
         </StackPanel>
                     
                     
         <Grid x:Name="menuGrid" HorizontalAlignment="Right" Visibility="Visible">
-                <Grid.RowDefinitions>
-               
+                <!--Grid.RowDefinitions>               
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                
-                </Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />                
+                </Grid.RowDefinitions-->
 
-                <Grid.ColumnDefinitions>                            
+                <!--Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />                            
-                </Grid.ColumnDefinitions>
-            
-                <ListView>
-                    <ListBox x:Name="qualityPicker" Foreground="White" 
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions-->
+
+                <StackPanel>
+                    <ListBox x:Name="qualityPicker" Foreground="Yellow" 
                           SelectedIndex="0" BorderThickness="0,0,0,0">
-                    <!--ListBox.ItemsSource>
+
+                        <TextBlock x:Name="itemA" Text ="A"/>
+
+                        <TextBlock x:Name="itemB" Text="B"/>
+                        <!--ListBox.ItemsSource>
                         <StaticResource ResourceKey="qualityButtons" />
                     </ListBox.ItemsSource-->
-                    <ListBox.ItemTemplate>
+                        
+                    <!--ListBox.ItemTemplate>
                         <StaticResource ResourceKey="qualityTemplate" />
-                    </ListBox.ItemTemplate>
+                    </ListBox.ItemTemplate-->
 
-                    <ListBox.ItemContainerStyle>
+                    <!--ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
-                            <Style.Setters>
-                                <!--SetterBaseCollection-->
-                                    <!--Setter Property="Template">
+                            <Style.Setters>                           
+                                    <Setter Property="Template">
                                         <Setter.Value>
                                             <StaticResource ResourceKey="PlayerControlsListBoxItemTemplate" />
                                         </Setter.Value>
-                                    </Setter-->
+                                    </Setter>
                                     <Setter Property="Padding" Value="0" />
-                                <!--/SetterBaseCollection-->
+                       
                             </Style.Setters>
                         </Style>
-                    </ListBox.ItemContainerStyle>
+                    </ListBox.ItemContainerStyle-->
 
-                    <ListBox.ItemsPanel>
+                    <!--ListBox.ItemsPanel>
                          <ItemsPanelTemplate>
                             <ControlTemplate>
                                 <local:WrapPanel x:Name="qualityPanel">
@@ -200,240 +207,245 @@
                                 </local:WrapPanel>
                             </ControlTemplate>
                          </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
+                    </ListBox.ItemsPanel-->
 
                 </ListBox>
-                </ListView>
-                    <StackPanel x:Name="menuPanel" HorizontalAlignment="Right"
+            </StackPanel>
+            
+                <StackPanel x:Name="menuPanel" HorizontalAlignment="Right"
                                 Margin="0,0,0,9" Orientation="Horizontal">
                     <StackPanel.RenderTransform>
                             <StaticResource ResourceKey="menuTrans" />
                         </StackPanel.RenderTransform>
-                    <StackPanel.Height>
+                  
+                    <!--StackPanel.Height>
                             <StaticResource ResourceKey="Size" />
-                     </StackPanel.Height>
+                     </StackPanel.Height-->
                                     
                     <StackPanel.Resources>
-                            <ResourceDictionary>
-                                <Style TargetType="ContentControl">
-                                    <Style.Setters>
+                        <ResourceDictionary>
+                            <Style TargetType="ContentControl">
+                                <Style.Setters>
                                                
-                                            <Setter Property="HorizontalContentAlignment"
-                                                    Value="Center" />
+                                        <Setter Property="HorizontalContentAlignment"
+                                                Value="Center" />
                                                
-                                    </Style.Setters>
-                                </Style>
-                                <Style TargetType="SymbolIcon">
-                                    <Style.Setters>
+                                </Style.Setters>
+                            </Style>
+                            <Style TargetType="SymbolIcon">
+                                <Style.Setters>
                                                  
-                                            <Setter Property="Margin" Value="4.75, 0" />
-                                            <Setter Property="Width">
-                                                <Setter.Value>
-                                                    <StaticResource ResourceKey="MenuButtonSize" />
-                                                </Setter.Value>
-                                            </Setter>
+                                        <Setter Property="Margin" Value="4.75, 0" />
+                                        <Setter Property="Width" Value="32" />
+                                        <!--Setter Property="Width">
+                                            <Setter.Value>
+                                                <StaticResource ResourceKey="MenuButtonSize" />
+                                            </Setter.Value>
+                                        </Setter-->
                                               
-                                    </Style.Setters>
-                                </Style>
+                                </Style.Setters>
+                            </Style>
                                             
-                                <Style TargetType="Image">
-                                    <Style.Setters>
+                            <Style TargetType="Image">
+                                <Style.Setters>
                                                 
-                                            <Setter Property="Stretch" Value="Uniform" />
-                                            <Setter Property="Margin" Value="4.75, 0" />
-                                            <Setter Property="Width">
-                                                <Setter.Value>
-                                                    <StaticResource ResourceKey="MenuButtonSize" />
-                                                </Setter.Value>
-                                            </Setter>
+                                        <Setter Property="Stretch" Value="Uniform" />
+                                        <Setter Property="Margin" Value="4.75, 0" />
+                                            <Setter Property="Width" Value="32" />
+                                            <!--Setter Property="Width">
+                                            <Setter.Value>
+                                                <StaticResource ResourceKey="MenuButtonSize" />
+                                            </Setter.Value>
+                                        </Setter-->
                                                
-                                    </Style.Setters>
-                                </Style>
+                                </Style.Setters>
+                            </Style>
                                             
-                                <Style TargetType="TextBlock">
-                                    <Style.Setters>                                                
-                                            <Setter Property="Margin" Value="4.75, 0" />
-                                            <!--Setter Property="FontSize">
-                                                <Setter.Value>
-                                                    <StaticResource ResourceKey="ImportantFontSize" />
-                                                </Setter.Value>
-                                            </Setter-->
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                            <Setter Property="TextAlignment" Value="Center" />
-                                            <Setter Property="FontWeight" Value="SemiBold" />
-                                            <Setter Property="MinWidth">
-                                                <Setter.Value>
-                                                    <StaticResource ResourceKey="MenuButtonSize" />
-                                                </Setter.Value>
-                                            </Setter>
+                            <Style TargetType="TextBlock">
+                                <Style.Setters>                                                
+                                        <Setter Property="Margin" Value="4.75, 0" />
+                                        <!--Setter Property="FontSize">
+                                            <Setter.Value>
+                                                <StaticResource ResourceKey="ImportantFontSize" />
+                                            </Setter.Value>
+                                        </Setter-->
+                                        <Setter Property="VerticalAlignment" Value="Center" />
+                                        <Setter Property="TextAlignment" Value="Center" />
+                                        <Setter Property="FontWeight" Value="SemiBold" />
+                                        <Setter Property="MinWidth" Value="32" />
+                                        <!--Setter Property="MinWidth">
+                                            <Setter.Value>
+                                                <StaticResource ResourceKey="MenuButtonSize" />
+                                            </Setter.Value>
+                                        </Setter-->
                                              
-                                    </Style.Setters>
-                                </Style>
-                            </ResourceDictionary>
-                        </StackPanel.Resources>
+                                </Style.Setters>
+                            </Style>
+                        </ResourceDictionary>
+                    </StackPanel.Resources>
                                     
-                        <ListView>
-                                <ContentControl x:Name="captions" HorizontalContentAlignment="Center"
-                                                Background="Transparent"
-                                                Visibility="Visible">
+                    <ListView>
+                            <ContentControl x:Name="captions" HorizontalContentAlignment="Center"
+                                            Background="Transparent"
+                                            Visibility="Visible">
                                              
-                                </ContentControl>
-                                <ContentControl x:Name="annotations" Background="Transparent" 
-                                                Visibility="Visible">
+                            </ContentControl>
+                            <ContentControl x:Name="annotations" Background="Transparent" 
+                                            Visibility="Visible">
                                               
-                                </ContentControl>
-                                <ContentControl x:Name="lockRotation" 
-                                                Background="Transparent" 
-                                                Visibility="Collapsed">
+                            </ContentControl>
+                            <ContentControl x:Name="lockRotation" 
+                                            Background="Transparent" 
+                                            Visibility="Collapsed">
                                               
-                                </ContentControl>
+                            </ContentControl>
                                         
-                                <ContentControl x:Name="shuffleMode" HorizontalAlignment="Center" 
-                                                Background="Transparent" 
-                                                Visibility="Visible">                                               
-                                </ContentControl>
+                            <ContentControl x:Name="shuffleMode" HorizontalAlignment="Center" 
+                                            Background="Transparent" 
+                                            Visibility="Visible">                                               
+                            </ContentControl>
                                         
-                                <ContentControl x:Name="playlistMode" HorizontalAlignment="Center" 
-                                            Background="Transparent" Visibility="Visible">
+                            <ContentControl x:Name="playlistMode" HorizontalAlignment="Center" 
+                                        Background="Transparent" Visibility="Visible">
                                                
-                                        <TextBlock x:Name="playlistIcon" FontFamily="Segoe UI Symbol"
-                                            Text ="TTT" 
-                                            Opacity="0.5">
+                                    <TextBlock x:Name="playlistIcon" FontFamily="Segoe UI Symbol"
+                                        Text ="TTT" 
+                                        Opacity="0.5">
                                                     
-                                        </TextBlock>                                            
-                                </ContentControl>
+                                    </TextBlock>                                            
+                            </ContentControl>
                                         
-                                <ContentControl x:Name="videoSpeed" HorizontalAlignment="Center" 
-                                    Background="Transparent" Visibility="Visible">
+                            <ContentControl x:Name="videoSpeed" HorizontalAlignment="Center" 
+                                Background="Transparent" Visibility="Visible">
                                              
-                                </ContentControl>                                        
-                            </ListView>                                    
-                    </StackPanel>                        
+                            </ContentControl>                                        
+                        </ListView>                                    
+                </StackPanel>                    
             
         </Grid>
 
 
-            <!--Row="1"-->
-                <Grid x:Name="mainGrid" Margin="0,9,5,0">
+        <!--Row="1"-->
+            <Grid x:Name="mainGrid" Margin="0,9,5,0">
                 <Grid.Background>
                     <ThemeResource ResourceKey="AppBarBackgroundThemeBrush" />
                 </Grid.Background>
                 <Grid.ColumnDefinitions>
-                  
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                  
+
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+
                 </Grid.ColumnDefinitions>
-             
-                    <ListView>
-                        <Rectangle x:Name="progressRec" Margin="1,5,0,1" IsHitTestVisible="True">
-                            <Rectangle.Fill>
-                                <StaticResource ResourceKey="recBackground" />
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <Rectangle x:Name="loadingRec" Margin="1,5,0,1" Visibility="Collapsed" 
-                                   Height="3" VerticalAlignment="Bottom" IsHitTestVisible="True">
-                            <Rectangle.Fill>
-                                <StaticResource ResourceKey="recBackground" />
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <!-- Column="1" -->
-                            <Rectangle x:Name="smallRec1" Width="1,5" Margin="0,0,0,0" Fill="White" 
-                                       HorizontalAlignment="Left" />
-                        <Rectangle x:Name="smallRec2" Margin="0,0,0,0" Width="1,5" Fill="White" 
-                                   HorizontalAlignment="Right" />
-                        <Rectangle x:Name="seekingRec" Margin="0,3,5,0" Width="1,5" 
-                                   Opacity="0" HorizontalAlignment="Left">
-                            <Rectangle.Fill>
-                                <StaticResource ResourceKey="recBackground" />
-                            </Rectangle.Fill>
-                            <Rectangle.RenderTransform>
-                                <TranslateTransform x:Name="seekingRecTrans" />
-                            </Rectangle.RenderTransform>
-                        </Rectangle>
-                 <TextBlock IsHitTestVisible="True" TextAlignment="Center" FontSize="22" 
-                                   HorizontalAlignment="Stretch" VerticalAlignment="Center" 
-                                   TextLineBounds="Tight">
-                  <TextBlock.Inlines>
-                    
-                      <Run x:Name="timeRun" Text="0:00" />
-                      <Run Text=" / " />
-                      <Run x:Name="totalTimeRun" Text="0:00" />
-                  
-                  </TextBlock.Inlines>
-                        </TextBlock>
-                        <TextBlock x:Name="audioText" Visibility="Collapsed" Text="audio" />
-                        <ContentControl>
-                             <!--ContentControl.Template>
-                                <StaticResource ResourceKey="StandardPointerContent" />
-                            </ContentControl.Template-->
+
+                <ListView>
+                    <Rectangle x:Name="progressRec" Margin="1,5,0,1" IsHitTestVisible="True">
+                        <Rectangle.Fill>
+                            <StaticResource ResourceKey="recBackground" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <Rectangle x:Name="loadingRec" Margin="1,5,0,1" Visibility="Collapsed" 
+                                Height="3" VerticalAlignment="Bottom" IsHitTestVisible="True">
+                        <Rectangle.Fill>
+                            <StaticResource ResourceKey="recBackground" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <!-- Column="1" -->
+                    <Rectangle x:Name="smallRec1" Width="1,5" Margin="0,0,0,0" Fill="White" 
+                                    HorizontalAlignment="Left" />
+                    <Rectangle x:Name="smallRec2" Margin="0,0,0,0" Width="1,5" Fill="White" 
+                                HorizontalAlignment="Right" />
+                    <Rectangle x:Name="seekingRec" Margin="0,3,5,0" Width="1,5" 
+                                Opacity="0" HorizontalAlignment="Left">
+                        <Rectangle.Fill>
+                            <StaticResource ResourceKey="recBackground" />
+                        </Rectangle.Fill>
+                        <Rectangle.RenderTransform>
+                            <TranslateTransform x:Name="seekingRecTrans" />
+                        </Rectangle.RenderTransform>
+                    </Rectangle>
+                    <TextBlock IsHitTestVisible="True" TextAlignment="Center" FontSize="22" 
+                                HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+                                TextLineBounds="Tight">
+                        <TextBlock.Inlines>
+
+                            <Run x:Name="timeRun" Text="0:00" />
+                            <Run Text=" / " />
+                            <Run x:Name="totalTimeRun" Text="0:00" />
+
+                        </TextBlock.Inlines>
+                    </TextBlock>
+                    <TextBlock x:Name="audioText" Visibility="Collapsed" Text="audio" />
+                    <ContentControl>
+                        <!--ContentControl.Template>
+                            <StaticResource ResourceKey="StandardPointerContent" />
+                        </ContentControl.Template-->
                         <ContentControl.Content>
-                                <Grid  HorizontalAlignment="Left" Margin="0,0,0,0">
-                                    <Grid.Background>
-                                        <StaticResource ResourceKey="buttonBackground" />
-                                    </Grid.Background>
-                                    <Grid.Height>
-                                        <StaticResource ResourceKey="Size" />
-                                    </Grid.Height>
-                                    <Grid.Width>
-                                        <StaticResource ResourceKey="Size" />
-                                    </Grid.Width>
-                                 
-                                        <ListView>
-                                            <SymbolIcon x:Name="symbolIcon" Symbol="Pause" 
-                                                        HorizontalAlignment="Center" 
-                                                        VerticalAlignment="Center" 
-                                                        Margin="0,0,0,0" />
-                                        </ListView>
-                            
-                                </Grid>
-                            </ContentControl.Content>
-                        </ContentControl>
+                            <Grid  HorizontalAlignment="Left" Margin="0,0,0,0">
+                                <Grid.Background>
+                                    <StaticResource ResourceKey="buttonBackground" />
+                                </Grid.Background>
+                                <!--Grid.Height>
+                                    <StaticResource ResourceKey="Size" />
+                                </Grid.Height-->
+                                <!--Grid.Width>
+                                    <StaticResource ResourceKey="Size" />
+                                </Grid.Width-->
+
+                                <ListView>
+                                    <SymbolIcon x:Name="symbolIcon" Symbol="Pause" 
+                                                    HorizontalAlignment="Center" 
+                                                    VerticalAlignment="Center" 
+                                                    Margin="0,0,0,0" />
+                                </ListView>
+
+                            </Grid>
+                        </ContentControl.Content>
+                    </ContentControl>
 
                     <!-- Column="2" -->
-                        <ContentControl UseLayoutRounding="True">
-                          <!--ContentControl.Template>
-                                <StaticResource ResourceKey="StandardPointerContent" />
-                          </ContentControl.Template-->
-                          <ContentControl.Content>
-                                <Grid  x:Name="menuButtonGrid" HorizontalAlignment="Left" Margin="0,0,0,0">
-                                <Grid.Background>
-                                        <StaticResource ResourceKey="buttonBackground" />
-                                    </Grid.Background>
-                                <Grid.Height>
-                                        <StaticResource ResourceKey="Size" />
-                                    </Grid.Height>
-                                <Grid.Width>
-                                        <StaticResource ResourceKey="Size" />
-                                    </Grid.Width>                              
-                                        <ListView>
-                                            <TextBlock x:Name="menuButton" HorizontalAlignment="Center" 
-                                                       VerticalAlignment="Center" Text="HD" 
-                                                       FontSize="22" FontWeight="Bold"
-                                                       TextLineBounds="Tight" />
-                                            <TextBlock Margin="0,9,0,9" FontWeight="Bold"
-                                                       Opacity="0.5" 
-                                                       Text="settings" FontSize="8" 
-                                                       HorizontalAlignment="Center" 
-                                                       VerticalAlignment="Bottom" />
-                                        </ListView>
-                               
-                                </Grid>
-                            </ContentControl.Content>
-                        </ContentControl>
+                    <ContentControl UseLayoutRounding="True">
+                        <!--ContentControl.Template>
+                            <StaticResource ResourceKey="StandardPointerContent" />
+                        </ContentControl.Template-->
+                        <ContentControl.Content>
+                            <Grid  x:Name="menuButtonGrid" HorizontalAlignment="Left" Margin="0,0,0,0">
+                                <!--Grid.Background>
+                                    <StaticResource ResourceKey="buttonBackground" />
+                                </Grid.Background-->
+                                <!--Grid.Height>
+                                    <StaticResource ResourceKey="Size" />
+                                </Grid.Height-->
+                                <!--Grid.Width>
+                                    <StaticResource ResourceKey="Size" />
+                                </Grid.Width-->
+                                <ListView>
+                                    <TextBlock x:Name="menuButton" HorizontalAlignment="Center" 
+                                                    VerticalAlignment="Center" Text="HD" 
+                                                    FontSize="22" FontWeight="Bold"
+                                                    TextLineBounds="Tight" />
+                                    <TextBlock Margin="0,9,0,9" FontWeight="Bold"
+                                                    Opacity="0.5" 
+                                                    Text="settings" FontSize="8" 
+                                                    HorizontalAlignment="Center" 
+                                                    VerticalAlignment="Bottom" />
+                                </ListView>
+
+                            </Grid>
+                        </ContentControl.Content>
+                    </ContentControl>
 
                     <!--  ColumnSpan="3" -->
-                        <TextBlock x:Name="seekInstructions" FontWeight="SemiBold" Foreground="Black"
-                                   Opacity="0.3" 
-                                   HorizontalAlignment="Center" 
-                                   VerticalAlignment="Bottom" 
-                                   Margin="19,0,19,3" 
-                                   FontSize="9" 
-                                   Text="swipe left or right on the screen to seek" 
-                                   Visibility="Collapsed" />
-                    </ListView>
-                 </Grid>
+                    <TextBlock x:Name="seekInstructions" FontWeight="SemiBold" Foreground="Black"
+                                Opacity="0.3" 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Bottom" 
+                                Margin="19,0,19,3" 
+                                FontSize="9" 
+                                Text="swipe left or right on the screen to seek" 
+                                Visibility="Collapsed" />
+                </ListView>
+            </Grid>
         </ListView>
    </Grid>
 </UserControl>

@@ -16,13 +16,13 @@ namespace ToastActionBackgroundTask
   [Activatable(16777216)]
   public sealed class ToastActionTask : IBackgroundTask, IStringable
   {
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+    
     public extern ToastActionTask();
 
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+   
     public extern void Run([In] IBackgroundTaskInstance taskInstance);
 
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+   
     extern string IStringable.ToString();
   }
 }

@@ -148,8 +148,6 @@ namespace myTube
             Helper.Write((object)"App constructor completed");
             System.Diagnostics.Debug.WriteLine(nameof(App), "App constructor completed");
 
-            //
-
             this.Suspending += OnSuspending;
         }
 
@@ -205,6 +203,7 @@ namespace myTube
                 // Обеспечение активности текущего окна
                 Window.Current.Activate();
             }
+
         }
 
       
@@ -682,7 +681,7 @@ namespace myTube
             //    new System.UnhandledExceptionEventArgs(cDisplayClass910.exception.CausedCrash, false));
             //});
             System.Diagnostics.Debug.WriteLine("[ex] Unhandled exception: " + exception.Message 
-                + " | "+ exception.ToString + 
+                + " | "+ exception.ToString() + 
                 " [" + exception.StackTrace+"]");
             ContentDialog SimplePopup = new ContentDialog()
             {
@@ -937,6 +936,7 @@ namespace myTube
         {
             string Tag = nameof(initialSetup);
             Helper.Write((object)Tag, (object)"Initial setup");
+            System.Diagnostics.Debug.WriteLine(Tag, " Initial setup");
 
             //RnD (try to set app permissions...)
             this.globalObjects = default;//App.GlobalObjects;
@@ -973,6 +973,7 @@ namespace myTube
             }
             
             Helper.Write((object)"InitialSetup", (object)"Starting");
+            System.Diagnostics.Debug.WriteLine("InitialSetup", " Starting");
 
             if (this.rootFrame == null)
             {
@@ -1019,7 +1020,9 @@ namespace myTube
                 current2.Closed += this.Current_Closed;
                 current2.Closed -= this.Current_Closed;
             }
+
             bool loadOrigPage = true;
+
             if (App.launchTile == null && this.launchArgs != null && !this.initialized)
             {
                 if (this.launchArgs != null 
@@ -1221,10 +1224,14 @@ namespace myTube
             }
         }
 
-        private void YouTube_Logged(object sender, string e) => Helper.Write((object)e);
+        private void YouTube_Logged(object sender, string e)
+        {
+            Helper.Write((object)e);
+        }
 
         private void Current_Closed(object sender, CoreWindowEventArgs e)
         {
+            //
         }
 
         //ToDo: Popup
@@ -1275,6 +1282,7 @@ namespace myTube
         private async void Current_Activated(object sender, WindowActivatedEventArgs e)
         {
             Helper.Write((object)"Window", (object)("Activated! (" + (object)e.WindowActivationState + ")"));
+            
             if (!this.alreadyActivated)
             {
                 if (this.windowActivatedTask != null)
@@ -1308,10 +1316,12 @@ namespace myTube
                 }
             }
             CoreWindowActivationState windowActivationState = e.WindowActivationState;
+            
         }
 
         private async Task InitialChecks()
         {
+            /*
             await Task.Run(() =>
             {
                 var displayClass1210 = new App.DisplayClass121_0()
@@ -1322,16 +1332,24 @@ namespace myTube
 
                 displayClass1210.InitialChecks();
             });
+            */
         }
 
 
-        private void YouTube_SignInFailed(object sender, SignedInFailedEventArgs e) => App.trySignIn = true;
+        private void YouTube_SignInFailed(object sender, SignedInFailedEventArgs e)
+        {
+            App.trySignIn = true;
+        }
 
         protected override void OnActivated(IActivatedEventArgs args)
         {
             Helper.Write((object)nameof(OnActivated), (object)"Started");
+            System.Diagnostics.Debug.WriteLine(nameof(OnActivated), "Started");
+
             base.OnActivated(args);
             bool flag = true;
+            /*
+            
             if (args is ProtocolActivatedEventArgs)
             {
                 ProtocolActivatedEventArgs activatedEventArgs = args as ProtocolActivatedEventArgs;
@@ -1356,9 +1374,14 @@ namespace myTube
                     App.launchTile = tileArgs;
                 }
             }
+            
+
             if (flag)
                 this.activationArgs = args;
+
             this.initialSetup();
+            */
+
             ActivationKind kind = args.Kind;
         }
 
@@ -1374,6 +1397,7 @@ namespace myTube
         public static void DisposeLaunchArgumants()
         {
             Helper.Write((object)nameof(App), (object)"Launch arguments disposed of");
+            System.Diagnostics.Debug.WriteLine(nameof(App), "Launch arguments disposed of");
             App.launchTile = (TileArgs)null;
         }
 
@@ -1391,7 +1415,7 @@ namespace myTube
                 displayClass1300.u003E4 = this;
                 try
                 {
-                    if (Settings.UserMode != UserMode.Owner)
+                    if (1==0)//(Settings.UserMode != UserMode.Owner)
                     {
                         using (List<Exception>.Enumerator enumerator = this.exceptions.GetEnumerator())
                         {
@@ -1424,27 +1448,22 @@ namespace myTube
 
                
                 Settings.UnhandledException = DataObject.ToJson((object)displayClass1300.data);
-                string str1 = "Note: You are seeing this message because you are a beta tester\n\n" +
+
+                string str1 = innerException.ToString();
+                string str2 = "[ Note: You are seeing this message because you are a beta tester\n\n" +
                     "Oops, looks like we've run into an internal error the developer hasn't looked out for.\n\n" +
                     "Would you like to report it?\n\n" +
-                    "Please include any information about how you came across this error in the report.";
+                    "Please include any information about how you came across this error in the report. ]";
 
                 if (Settings.UserMode >= UserMode.Owner)
                 {
-                    string str2 = str1 + "\n\n" + innerException.ToString();
+                    str1 = "\n\n"  + str2;
                 }
-
-                /*
-                await this.RootFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    this.TaskScheduler_UnobservedTaskException(this, 
-                        new UnobservedTaskExceptionEventArgs((AggregateException)innerException));
-                });*/
 
                 ContentDialog SimplePopup = new ContentDialog()
                 {
                     Title = "[!] Error / Exception occurs",
-                    Content = str1 + "\n\n" + innerException.ToString(),
+                    Content = str1 + "\n\n" + str1,
                     CloseButtonText = "Ok"
                 };
                 await SimplePopup.ShowAsync();
@@ -1492,8 +1511,9 @@ namespace myTube
                         Settings.Version = obj.Version;
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    System.Diagnostics.Debug.WriteLine("[ex] SetUpBackgroundTask error: " + ex.Message);
                 }
 
                 Helper.Write((object)Tag, (object)"Listing tiles");
@@ -1527,15 +1547,20 @@ namespace myTube
                                     }
                                 }
                             }
-                            catch
+                            catch (Exception ex1)
                             {
+                                System.Diagnostics.Debug.WriteLine("[ex1] Unregistering tile task error: "
+                                    + ex1.Message);
                             }
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        System.Diagnostics.Debug.WriteLine("[ex] Unregistering tile task error: "
+                                    + ex.Message);
                     }
                 }
+
                 BackgroundAccessStatus backgroundAccessStatus = 
                     await BackgroundExecutionManager.RequestAccessAsync();
 

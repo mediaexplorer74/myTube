@@ -195,7 +195,7 @@ namespace myTube
       DependencyObject d,
       DependencyPropertyChangedEventArgs e)
     {
-      (((DependencyObject) (d as OverCanvas)).GetValue(OverCanvas.ScrollViewerProperty) 
+      ((d as OverCanvas).GetValue(OverCanvas.ScrollViewerProperty) 
                 as ScrollViewer).ScrollToHorizontalOffset((double) e.NewValue);
     }
 
@@ -203,8 +203,9 @@ namespace myTube
       DependencyObject d,
       DependencyPropertyChangedEventArgs e)
     {
-      (((DependencyObject) (d as OverCanvas)).GetValue(OverCanvas.ScrollViewerProperty) 
-                as ScrollViewer).ChangeView(new double?(), new double?((double) e.NewValue), new float?(), true);
+      ((d as OverCanvas).GetValue(OverCanvas.ScrollViewerProperty) 
+                as ScrollViewer).ChangeView(new double?(), new double?((double) e.NewValue), 
+                new float?(), true);
     }
 
     private static void OverCanvasPagePropertyChanged(
@@ -388,13 +389,16 @@ namespace myTube
             //await CScrollViewerDisplayClass.s.ViewChanged(CScrollViewerDisplayClass.s, e);//CnewScroll_ViewChanged_u003Eb__0();
         }, TimeSpan.FromMilliseconds(200.0));
        }
+       
        this.SetIndexBasedOnScroll(CScrollViewerDisplayClass.s.HorizontalOffset);
     }
 
-    public static bool GetOverCanvasShown(DependencyObject obj) 
-            => (bool) obj.GetValue(OverCanvas.OverCanvasShownProperty);
+        public static bool GetOverCanvasShown(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(OverCanvas.OverCanvasShownProperty);
+        }
 
-    public static void SetOverCanvasShown(DependencyObject obj, bool value) 
+        public static void SetOverCanvasShown(DependencyObject obj, bool value) 
             => obj.SetValue(OverCanvas.OverCanvasShownProperty, (object) value);
 
     public static int GetOverCanvasPage(DependencyObject obj) 
@@ -993,8 +997,11 @@ namespace myTube
       this.HorizontalPadding = new Thickness(this.leftMargin, 0.0, this.rightMargin, 0.0);
     }
 
-    protected virtual Size ArrangeOverride(Size finalSize)
+    protected override Size ArrangeOverride(Size finalSize)
     {
+      //RnD
+      base.ArrangeOverride(finalSize);
+
       double num1 = (double) this.snapWidth + 12.0;
       this.snaps.Clear();
       this.childrenSnaps.Clear();
@@ -1075,8 +1082,11 @@ namespace myTube
       return this.arrangeSize;
     }
 
-    protected virtual Size MeasureOverride(Size availableSize)
+    protected override Size MeasureOverride(Size availableSize)
     {
+      //RnD
+      base.MeasureOverride(availableSize);
+
       if (double.IsInfinity(availableSize.Height) || double.IsPositiveInfinity(availableSize.Height))
         availableSize.Height = Window.Current.Bounds.Height;
       Size size1 = new Size();

@@ -15,15 +15,12 @@ namespace myTube.Popups
 {
   public sealed partial class DevicePickerFlyout : UserControl
   {
-    private DispatcherTimer timer;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private DataTemplate itemTemplate;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private ListView listView;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private ProgressBar progress;
-    //[GeneratedCode("Microsoft.Windows.UI.Xaml.Build.Tasks", " 4.0.0.0")]
-    private ContentControl dontCastControl;
+        //TEMP
+    private DispatcherTimer timer = new DispatcherTimer();
+    private DataTemplate itemTemplate = new DataTemplate();
+    private ListView listView = new ListView();
+    private ProgressBar progress = new ProgressBar();
+    private ContentControl dontCastControl = new ContentControl();
     
 
     public event EventHandler<DeviceInformation> ItemSelected;

@@ -259,16 +259,16 @@
                     </ProgressBar>
 
                 <!--TODO-->
-                    <!--local:PlayerControls x:Name="controls" 
+                    <local:PlayerControls x:Name="controls" 
                                           Visibility="Collapsed" 
                                           VerticalAlignment="Bottom" 
                                           Margin="19,0,19,37" 
                                           MaxWidth="570" 
                                           RenderTransformOrigin="0.5,0.8514286">
-                        <!- - RenderTransform>
+                        <local:PlayerControls.RenderTransform>
                             <CompositeTransform ScaleX="1" ScaleY="1" />
-                        </RenderTransform- - >
-                    </local:PlayerControls-->
+                        </local:PlayerControls.RenderTransform>
+                    </local:PlayerControls>
                
             </ListView>
         </Grid>

@@ -14,6 +14,10 @@ namespace Windows10TileTask
   [ExclusiveTo(typeof (SingularBackgroundTask))]
   internal interface ISingularBackgroundTaskClass
   {
-    bool SetYouTubeParams { [MethodImpl(MethodCodeType = MethodCodeType.Runtime)] get; [MethodImpl(MethodCodeType = MethodCodeType.Runtime)] [param: In] set; }
+    bool SetYouTubeParams
+    { 
+            get; 
+            set;
+    }
   }
 }

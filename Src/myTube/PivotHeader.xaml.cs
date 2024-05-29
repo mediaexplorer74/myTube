@@ -273,14 +273,15 @@ namespace myTube
             set => ((DependencyObject)this).SetValue(PivotHeader.IndexProperty, (object)value);
         }
               
-
+      
         protected override Size MeasureOverride(Size availableSize)
         {
             //RnD
-            Size size = availableSize;//((FrameworkElement)this).MeasureOverride(availableSize);
+            Size size = /*availableSize;*/base.MeasureOverride(availableSize);
             this.setLargeScreen(size.Width < availableSize.Width - 2.0);
             return size;
         }
+                
 
         private void calculateWidth()
         {

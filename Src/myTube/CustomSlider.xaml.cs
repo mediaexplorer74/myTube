@@ -178,7 +178,7 @@ namespace myTube
             this.Value = MyMath.Between(this.Minimum, this.Maximum, MyMath.BetweenValue(0.0, 
                 ((FrameworkElement)this).ActualWidth, e.GetPosition((UIElement)this).X));
             e.Handled = true;
-            this.OnTapped(e);
+            base.OnTapped(e);
         }     
     }
 }

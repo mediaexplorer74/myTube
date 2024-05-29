@@ -55,18 +55,26 @@ namespace myTube
 
     public void RemoveLastBackStackAtNavigate() => this.removeLastEntry = true;
 
-        protected override Size MeasureOverride(Size availableSize) => this.navigating
-                ? availableSize : availableSize;//((FrameworkElement) this).MeasureOverride(availableSize);
+        
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            return this.navigating
+                ? availableSize : base.MeasureOverride(availableSize);
+        }
 
-        protected override Size ArrangeOverride(Size finalSize) => this.navigating
-                ? finalSize : finalSize;//((FrameworkElement) this).ArrangeOverride(finalSize);
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            return this.navigating
+               ? finalSize : base.ArrangeOverride(finalSize);
+        }
+        
 
-    private void CustomFrame_Navigated(object sender, NavigationEventArgs e)
+        private void CustomFrame_Navigated(object sender, NavigationEventArgs e)
     {
       this.navigating = false;
-      if (((ContentControl) this).Content == null)
+      if (this.Content == null)
         return;
-      if (((ContentControl) this).Content is FrameworkElement)
+      if (this.Content is FrameworkElement)
       {
         Helper.Write((object) nameof (CustomFrame), 
             (object) ("Navigation Mode: " + (object) e.NavigationMode));
@@ -194,7 +202,8 @@ namespace myTube
                 {
                     try
                     {
-                        base.Navigate(type, parameter, tranInfo);
+                        //Temporary commented (No HomePage yet)
+                        //base.Navigate(type, parameter, tranInfo);
                     }
                     catch (Exception ex)
                     {

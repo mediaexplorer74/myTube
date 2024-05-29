@@ -13,7 +13,7 @@ namespace Windows10TileTask
   [ExclusiveTo(typeof (MainTileTask))]
   internal interface IMainTileTaskStatic
   {
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+    //[MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
     IAsyncAction UpdateMainTile();
   }
 }

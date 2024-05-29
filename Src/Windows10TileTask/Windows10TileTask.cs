@@ -14,13 +14,12 @@ namespace Windows10TileTask
   [Activatable(16777216)]
   public sealed class Windows10TileTask : IBackgroundTask, IStringable
   {
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+ 
     public extern Windows10TileTask();
 
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
+
     public extern void Run([In] IBackgroundTaskInstance taskInstance);
 
-    [MethodImpl(MethodCodeType = MethodCodeType.Runtime)]
     extern string IStringable.ToString();
   }
 }

@@ -384,9 +384,10 @@ namespace myTube
 
             try
             {
-                App.GlobalObjects.VideoThumbTemplate = Settings.Thunbnail != ThumbnailStyle.Classic
-                    ? (DataTemplate)((IDictionary<object, object>)Application.Current.Resources)[(object)"VideoThumbs2"]
-                    : (DataTemplate)((IDictionary<object, object>)Application.Current.Resources)[(object)"VideoThumbs"];
+                if (App.GlobalObjects != null)
+                App.GlobalObjects.VideoThumbTemplate = default;//Settings.Thunbnail != ThumbnailStyle.Classic
+                 //   ? (DataTemplate)((IDictionary<object, object>)Application.Current.Resources)[(object)"VideoThumbs2"]
+                 //   : (DataTemplate)((IDictionary<object, object>)Application.Current.Resources)[(object)"VideoThumbs"];
             }
             catch (Exception ex)
             {
@@ -422,7 +423,7 @@ namespace myTube
 
         private void view_VisibleBoundsChanged(DefaultPage defaultPage, object e)
         {
-            throw new NotImplementedException();
+            //Not Implemented
         }
 
         private void Dispatcher_AcceleratorKeyActivated(
@@ -464,7 +465,7 @@ namespace myTube
         protected override Size MeasureOverride(Size availableSize)
         {
             //RnD
-            return availableSize;// this.MeasureOverride(availableSize);
+            return base.MeasureOverride(availableSize);
         }
 
         private void Current_SizeChanged(object sender, WindowSizeChangedEventArgs e)
@@ -839,9 +840,8 @@ namespace myTube
                     this.ToggleFullscreen();
                 else
                     this.ExitFullscreenMode();
-            }
-         
-            this.OnDoubleTapped(e);
+            }         
+            base.OnDoubleTapped(e);
         }
 
         protected override void OnPointerMoved(PointerRoutedEventArgs e)
@@ -900,7 +900,7 @@ namespace myTube
                     this.player.ControlsShown = false;
                 }
             }
-          this.OnPointerMoved(e);
+          base.OnPointerMoved(e);
         }
 
         private void createMouseShownTimer()
@@ -942,7 +942,7 @@ namespace myTube
 
         protected override void OnPointerEntered(PointerRoutedEventArgs e)
         {
-            this.OnPointerEntered(e);
+            base.OnPointerEntered(e);
             if (this.currentPlayerElement == null 
                 || !this.player.ControlsShown || ((FrameworkElement)this.player).ContainsPoint(e))
                 return;
@@ -953,12 +953,12 @@ namespace myTube
         {
             if (this.currentPlayerElement != null && this.currentPlayerElement != this.LayoutRoot)
                 this.player.ControlsShown = false;
-            this.OnPointerWheelChanged(e);
+            base.OnPointerWheelChanged(e);
         }
 
         protected override void OnPointerPressed(PointerRoutedEventArgs e)
         {
-            this.OnPointerPressed(e);
+            base.OnPointerPressed(e);
             if (((RoutedEventArgs)e).OriginalSource is TextBlock originalSource && originalSource.IsTextSelectionEnabled || ((RoutedEventArgs)e).OriginalSource is TextBox)
                 return;
             int num1 = this.player.ControlsShown ? 1 : 0;
@@ -975,7 +975,7 @@ namespace myTube
 
         protected override void OnManipulationDelta(ManipulationDeltaRoutedEventArgs e)
         {
-            this.OnManipulationDelta(e);
+            base.OnManipulationDelta(e);
             if (!this.movingOvercanvas)
                 return;
             this.overCanvas.Move(e.Delta.Translation.X);
@@ -983,7 +983,7 @@ namespace myTube
 
         protected override void OnManipulationCompleted(ManipulationCompletedRoutedEventArgs e)
         {
-            this.OnManipulationCompleted(e);
+            base.OnManipulationCompleted(e);
             if (!this.movingOvercanvas)
                 return;
             ((UIElement)this).ManipulationMode = (ManipulationModes)65536;
@@ -994,7 +994,7 @@ namespace myTube
 
         protected override void OnPointerReleased(PointerRoutedEventArgs e)
         {
-            this.OnPointerReleased(e);
+            base.OnPointerReleased(e);
             MediaTranscoder mediaTranscoder = new MediaTranscoder();
             if (!this.movingOvercanvas)
                 return;
@@ -1234,11 +1234,15 @@ namespace myTube
             Helper.Write((object)"Got orientation sensor");
         }
 
-        private void Accel_OrientChanged(OrientChangedEventArgs e) => this.Rotate(e.Orientation);
+        private void Accel_OrientChanged(OrientChangedEventArgs e)
+        {
+            this.Rotate(e.Orientation);
+        }
 
         private void DefaultPage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             this.MiniPlayerTypeChanged();
+            
             if (this.currentPopup != null)
             {
                 Func<Point> popupArrangeMethod 
@@ -1257,6 +1261,10 @@ namespace myTube
             if (!(str != this.lastStateName))
                 return;
             VisualStateManager.GoToState((Control)this, str, false);
+            
+
+            //TEMP
+            //string str = "DefaultPhone";
             this.lastStateName = str;
         }
 
@@ -1450,17 +1458,30 @@ namespace myTube
 
         public async void MiniPlayerTypeChanged()
         {
+            
             if (!this.firstMiniPlayerChanged)
                 this.firstMiniPlayerChanged = true;
             else if (this.lastMiniPlayerType == Settings.MiniPlayerType)
                 return;
+
             this.lastMiniPlayerType = Settings.MiniPlayerType;
             switch (Settings.MiniPlayerType)
             {
                 case MiniPlayerType.Background:
                     this.SetOrientationType();
                     IVideoContainer temp = this.currentPlayerElement;
-                    int num1 = await this.requestVideoPlayerInternal((IVideoContainer)null, true) ? 1 : 0;
+                    int num1 = 0;
+
+                    try
+                    {
+                        num1 = await this.requestVideoPlayerInternal((IVideoContainer)null, true) ? 1 : 0;
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[ex] requestVideoPlayerInternal error:" + ex.Message);
+                    }
+
+
                     this.bindVideoPlayer(true);
                     this.reservedVideoElement = temp;
                     temp = (IVideoContainer)null;
@@ -1474,6 +1495,7 @@ namespace myTube
                     }
                     break;
             }
+            
             if (this.overCanvas == null)
                 return;
             this.setOverCanvasFlipStyle(this.overCanvas);
@@ -1619,6 +1641,9 @@ namespace myTube
             return await this.requestVideoPlayerInternal((IVideoContainer)this, true);
         }
 
+
+
+
         private Task<bool> requestVideoPlayerInternal(
           IVideoContainer element,
           bool bindShown,
@@ -1626,9 +1651,15 @@ namespace myTube
         {
             Helper.Write((object)nameof(DefaultPage),
                 (object)("Requesting video player control on " + (object)element ?? "NULL"));
+            System.Diagnostics.Debug.WriteLine("DefaultPage",
+                   "Requesting video player control on " + (object)element ?? "NULL");
 
-            TaskCompletionSource<bool> tcs;
-            if (Settings.MiniPlayerType != MiniPlayerType.MiniPlayer && this.currentPlayerElement == null)
+                                            //RnD
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>(); 
+
+            /*
+            if (Settings.MiniPlayerType != MiniPlayerType.MiniPlayer 
+                && this.currentPlayerElement == null)
             {
                 this.reservedVideoElement = element;
                 tcs = new TaskCompletionSource<bool>();
@@ -1639,6 +1670,8 @@ namespace myTube
             {
                 Helper.Write((object)nameof(DefaultPage),
                     (object)"VideoPlayer currently in fullscreen, exiting method");
+                System.Diagnostics.Debug.WriteLine("DefaultPage",
+                   "VideoPlayer currently in fullscreen, exiting method");
 
                 tcs = new TaskCompletionSource<bool>();
                 this.fullscreenReturnElement = element;
@@ -1659,6 +1692,8 @@ namespace myTube
             {
                 Helper.Write((object)nameof(DefaultPage), 
                     (object)"Video player has already been reset, exiting method");
+                System.Diagnostics.Debug.WriteLine("DefaultPage",
+                   "Video player has already been reset, exiting method");
 
                 tcs.TrySetResult(true);
                 return tcs.Task;
@@ -1668,7 +1703,9 @@ namespace myTube
             {
                 Helper.Write((object)nameof(DefaultPage), 
                     (object)"Element already set as video player control, exiting method");
-                
+                System.Diagnostics.Debug.WriteLine("DefaultPage",
+                  "Element already set as video player control, exiting method");
+
                 tcs.SetResult(true);
                 this.showOrHideVideoButton();
                 return tcs.Task;
@@ -1677,12 +1714,15 @@ namespace myTube
             {
                 Helper.Write((object)nameof(DefaultPage), 
                     (object)"Already setting other element as video player control, this element will be placed afterwords. Exiting method.");
-               
+                System.Diagnostics.Debug.WriteLine("DefaultPage",
+                  "Already setting other element as video player control, this element will be placed afterwords. Exiting method.");
+
                 this.waitingBind = bindShown;
                 this.waitingVideoElement = element;
                 if (this.waitingVideoTcs != null)
                     this.waitingVideoTcs.TrySetResult(false);
-                this.waitingVideoTcs = this.waitingVideoTcs != tcs ? tcs : new TaskCompletionSource<bool>();
+                this.waitingVideoTcs = this.waitingVideoTcs != tcs 
+                    ? tcs : new TaskCompletionSource<bool>();
                 this.showOrHideVideoButton();
                 return tcs.Task;
             }
@@ -1709,8 +1749,11 @@ namespace myTube
                 tcs.TrySetResult(this.player.Parent == element);
                 this.showOrHideVideoButton();
             };
+            */
             return tcs.Task;
-        }
+        }//
+
+
 
         private void bindVideoPlayer(bool bindShown)
         {
