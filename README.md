@@ -32,9 +32,10 @@ So, myTube reconstruction is very important thing :)
 - TestFramework
 
 ## Progress
-- Draft / Early bird
+- Draft / Early bird / no UI at all
 - No HomePage, etc. Only partially reconstructed TextPage.. =)
 - XAML experimentation, RnD some event handlers, OverCanvas feature, etc...
+- Plan1_by_ClaudeAI_FreeEdition.md added (see /Doc folder)
 
 ## License / Credits
 - MIT  
@@ -46,4 +47,4 @@ So, myTube reconstruction is very important thing :)
 As is. No support. RnD only. DIY
 
 ## .
-[m][e] 2024
+[m][e] May 19, 2026
